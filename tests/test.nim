@@ -19,6 +19,8 @@ block continuity_2d:
         rightGrid = noise.grid((x + Epsilon, y), (4, 4))
       doAssert abs(left - right) < Tolerance
       doAssert abs(leftGrid[0, 0] - rightGrid[0, 0]) < Tolerance
+      doAssert abs(leftGrid[0, 0] - left) < Tolerance
+      doAssert abs(rightGrid[0, 0] - right) < Tolerance
 
 block continuity_3d:
   const
@@ -37,6 +39,8 @@ block continuity_3d:
       rightGrid = noise.grid((x + Epsilon, y, z), (4, 4, 4))
     doAssert abs(left - right) < Tolerance
     doAssert abs(leftGrid[0, 0, 0] - rightGrid[0, 0, 0]) < Tolerance
+    doAssert abs(leftGrid[0, 0, 0] - left) < Tolerance
+    doAssert abs(rightGrid[0, 0, 0] - right) < Tolerance
 
 block basic_2d:
   let grid = simplex.grid((0, 0), (19, 17))

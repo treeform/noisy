@@ -256,13 +256,19 @@ func value*(simplex: Simplex, x, y, z: int): float32 {.inline.} =
   ## Helper for working with ints
   simplex.value(x.float32, y.float32, z.float32)
 
-func column4(simplex: Simplex, x, y, step: float32): M128 =
+func coordinates(start: float32, offset: int): M128 =
+  ## Forms world coordinates in the same addition order as scalar sampling.
+  var values: array[4, float32]
+  for i in 0 ..< 4:
+    values[i] = start + (offset + i).float32
+  cast[M128](values)
+
+func column4(simplex: Simplex, x: float32, y: M128): M128 =
+  ## Evaluates four 2D samples at already scaled coordinates.
   let
     F2 = m128(F2)
     G2 = m128(G2)
-    steps = cast[M128]([0.float32, step, step * 2, step * 3])
     x = m128(x)
-    y = m128(y) + steps
     vec0 = m128(0)
     vec1 = m128(1)
     vec2 = m128(2)
@@ -367,18 +373,26 @@ func column4(simplex: Simplex, x, y, step: float32): M128 =
 
   m128(70) * (n0 + n1 + n2)
 
-func row4(simplex: Simplex, x, y, step: float32): array[4, M128] =
+func row4(
+  simplex: Simplex, x: array[4, float32], y: M128
+): array[4, M128] =
+  ## Evaluates four columns using the supplied scaled coordinates.
   for i in 0 ..< 4:
-    result[i] = simplex.column4(x + i.float32 * step, y, step)
+    result[i] = simplex.column4(x[i], y)
 
-func grid4(simplex: Simplex, x, y: float32): array[4, M128] =
+func grid4(
+  simplex: Simplex, x, y: float32, offsetX, offsetY: int
+): array[4, M128] =
   ## Generates a 4x4 2D noise grid based on the Simplex parameters.
-  ## Starts at (x, y) and moves by +1 in the x and y directions.
-  ## Uses SSE2 SIMD insructions.
+  ## Applies integer grid offsets before scaling coordinates for each octave.
+  ## Uses SSE2 SIMD instructions.
 
   if simplex.octaves == 0:
     failOctaves()
 
+  let
+    xs = coordinates(x, offsetX)
+    ys = coordinates(y, offsetY)
   var
     totals: array[4, M128]
     amplitude = m128(simplex.amplitude)
@@ -386,7 +400,9 @@ func grid4(simplex: Simplex, x, y: float32): array[4, M128] =
     frequency = simplex.frequency
 
   for _ in 0 ..< simplex.octaves:
-    let rows = simplex.row4(x * frequency, y * frequency, frequency)
+    let
+      scale = m128(frequency)
+      rows = simplex.row4(cast[array[4, float32]](xs * scale), ys * scale)
     for i in 0 ..< 4:
       totals[i] += rows[i] * amplitude
 
@@ -400,14 +416,13 @@ func grid4(simplex: Simplex, x, y: float32): array[4, M128] =
 
   totals
 
-func layer4(simplex: Simplex, x, y, z, step: float32): M128 =
+func layer4(simplex: Simplex, x, y: float32, z: M128): M128 =
+  ## Evaluates four 3D samples at already scaled coordinates.
   let
     F3 = m128(F3)
     G3 = m128(G3)
-    steps = cast[M128]([0.float32, step, step * 2, step * 3])
     x = m128(x)
     y = m128(y)
-    z = m128(z) + steps
     vec0 = m128(0)
     vec1 = m128(1)
     vec2 = m128(2)
@@ -613,24 +628,34 @@ func layer4(simplex: Simplex, x, y, z, step: float32): M128 =
 
   m128(32) * (n0 + n1 + n2 + n3)
 
-func column4(simplex: Simplex, x, y, z, step: float32): array[4, M128] =
+func column4(
+  simplex: Simplex, x: float32, y: array[4, float32], z: M128
+): array[4, M128] =
+  ## Evaluates four layers using the supplied scaled coordinates.
   for i in 0 ..< 4:
-    result[i] = simplex.layer4(x, y + i.float32 * step, z, step)
+    result[i] = simplex.layer4(x, y[i], z)
 
-func row4(simplex: Simplex, x, y, z, step: float32): array[4, array[4, M128]] =
+func row4(
+  simplex: Simplex, x, y: array[4, float32], z: M128
+): array[4, array[4, M128]] =
+  ## Evaluates four columns using the supplied scaled coordinates.
   for i in 0 ..< 4:
-    result[i] = simplex.column4(x + i.float32 * step, y, z, step)
+    result[i] = simplex.column4(x[i], y, z)
 
 func grid4(
-  simplex: Simplex, x, y, z: float32
+  simplex: Simplex, x, y, z: float32, offsetX, offsetY, offsetZ: int
 ): array[4, array[4, M128]] =
-  ## Generates a 4x4 2D noise grid based on the Simplex parameters.
-  ## Starts at (x, y) and moves by +1 in the x and y directions.
-  ## Uses SSE2 SIMD insructions.
+  ## Generates a 4x4x4 3D noise grid based on the Simplex parameters.
+  ## Applies integer grid offsets before scaling coordinates for each octave.
+  ## Uses SSE2 SIMD instructions.
 
   if simplex.octaves == 0:
     failOctaves()
 
+  let
+    xs = coordinates(x, offsetX)
+    ys = coordinates(y, offsetY)
+    zs = coordinates(z, offsetZ)
   var
     totals: array[4, array[4, M128]]
     amplitude = m128(simplex.amplitude)
@@ -638,9 +663,13 @@ func grid4(
     frequency = simplex.frequency
 
   for _ in 0 ..< simplex.octaves:
-    let rows = simplex.row4(
-      x * frequency, y * frequency, z * frequency, frequency
-    )
+    let
+      scale = m128(frequency)
+      rows = simplex.row4(
+        cast[array[4, float32]](xs * scale),
+        cast[array[4, float32]](ys * scale),
+        zs * scale
+      )
     for i in 0 ..< 4:
       for j in 0 ..< 4:
         totals[i][j] += rows[i][j] * amplitude
@@ -676,7 +705,7 @@ func grid*(
   var widthDone, heightDone: int
   for i in countup(0, width - 4, 4):
     for j in countup(0, height - 4, 4):
-      let grid4 = simplex.grid4(x + i.float32, y + j.float32)
+      let grid4 = simplex.grid4(x, y, i, j)
       for a in 0 ..< 4:
         mm_storeu_ps(
           result.values[result.valueIndex(a + i, j, 0)].unsafeAddr,
@@ -722,9 +751,7 @@ func grid*(
   for i in countup(0, width - 4, 4):
     for j in countup(0, height - 4, 4):
       for k in countup(0, depth - 4, 4):
-        let grid4 = simplex.grid4(
-          x + i.float32, y + j.float32, z + k.float32
-        )
+        let grid4 = simplex.grid4(x, y, z, i, j, k)
         for a in 0 ..< 4:
           for b in 0 ..< 4:
             mm_storeu_ps(
