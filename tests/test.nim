@@ -1,6 +1,42 @@
-import noisy
+import std/math, noisy
 
 let simplex = initSimplex(1988) # 1988 is the random seed, generate this however
+
+block continuity_2d:
+  const
+    F2 = ((sqrt(3.0) - 1) / 2).float32
+    Epsilon = 0.000001'f
+    Tolerance = 0.0001'f
+  for seed in [1, 42, 1988]:
+    let noise = initSimplex(seed)
+    for y in [-0.25'f, 0.25'f]:
+      # Cross i = 0 in the skewed lattice, where masking wraps -1 to 255.
+      let
+        x = -y * F2 / (1 + F2)
+        left = noise.value(x - Epsilon, y)
+        right = noise.value(x + Epsilon, y)
+        leftGrid = noise.grid((x - Epsilon, y), (4, 4))
+        rightGrid = noise.grid((x + Epsilon, y), (4, 4))
+      doAssert abs(left - right) < Tolerance
+      doAssert abs(leftGrid[0, 0] - rightGrid[0, 0]) < Tolerance
+
+block continuity_3d:
+  const
+    Epsilon = 0.000001'f
+    Tolerance = 0.0001'f
+  for seed in [1, 42, 1988]:
+    let
+      noise = initSimplex(seed)
+      y = 0.4'f
+      z = -0.2'f
+      # The 3D skew places i = 0 at x = -(y + z) / 4.
+      x = -(y + z) / 4
+      left = noise.value(x - Epsilon, y, z)
+      right = noise.value(x + Epsilon, y, z)
+      leftGrid = noise.grid((x - Epsilon, y, z), (4, 4, 4))
+      rightGrid = noise.grid((x + Epsilon, y, z), (4, 4, 4))
+    doAssert abs(left - right) < Tolerance
+    doAssert abs(leftGrid[0, 0, 0] - rightGrid[0, 0, 0]) < Tolerance
 
 block basic_2d:
   let grid = simplex.grid((0, 0), (19, 17))

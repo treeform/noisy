@@ -71,17 +71,22 @@ func blend(a, b, mask: M128): M128 {.inline.} =
   ((a xor b) and mask) xor a
 
 func initSimplex*(seed: int): Simplex =
+  ## Initializes simplex noise with a seeded, repeated permutation table.
   result.octaves = 1
   result.amplitude = 1
   result.frequency = 1
   result.lacunarity = 2
   result.gain = 0.5
 
+  var
+    permutation: array[256, int32]
+    rng = initRand(seed)
+  for i in 0 ..< permutation.len:
+    permutation[i] = i.int32
+  shuffle(rng, permutation)
+  # Duplicate the permutation so masked lattice coordinates wrap consistently.
   for i in 0 ..< result.perm.len:
-    result.perm[i] = i.int32 and 255
-  var r = initRand(seed)
-  shuffle(r, result.perm)
-  for i in 0 ..< result.perm.len:
+    result.perm[i] = permutation[i and 255]
     result.permMod12[i] = result.perm[i] mod 12
 
 func valueIndex(g: Grid, x, y, z: int): int {.inline.} =
