@@ -1,6 +1,6 @@
 import
   std/strformat,
-  noisy/[opensimplexes, values]
+  noisy/[cellulars, opensimplexes, values]
 
 from noisy/grids import useGridNeon
 
@@ -144,39 +144,61 @@ proc checkGridBoundaries[T](noise: T) =
   const
     X = -0.125'f
     Y = 0.25'f
-    Skew = 0.5'f * (1.73205077648162841796875'f - 1)
+  when T is OpenSimplex2 or T is OpenSimplex2S:
+    const Skew = 0.5'f * (1.73205077648162841796875'f - 1)
   for boundary in [-256.0'f, -1.0'f, -0.5'f, 0.0'f, 0.5'f, 255.0'f]:
     let
       y =
-        when T is OpenSimplex2S: (boundary - Skew * X) / (1 + Skew)
+        when T is OpenSimplex2 or T is OpenSimplex2S:
+          (boundary - Skew * X) / (1 + Skew)
         else: boundary
       z =
-        when T is OpenSimplex2S: 2 * (X + Y) - 3 * boundary
+        when T is OpenSimplex2 or T is OpenSimplex2S:
+          2 * (X + Y) - 3 * boundary
         else: boundary
     for delta in [-0.0001'f, 0.0'f, 0.0001'f]:
       for offset in 0 .. 10:
         compareGrid(noise, (X, y + delta - offset.float32), 11)
         compareGrid(noise, (X, Y, z + delta - offset.float32), 11)
 
-echo "Testing OpenSimplex2S and ValueCubic grids against scalar sampling"
+echo "Testing FastNoiseLite-compatible grids against scalar sampling"
 when (NimMajor, NimMinor) >= (2, 4):
   # Nim 2.2's VM cannot evaluate the existing scalar kernels.
   static:
     let
+      simplex = initOpenSimplex2(1988)
       smooth = initOpenSimplex2S(-7)
+      value = initValue(1988)
       cubic = initValueCubic(1988)
+      cellular = initCellular(-7)
       plane = smooth.grid((0, 0), (1, 4))
       volume = cubic.grid((0, 0, 0), (1, 1, 4))
+    doAssert simplex.grid((0, 0, 0), (1, 1, 4))[0, 0, 3] ==
+      simplex.value(0, 0, 3)
     doAssert plane[0, 3] == smooth.value(0, 3)
+    doAssert value.grid((0, 0), (1, 4))[0, 3] == value.value(0, 3)
     doAssert volume[0, 0, 3] == cubic.value(0, 0, 3)
+    doAssert cellular.grid((0, 0, 0), (1, 1, 4))[0, 0, 3] ==
+      cellular.value(0, 0, 3)
 
+checkGrid(initOpenSimplex2(1988))
 checkGrid(initOpenSimplex2S(-7))
+checkGrid(initValue(1988))
 checkGrid(initValueCubic(1988))
+checkGrid(initCellular(-7))
 for seed in [-7, 0, low(int32).int, high(int32).int]:
   let
+    simplex = initOpenSimplex2(seed)
     smooth = initOpenSimplex2S(seed)
+    value = initValue(seed)
     cubic = initValueCubic(seed)
+    cellular = initCellular(seed)
+  checkGridBatches(simplex)
   checkGridBatches(smooth)
+  checkGridBatches(value)
   checkGridBatches(cubic)
+  checkGridBatches(cellular)
+  checkGridBoundaries(simplex)
   checkGridBoundaries(smooth)
+  checkGridBoundaries(value)
   checkGridBoundaries(cubic)

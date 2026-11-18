@@ -5,13 +5,13 @@ const
   NoisyReferenceDir* {.strdefine.} = ""
 
 when NoisyReferenceDir.len == 0:
-  {.error: "Fetch references with tools/gen_references.py, then pass " &
+  {.error: "Fetch references with nim r tools/gen_references.nim, then pass " &
     "-d:noisyReferenceDir=/cache/path".}
 static:
   doAssert fileExists(NoisyReferenceDir / "stegu/noise1234.c"),
-    "Perlin reference missing; rerun tools/gen_references.py with --cache-dir"
+    "Perlin reference missing; rerun nim r tools/gen_references.nim with --cache-dir"
   doAssert fileExists(NoisyReferenceDir / "caseman/simplex23.c"),
-    "Reference cache missing; run tools/gen_references.py with --cache-dir"
+    "Reference cache missing; run nim r tools/gen_references.nim with --cache-dir"
 
 {.passC: "-I" & quoteShell(NoisyReferenceDir).}
 {.compile: ReferenceDir / "reference_noise.cpp".}

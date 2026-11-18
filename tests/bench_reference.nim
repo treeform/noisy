@@ -43,8 +43,7 @@ var checksum: float64
 var results = newJArray()
 
 template supportsVector(noise: typed): bool =
-  noise is Simplex or
-    (useGridNeon and (noise is OpenSimplex2S or noise is ValueCubic))
+  noise is Simplex or useGridNeon
 
 proc consume(values: seq[float32]) =
   ## Consumes every output outside the timer to prevent dead-code removal.

@@ -54,9 +54,6 @@ block:
 
 echo "Testing Cellular defaults, seeds, and scalar overloads"
 block:
-  static:
-    doAssert not compiles(initCellular(1).grid((0, 0), (4, 4)))
-    doAssert not compiles(initCellular(1).grid((0, 0, 0), (4, 4, 4)))
   for seed in [low(int32).int, -1988, 0, 1, 1988, high(int32).int]:
     let
       noise = initCellular(seed = seed)
@@ -181,3 +178,84 @@ block:
       except NoisyError:
         caught = true
       doAssert caught
+
+echo "Testing Cellular grids across distances, return modes, and exact ties"
+block:
+  const Start = (0.5'f, -0.5'f, 1.5'f)
+  for seed in [low(int32).int, 0, 1988]:
+    for settings in [(1, 1.0'f, 1.0'f), (3, -0.37'f, -0.8'f)]:
+      var noise = initCellular(seed)
+      (noise.octaves, noise.frequency, noise.amplitude) = settings
+      for jitter in [0.0'f, 0.5'f, 1.0'f]:
+        noise.jitter = jitter
+        for metric in CellularDistance:
+          noise.distanceFunction = metric
+          for returnType in CellularReturn:
+            noise.returnType = returnType
+            let
+              plane = noise.grid((Start[0], Start[1]), (2, 7))
+              volume = noise.grid(Start, (2, 2, 7))
+            template compare(actual, expected: float32) =
+              if returnType == CellValue and noise.octaves == 1:
+                doAssert actual == expected,
+                  "Cellular grid selected a different feature in " & $metric
+              else:
+                checkClose(actual, expected)
+            for x in 0 ..< plane.width:
+              let sampleX = Start[0] + x.float32
+              for y in 0 ..< plane.height:
+                compare(plane[x, y], noise.value(sampleX, Start[1] + y.float32))
+              for y in 0 ..< volume.height:
+                let sampleY = Start[1] + y.float32
+                for z in 0 ..< volume.depth:
+                  compare(volume[x, y, z],
+                    noise.value(sampleX, sampleY, Start[2] + z.float32))
+  for jitter in [-0.001, 1.001, Inf, NegInf, NaN]:
+    var noise = initCellular(42)
+    noise.jitter = jitter.float32
+    doAssertRaises NoisyError:
+      discard noise.grid((0, 0), (0, 0))
+    doAssertRaises NoisyError:
+      discard noise.grid((0, 0, 0), (1, 1, 4))
+
+echo "Testing Cellular grid feature selection on either side of jittered boundaries"
+block:
+  for dimensions in 2 .. 3:
+    for seed in [low(int32).int, -1988, 0, 42, 1988, high(int32).int]:
+      var noise = initCellular(seed)
+      noise.returnType = CellValue
+      for jitter in [0.5'f, 1.0'f]:
+        noise.jitter = jitter
+        for metric in CellularDistance:
+          noise.distanceFunction = metric
+          var
+            point = [-3.125'f, 0.25'f, 0.0'f]
+            left = 6.0'f
+            right = 8.0'f
+          let axis = dimensions - 1
+          point[axis] = left
+          let leftCell = noise.sample(point, dimensions)
+          point[axis] = right
+          doAssert noise.sample(point, dimensions) != leftCell
+          # Find consecutive float32 coordinates with distinct feature hashes.
+          while true:
+            point[axis] = left + (right - left) * 0.5'f
+            if point[axis] == left or point[axis] == right:
+              break
+            if noise.sample(point, dimensions) == leftCell:
+              left = point[axis]
+            else:
+              right = point[axis]
+          for boundaryPoint in [left, right]:
+            point[axis] = boundaryPoint
+            let expected = noise.sample(point, dimensions)
+            for lane in 0 ..< 4:
+              let start = boundaryPoint - lane.float32
+              doAssert start + lane.float32 == boundaryPoint
+              let actual =
+                if dimensions == 2:
+                  noise.grid((point[0], start), (1, 4))[0, lane]
+                else:
+                  noise.grid((point[0], point[1], start), (1, 1, 4))[0, 0, lane]
+              doAssert actual == expected,
+                "Cellular boundary selected a different feature in " & $metric

@@ -3,16 +3,16 @@ import common, grids, lattices
 export common, Grid, `[]`
 
 when useGridNeon:
-  import simd, simd/opensimplex2sneon
+  import simd, simd/[opensimplex2neon, opensimplex2sneon]
 
 type
   OpenSimplex2* = object
-    ## Scalar OpenSimplex2 using FastNoiseLite's 2D and 3D conventions.
+    ## OpenSimplex2 using FastNoiseLite's 2D and 3D conventions.
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
 
   OpenSimplex2S* = object
-    ## Scalar OpenSimplex2S using FastNoiseLite's 2D and 3D conventions.
+    ## OpenSimplex2S using FastNoiseLite's 2D and 3D conventions.
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
 
@@ -439,41 +439,80 @@ func value*(noise: OpenSimplex2S, x, y, z: int): float32 {.inline.} =
   noise.value(x.float32, y.float32, z.float32)
 
 when useGridNeon:
-  func sample2x4(noise: OpenSimplex2S, x, y: Float4): Float4 =
+  func sample2x4[T: OpenSimplex2 | OpenSimplex2S](noise: T, x, y: Float4): Float4 =
     ## Samples four 2D positions through the same octave settings as value.
+    let seed = cast[int32](noise.seed)
     var
       amplitude = noise.amplitude
       frequency = noise.frequency
     result = float4(0)
     for _ in 0 ..< noise.octaves:
       let scale = float4(frequency)
-      result += sampleSmooth4(cast[int32](noise.seed), x * scale, y * scale) *
-        float4(amplitude)
+      let sample =
+        when T is OpenSimplex2: sample4(seed, x * scale, y * scale)
+        else: sampleSmooth4(seed, x * scale, y * scale)
+      result += sample * float4(amplitude)
       amplitude *= noise.gain
       frequency *= noise.lacunarity
     result /= float4(noise.octaves.float32)
 
-  func sample3x4(noise: OpenSimplex2S, x, y, z: Float4): Float4 =
+  func sample3x4[T: OpenSimplex2 | OpenSimplex2S](
+    noise: T, x, y, z: Float4
+  ): Float4 =
     ## Samples four 3D positions through the same octave settings as value.
+    let seed = cast[int32](noise.seed)
     var
       amplitude = noise.amplitude
       frequency = noise.frequency
     result = float4(0)
     for _ in 0 ..< noise.octaves:
       let scale = float4(frequency)
-      result += sampleSmooth4(
-        cast[int32](noise.seed), x * scale, y * scale, z * scale
-      ) * float4(amplitude)
+      let sample =
+        when T is OpenSimplex2: sample4(seed, x * scale, y * scale, z * scale)
+        else: sampleSmooth4(seed, x * scale, y * scale, z * scale)
+      result += sample * float4(amplitude)
       amplitude *= noise.gain
       frequency *= noise.lacunarity
     result /= float4(noise.octaves.float32)
+
+func grid*(
+  noise: OpenSimplex2, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Samples a 2D OpenSimplex2 grid at unit intervals from start.
+  when useGridNeon:
+    noise.fillGrid(start, dimens, sample2x4[OpenSimplex2])
+  else:
+    noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: OpenSimplex2, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Samples a 2D OpenSimplex2 grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  noise: OpenSimplex2,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Samples a 3D OpenSimplex2 grid at unit intervals from start.
+  when useGridNeon:
+    noise.fillGrid(start, dimens, sample3x4[OpenSimplex2])
+  else:
+    noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: OpenSimplex2, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Samples a 3D OpenSimplex2 grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
 
 func grid*(
   noise: OpenSimplex2S, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D OpenSimplex2S grid at unit intervals from start.
   when useGridNeon:
-    noise.fillGrid(start, dimens, sample2x4)
+    noise.fillGrid(start, dimens, sample2x4[OpenSimplex2S])
   else:
     noise.scalarGrid(start, dimens)
 
@@ -490,7 +529,7 @@ func grid*(
 ): Grid =
   ## Samples a 3D OpenSimplex2S grid at unit intervals from start.
   when useGridNeon:
-    noise.fillGrid(start, dimens, sample3x4)
+    noise.fillGrid(start, dimens, sample3x4[OpenSimplex2S])
   else:
     noise.scalarGrid(start, dimens)
 

@@ -49,11 +49,6 @@ block:
 
 echo "Testing Perlin initialization, scalar overloads, and determinism"
 block:
-  static:
-    doAssert not compiles(initPerlin(1).grid(0, 5))
-    doAssert not compiles(initPerlin(1).grid((0, 0), (5, 5)))
-    doAssert not compiles(initPerlin(1).grid((0, 0, 0), (5, 5, 5)))
-    doAssert not compiles(initPerlin(1).grid((0, 0, 0, 0), (5, 5, 5, 5)))
   var rng = initRand(7419)
   for seed in [-12345, 1, 42, 1988]:
     let
@@ -182,3 +177,107 @@ block:
       except NoisyError:
         caught = true
       doAssert caught, &"{dimensions}D accepted octaves={octaves}"
+
+echo "Testing Perlin grids against point sampling"
+block:
+  for seed in [1, 42, 1988]:
+    var noise = initPerlin(seed)
+    if seed == 42:
+      # A caller can change the two halves independently.
+      for i in 256 ..< noise.perm.len:
+        noise.perm[i] = (noise.perm[i] + 37) and 255
+    for settings in [(1, 1.0'f), (3, -0.75'f), (4, 0.125'f)]:
+      noise.octaves = settings[0]
+      noise.frequency = settings[1]
+      noise.amplitude = 0.8'f
+      noise.lacunarity = 1.75'f
+      noise.gain = -0.6'f
+      var starts = @[
+        [-1.375'f, 2.125'f, -0.625'f, 0.375'f],
+        [255.875'f, -256.25'f, 511.5'f, -256.0'f]
+      ]
+      when sizeof(int) == 8:
+        starts.add [
+          [0.125'f, 3_000_000_000.0'f, 0.625'f, -4_000_000_000.0'f],
+          [-3_000_000_000.0'f, 0.125'f, 4_000_000_000.0'f, 0.875'f]
+        ]
+      for start in starts:
+        for span in [3, 4, 9]:
+          for dimensions in 1 .. 4:
+            let grid = case dimensions
+              of 1: noise.grid(start[0], span)
+              of 2: noise.grid((start[0], start[1]), (3, span))
+              of 3: noise.grid((start[0], start[1], start[2]), (3, 2, span))
+              else: noise.grid(
+                (start[0], start[1], start[2], start[3]), (3, 2, span, 2)
+              )
+            let expectedShape = case dimensions
+              of 1: [span, 1, 1, 1]
+              of 2: [3, span, 1, 1]
+              of 3: [3, 2, span, 1]
+              else: [3, 2, span, 2]
+            doAssert [grid.width, grid.height, grid.depth, grid.frames] ==
+              expectedShape
+            var index = 0
+            for w in 0 ..< grid.frames:
+              for x in 0 ..< grid.width:
+                for y in 0 ..< grid.height:
+                  for z in 0 ..< grid.depth:
+                    let point = [
+                      start[0] + x.float32, start[1] + y.float32,
+                      start[2] + z.float32, start[3] + w.float32
+                    ]
+                    let indexed = case dimensions
+                      of 1: grid[x]
+                      of 2: grid[x, y]
+                      of 3: grid[x, y, z]
+                      else: grid[x, y, z, w]
+                    doAssert indexed == grid.values[index]
+                    checkClose(indexed, noise.sample(point, dimensions),
+                      &"Perlin {dimensions}D, seed={seed}, span={span}, point={point}")
+                    inc index
+            doAssert grid.values.len == index
+
+  # Both same-cell and mixed-cell batches must retain signed and full-width
+  # permutation values whenever the resulting indexes are in bounds.
+  for base in [-8'i32, 300'i32]:
+    var noise = initPerlin(1)
+    for i in 0 ..< noise.perm.len:
+      noise.perm[i] = base + int32(i mod 7)
+    noise.frequency = 0.125'f
+    let samples = noise.grid((97.0'f, 90.0'f, 99.0'f), (1, 1, 12))
+    for z in 0 ..< samples.depth:
+      checkClose(samples[0, 0, z], noise.value(97.0'f, 90.0'f, 99.0'f + z.float32),
+        &"Perlin custom permutation, base={base}, z={z}")
+
+echo "Testing Perlin grid overloads and dimensions"
+block:
+  var noise = initPerlin(1)
+  noise.frequency = 0.125'f
+  doAssert noise.grid(-1, 5).values == noise.grid(-1.0'f, 5).values
+  doAssert noise.grid((-1, 2), (3, 5)).values ==
+    noise.grid((-1.0'f, 2.0'f), (3, 5)).values
+  doAssert noise.grid((-1, 2, -3), (2, 3, 5)).values ==
+    noise.grid((-1.0'f, 2.0'f, -3.0'f), (2, 3, 5)).values
+  doAssert noise.grid((-1, 2, -3, 4), (2, 3, 5, 2)).values ==
+    noise.grid((-1.0'f, 2.0'f, -3.0'f, 4.0'f), (2, 3, 5, 2)).values
+  doAssert noise.grid(0, 0).values.len == 0
+  doAssert noise.grid((0, 0, 0, 0), (2, 3, 5, 0)).values.len == 0
+
+  template expectGridError(expression: untyped) =
+    block:
+      var caught = false
+      try:
+        discard expression
+      except NoisyError:
+        caught = true
+      doAssert caught
+
+  expectGridError(noise.grid(0, -1))
+  expectGridError(noise.grid((0, 0, 0, 0), (2, 3, 0, -1)))
+  expectGridError(noise.grid(0, int.high))
+  expectGridError(noise.grid((0, 0, 0, 0), (int.high, 3, 5, 2)))
+  var invalid = noise
+  invalid.octaves = 0
+  expectGridError(invalid.grid(0, 0))
+  expectGridError(invalid.grid((0, 0, 0, 0), (2, 3, 5, 2)))

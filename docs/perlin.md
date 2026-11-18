@@ -21,8 +21,15 @@ let
   animation = noise.value(12.5'f, -7.25'f, 3.0'f, 0.5'f)
 ```
 
-`import noisy/perlins` also exposes this API without importing the Simplex SIMD
-backend. Perlin has no `grid()` overloads or explicit SIMD implementation.
+`import noisy/perlins` also exposes this API. Perlin supports `grid()` in all
+four dimensions, with automatic NEON on ARM64 and a scalar fallback on other
+architectures. Its grid shapes and indexing match Simplex. Build with
+`-d:noisyNoNeon` to use scalar Perlin grids on ARM64.
+
+```nim
+let heights = noise.grid((-4.5'f, -2.0'f), (16, 24))
+let line = noise.grid(-4.5'f, 16)
+```
 
 | Setting | Default | Meaning |
 | --- | ---: | --- |
@@ -57,7 +64,7 @@ Upstream sources remain outside this repository. The existing downloader pins
 both files by commit and SHA-256; the bridge compiles them unchanged.
 
 ```sh
-python3 tools/gen_references.py --cache-dir /tmp/noisy-references
+nim r tools/gen_references.nim --cache-dir /tmp/noisy-references
 nim r -f -d:noisyReferenceDir=/tmp/noisy-references tests/test_perlin_reference.nim
 nim cpp -r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/test_perlin_reference.nim
 ```

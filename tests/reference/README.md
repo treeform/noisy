@@ -17,19 +17,18 @@ accepts an external location.
 
 ## Reproduce the comparison
 
-Install Noisy's dependencies with Nimby as usual. The reference check additionally
-needs Python 3.8 or newer for downloading, a C++ compiler, and network access for
-the initial fetch. From the repository root on macOS or Linux:
+Install Noisy's dependencies with Nimby as usual. Reference checks need a C++
+compiler. The initial fetch uses curl and requires network access. Run these
+commands from the repository root.
 
 ```sh
-python tools/gen_references.py
+nim r tools/gen_references.nim
 nim r -f -d:noisyReferenceDir=tests/reference/.cache tests/test_reference.nim
 nim cpp -r -f -d:release -d:noisyReferenceDir=tests/reference/.cache tests/test_reference.nim
 ```
 
-Use `python3` if that is the name of your Python 3 executable. Quote the whole
-`-d:noisyReferenceDir=...` argument when the path contains spaces. The fetch
-script also prints the exact command for its resolved cache path.
+Quote the whole `-d:noisyReferenceDir=...` argument when the path contains spaces.
+The Nim runner also prints the command for its resolved cache path.
 
 The fetch verifies all SHA-256 hashes from `sources.json`, including already
 cached files. `--offline` verifies a cache without making network requests and
@@ -42,7 +41,7 @@ fetches and runs the C and C++ reference comparisons on all three platforms.
 
 The test prints comparison counts and maximum absolute errors for each Simplex
 dimension. The other tests and their settings are described in the
-[Improved Perlin](../../docs/perlin.md) and [scalar noise](../../docs/scalar-noises.md)
+[Improved Perlin](../../docs/perlin.md) and [FastNoiseLite-compatible noise](../../docs/scalar-noises.md)
 guides.
 
 ## Timing
@@ -51,14 +50,14 @@ Run this from the repository root to download the pinned sources and benchmark
 all supported noise families and dimensions with one and three octaves.
 
 ```sh
-python tools/gen_references.py --benchmark
+nim r tools/gen_references.nim --benchmark
 ```
 
 On x86, automatic dispatch selects AVX2 or SSE2 for Simplex. When it selects
 AVX2, the runner also benchmarks a separate `-d:noisyNoAvx` SSE2 build. On
-ARM64, Simplex, OpenSimplex2S, and ValueCubic use NEON. The table shows a dash
-for a noise without the given SIMD backend. Its reference and scalar medians
-come from the automatic-dispatch run. Git records the checked-out source
+ARM64, every noise family uses NEON. The table shows a dash for a noise without
+the given SIMD backend. Reference and scalar medians come from the
+automatic-dispatch run. Git records the checked-out source
 revision in the summary.
 
 All generated files are ignored under `tests/reference/.cache/`. The `results/`
@@ -72,9 +71,9 @@ Useful variants:
 
 ```sh
 # Reuse verified downloads without network access.
-python tools/gen_references.py --offline --benchmark
+nim r tools/gen_references.nim --offline --benchmark
 # Short smoke test; use the default settings for reported measurements.
-python tools/gen_references.py --benchmark --rounds 3 --batches 1
+nim r tools/gen_references.nim --benchmark --rounds 3 --batches 1
 # Run one configuration directly, optionally adding -d:noisyNoAvx.
 nim r -f -d:release -d:noisyReferenceDir=tests/reference/.cache tests/bench_reference.nim
 ```
@@ -90,8 +89,8 @@ Each reference grid uses one call into the C++ bridge. The bridge applies
 Noisy's octave composition and uses FastNoiseLite's public `GetNoise()` API
 for its five noise types, with one configuration per grid. Noisy scalar
 measurements fill a buffer with `value()` calls. SIMD measurements call the
-public `grid()` API. The timer
-includes allocation and output writes. Validation, checksums, and freeing
+public `grid()` API. The timer includes allocation and output writes.
+Validation, checksums, and freeing
 the output buffer happen outside the timer. A printed checksum consumes
 the output and prevents dead-code elimination.
 

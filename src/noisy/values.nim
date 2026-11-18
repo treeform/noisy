@@ -1,18 +1,18 @@
 import common, grids, lattices
 
 when useGridNeon:
-  import simd, simd/valuecubicneon
+  import simd, simd/[valuecubicneon, valueneon]
 
 export common, Grid, `[]`
 
 type
   ValueNoise* = object
-    ## Scalar 2D and 3D Value noise using FastNoiseLite's lattice conventions.
+    ## 2D and 3D Value noise using FastNoiseLite's lattice conventions.
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
 
   ValueCubic* = object
-    ## Scalar 2D and 3D cubic Value noise matching FastNoiseLite.
+    ## 2D and 3D cubic Value noise matching FastNoiseLite.
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
 
@@ -227,8 +227,8 @@ func value*(noise: ValueCubic, x, y, z: int): float32 {.inline.} =
   noise.value(x.float32, y.float32, z.float32)
 
 when useGridNeon:
-  func sample2x4(noise: ValueCubic, x, y: Float4): Float4 =
-    ## Samples four 2D cubic Value points with the configured octaves.
+  func sample2x4[T: ValueNoise | ValueCubic](noise: T, x, y: Float4): Float4 =
+    ## Samples four 2D points with the configured octaves.
     let seed = cast[int32](noise.seed)
     var
       amplitude = noise.amplitude
@@ -236,13 +236,16 @@ when useGridNeon:
       total = float4(0)
     for _ in 0 ..< noise.octaves:
       let scale = float4(frequency)
-      total += sampleCubic4(seed, x * scale, y * scale) * float4(amplitude)
+      let sample =
+        when T is ValueNoise: sampleValue4(seed, x * scale, y * scale)
+        else: sampleCubic4(seed, x * scale, y * scale)
+      total += sample * float4(amplitude)
       amplitude *= noise.gain
       frequency *= noise.lacunarity
     total / float4(noise.octaves.float32)
 
-  func sample3x4(noise: ValueCubic, x, y, z: Float4): Float4 =
-    ## Samples four 3D cubic Value points with the configured octaves.
+  func sample3x4[T: ValueNoise | ValueCubic](noise: T, x, y, z: Float4): Float4 =
+    ## Samples four 3D points with the configured octaves.
     let seed = cast[int32](noise.seed)
     var
       amplitude = noise.amplitude
@@ -250,18 +253,52 @@ when useGridNeon:
       total = float4(0)
     for _ in 0 ..< noise.octaves:
       let scale = float4(frequency)
-      total += sampleCubic4(seed, x * scale, y * scale, z * scale) *
-        float4(amplitude)
+      let sample =
+        when T is ValueNoise: sampleValue4(seed, x * scale, y * scale, z * scale)
+        else: sampleCubic4(seed, x * scale, y * scale, z * scale)
+      total += sample * float4(amplitude)
       amplitude *= noise.gain
       frequency *= noise.lacunarity
     total / float4(noise.octaves.float32)
+
+func grid*(
+  noise: ValueNoise, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Samples a 2D Value grid at unit intervals from start.
+  when useGridNeon:
+    noise.fillGrid(start, dimens, sample2x4[ValueNoise])
+  else:
+    noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: ValueNoise, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Samples a 2D Value grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  noise: ValueNoise,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Samples a 3D Value grid at unit intervals from start.
+  when useGridNeon:
+    noise.fillGrid(start, dimens, sample3x4[ValueNoise])
+  else:
+    noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: ValueNoise, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Samples a 3D Value grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
 
 func grid*(
   noise: ValueCubic, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D ValueCubic grid at unit intervals from start.
   when useGridNeon:
-    noise.fillGrid(start, dimens, sample2x4)
+    noise.fillGrid(start, dimens, sample2x4[ValueCubic])
   else:
     noise.scalarGrid(start, dimens)
 
@@ -278,7 +315,7 @@ func grid*(
 ): Grid =
   ## Samples a 3D ValueCubic grid at unit intervals from start.
   when useGridNeon:
-    noise.fillGrid(start, dimens, sample3x4)
+    noise.fillGrid(start, dimens, sample3x4[ValueCubic])
   else:
     noise.scalarGrid(start, dimens)
 

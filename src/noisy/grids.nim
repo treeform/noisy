@@ -80,6 +80,27 @@ func gridLength*(dimens: openArray[int]): int =
     result *= size
 
 func fillGridImpl[T, Batch](
+  noise: T, start: float32, width: int, batch: static[Batch]
+): Grid =
+  ## Fills a line using the supplied batch sampler and scalar tails.
+  mixin value
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  let length = gridLength([width])
+  result = Grid(
+    width: width, height: 1, depth: 1, frames: 1,
+    values: newSeq[float32](length)
+  )
+  let scalarStart =
+    when Batch is GridSampler: 0
+    else: width - width mod 4
+  when Batch isnot GridSampler:
+    for x in countup(0, scalarStart - 4, 4):
+      store(result.values[x].unsafeAddr, batch(noise, gridCoordinates(start, x)))
+  for x in scalarStart ..< width:
+    result.values[x] = noise.value(start + x.float32)
+
+func fillGridImpl[T, Batch](
   noise: T, start: (float32, float32), dimens: (int, int), batch: static[Batch]
 ): Grid =
   ## Fills a plane using the supplied batch sampler and scalar tails.
@@ -154,6 +175,57 @@ func fillGridImpl[T, Batch](
         result.values[index] = noise.value(sampleX, sampleY, start[2] + z.float32)
         inc index
 
+func fillGridImpl[T, Batch](
+  noise: T,
+  start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int),
+  batch: static[Batch]
+): Grid =
+  ## Fills each volume slice using the supplied batch sampler and scalar tails.
+  mixin value
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  let
+    (width, height, depth, frames) = dimens
+    length = gridLength([width, height, depth, frames])
+  result = Grid(
+    width: width, height: height, depth: depth, frames: frames,
+    values: newSeq[float32](length)
+  )
+  if length == 0:
+    return
+  let scalarStart =
+    when Batch is GridSampler: 0
+    else: depth - depth mod 4
+  var index = 0
+  for w in 0 ..< frames:
+    let sampleW = start[3] + w.float32
+    when Batch isnot GridSampler:
+      let batchW = float4(sampleW)
+    for x in 0 ..< width:
+      let sampleX = start[0] + x.float32
+      when Batch isnot GridSampler:
+        let batchX = float4(sampleX)
+      for y in 0 ..< height:
+        let sampleY = start[1] + y.float32
+        when Batch isnot GridSampler:
+          let batchY = float4(sampleY)
+          for z in countup(0, scalarStart - 4, 4):
+            store(
+              result.values[index].unsafeAddr,
+              batch(noise, batchX, batchY, gridCoordinates(start[2], z), batchW)
+            )
+            index += 4
+        for z in scalarStart ..< depth:
+          result.values[index] = noise.value(
+            sampleX, sampleY, start[2] + z.float32, sampleW
+          )
+          inc index
+
+func scalarGrid*[T](noise: T, start: float32, width: int): Grid {.inline.} =
+  ## Fills a line with scalar samples at unit intervals.
+  noise.fillGridImpl(start, width, sampleScalar)
+
 func scalarGrid*[T](
   noise: T, start: (float32, float32), dimens: (int, int)
 ): Grid {.inline.} =
@@ -166,10 +238,29 @@ func scalarGrid*[T](
   ## Fills a volume with scalar samples at unit intervals.
   noise.fillGridImpl(start, dimens, sampleScalar)
 
+func scalarGrid*[T](
+  noise: T,
+  start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int)
+): Grid {.inline.} =
+  ## Fills volume slices with scalar samples at unit intervals.
+  noise.fillGridImpl(start, dimens, sampleScalar)
+
 when useGridNeon:
   type
+    GridBatch1[T] = proc(noise: T, x: Float4): Float4 {.noSideEffect.}
     GridBatch2[T] = proc(noise: T, x, y: Float4): Float4 {.noSideEffect.}
     GridBatch3[T] = proc(noise: T, x, y, z: Float4): Float4 {.noSideEffect.}
+    GridBatch4[T] = proc(noise: T, x, y, z, w: Float4): Float4 {.noSideEffect.}
+
+  func fillGrid*[T](
+    noise: T, start: float32, width: int, batch: static[GridBatch1[T]]
+  ): Grid {.inline.} =
+    ## Generates a 1D grid using four contiguous samples per batch.
+    when nimvm:
+      noise.scalarGrid(start, width)
+    else:
+      noise.fillGridImpl(start, width, batch)
 
   func fillGrid*[T](
     noise: T,
@@ -190,6 +281,18 @@ when useGridNeon:
     batch: static[GridBatch3[T]]
   ): Grid {.inline.} =
     ## Generates a 3D grid using four contiguous z samples per batch.
+    when nimvm:
+      noise.scalarGrid(start, dimens)
+    else:
+      noise.fillGridImpl(start, dimens, batch)
+
+  func fillGrid*[T](
+    noise: T,
+    start: (float32, float32, float32, float32),
+    dimens: (int, int, int, int),
+    batch: static[GridBatch4[T]]
+  ): Grid {.inline.} =
+    ## Generates a 4D grid using four contiguous z samples per batch.
     when nimvm:
       noise.scalarGrid(start, dimens)
     else:

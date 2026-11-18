@@ -5,11 +5,11 @@ const
   NoisyReferenceDir {.strdefine.} = ""
 
 when NoisyReferenceDir.len == 0:
-  {.error: "Fetch references with tools/gen_references.py, then pass " &
+  {.error: "Fetch references with nim r tools/gen_references.nim, then pass " &
     "-d:noisyReferenceDir=/cache/path".}
 static:
   doAssert fileExists(NoisyReferenceDir / "fastnoise/FastNoiseLite.h"),
-    "FastNoiseLite reference missing; rerun tools/gen_references.py"
+    "FastNoiseLite reference missing; rerun nim r tools/gen_references.nim"
 
 # FastNoiseLite intentionally wraps signed hashes. Define that behavior only
 # for this unchanged upstream translation unit, leaving other builds alone.

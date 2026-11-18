@@ -1,8 +1,11 @@
 import
   std/math,
-  common, lattices
+  common, grids, lattices
 
-export common
+when useGridNeon:
+  import simd, simd/cellularneon
+
+export common, Grid, `[]`
 
 type
   CellularDistance* = enum
@@ -13,7 +16,7 @@ type
     Distance2Mul, Distance2Div
 
   Cellular* = object
-    ## Scalar 2D/3D cellular noise using FastNoiseLite's conventions.
+    ## 2D/3D cellular noise using FastNoiseLite's conventions.
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
     distanceFunction*: CellularDistance
@@ -125,15 +128,19 @@ func noise[N: static[int]](
       closestHash = hashValue
   cellular.finish(closestHash, distance0, distance1)
 
+func validate(cellular: Cellular) {.inline, raises: [NoisyError].} =
+  ## Checks the shared requirements for point and grid sampling.
+  if cellular.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  if not (cellular.jitter >= 0 and cellular.jitter <= 1):
+    raise newException(NoisyError, "Cellular jitter must be in [0, 1]")
+
 func sample[N: static[int]](
   cellular: Cellular,
   point: array[N, float32]
 ): float32 {.raises: [NoisyError].} =
   ## Layers scalar samples using the same octave convention as Simplex.
-  if cellular.octaves <= 0:
-    raise newException(NoisyError, "Octaves must be > 0")
-  if not (cellular.jitter >= 0 and cellular.jitter <= 1):
-    raise newException(NoisyError, "Cellular jitter must be in [0, 1]")
+  cellular.validate()
   var
     amplitude = cellular.amplitude
     frequency = cellular.frequency
@@ -161,3 +168,109 @@ func value*(cellular: Cellular, x, y: int): float32 {.inline.} =
 func value*(cellular: Cellular, x, y, z: int): float32 {.inline.} =
   ## Samples 3D cellular noise at integer coordinates.
   cellular.value(x.float32, y.float32, z.float32)
+
+when useGridNeon:
+  func finish4(cellular: Cellular, features: NearestFeatures): Float4 {.inline.} =
+    ## Converts the nearest feature distances using the scalar return rules.
+    let one = float4(1)
+    var
+      distance0 = features.first
+      distance1 = features.second
+    if cellular.distanceFunction == Euclidean and cellular.returnType >= Distance:
+      distance0 = sqrt4(distance0)
+      if cellular.returnType >= Distance2:
+        distance1 = sqrt4(distance1)
+    case cellular.returnType
+    of CellValue:
+      toFloats(cast[Int4](features.hash)) * float4(1.0'f / 2147483648.0'f)
+    of Distance:
+      distance0 - one
+    of Distance2:
+      distance1 - one
+    of Distance2Add:
+      (distance1 + distance0) * float4(0.5'f) - one
+    of Distance2Sub:
+      distance1 - distance0 - one
+    of Distance2Mul:
+      distance1 * distance0 * float4(0.5'f) - one
+    of Distance2Div:
+      distance0 / distance1 - one
+
+  func sample4Impl[N: static[int]](
+    cellular: Cellular, point: array[N, Float4],
+    squared, manhattan, trackSecond, trackHash: static[bool]
+  ): Float4 =
+    ## Layers four independent samples with the same seed in each octave.
+    let seed = cast[int32](cellular.seed)
+    var
+      amplitude = cellular.amplitude
+      frequency = cellular.frequency
+      total = float4(0)
+    for _ in 0 ..< cellular.octaves:
+      let scale = float4(frequency)
+      var scaled: array[N, Float4]
+      for axis in 0 ..< N:
+        scaled[axis] = point[axis] * scale
+      let features = searchFeatures4(seed, cellular.jitter, scaled,
+        squared, manhattan, trackSecond, trackHash)
+      total += cellular.finish4(features) * float4(amplitude)
+      amplitude *= cellular.gain
+      frequency *= cellular.lacunarity
+    total / float4(cellular.octaves.float32)
+
+  func sample4[N: static[int]](
+    cellular: Cellular, point: array[N, Float4]
+  ): Float4 =
+    ## Selects the required search calculations before visiting any features.
+    template sampleMetric(trackSecond, trackHash: static[bool]): Float4 =
+      case cellular.distanceFunction
+      of Euclidean, EuclideanSquared:
+        sample4Impl(cellular, point, true, false, trackSecond, trackHash)
+      of Manhattan:
+        sample4Impl(cellular, point, false, true, trackSecond, trackHash)
+      of Hybrid:
+        sample4Impl(cellular, point, true, true, trackSecond, trackHash)
+    case cellular.returnType
+    of CellValue: sampleMetric(false, true)
+    of Distance: sampleMetric(false, false)
+    else: sampleMetric(true, false)
+
+  func sample2x4(cellular: Cellular, x, y: Float4): Float4 =
+    cellular.sample4([x, y])
+
+  func sample3x4(cellular: Cellular, x, y, z: Float4): Float4 =
+    cellular.sample4([x, y, z])
+
+func grid*(
+  cellular: Cellular, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Generates a 2D Cellular grid at unit intervals.
+  cellular.validate()
+  when useGridNeon:
+    cellular.fillGrid(start, dimens, sample2x4)
+  else:
+    cellular.scalarGrid(start, dimens)
+
+func grid*(
+  cellular: Cellular,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Generates a 3D Cellular grid at unit intervals.
+  cellular.validate()
+  when useGridNeon:
+    cellular.fillGrid(start, dimens, sample3x4)
+  else:
+    cellular.scalarGrid(start, dimens)
+
+func grid*(
+  cellular: Cellular, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Generates a 2D Cellular grid from an integer origin.
+  cellular.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  cellular: Cellular, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Generates a 3D Cellular grid from an integer origin.
+  cellular.grid((start[0].float32, start[1].float32, start[2].float32), dimens)

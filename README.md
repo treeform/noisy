@@ -14,15 +14,15 @@
 
 ## About
 
-Noisy generates seeded simplex noise in one, two, three, and four dimensions.
-It supports octave layering through `octaves`, `amplitude`, `frequency`,
-`lacunarity`, and `gain`.
+Noisy generates seven families of seeded noise. Simplex and Improved Perlin
+support 1D through 4D. OpenSimplex2, OpenSimplex2S, Value, ValueCubic, and
+Cellular support 2D and 3D. All share the `octaves`, `amplitude`,
+`frequency`, `lacunarity`, and `gain` settings.
 
-Point sampling with `value()` uses scalar arithmetic. Grid generation selects
-AVX2 on supported x86-64 CPUs, SSE2 on other x86 CPUs, and NEON on ARM64.
-All three backends accelerate all four dimensions, with scalar handling for
-leftover edges. Noisy depends on Nimsimd and supports the C and C++ backends
-with Nim 2.2 and 2.4.
+Point sampling with `value()` uses scalar arithmetic. On ARM64, `grid()` uses
+NEON for every noise family and handles leftover samples with scalar arithmetic.
+On x86, Simplex grids use AVX2 or SSE2 and the other grids use scalar sampling.
+Noisy depends on Nimsimd and supports the C and C++ backends with Nim 2.2 and 2.4.
 
 AVX2 generates eight samples at a time and checks both CPU and operating-system
 support before use. Only the AVX2 module receives AVX2 compiler flags, so no
@@ -109,7 +109,7 @@ The generator writes the preview to `docs/noise.png`.
 Run the benchmark for all noise families against the pinned C/C++ references.
 
 ```sh
-python tools/gen_references.py --benchmark
+nim r tools/gen_references.nim --benchmark
 ```
 
 Sources, build files, logs, and results stay in `tests/reference/.cache/`.

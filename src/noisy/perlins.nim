@@ -1,15 +1,18 @@
 import
   std/[math, random],
-  common
+  common, grids
 
-export common
+when useGridNeon:
+  import simd, simd/perlinneon
+
+export common, Grid, `[]`
 
 const
   PerlinScales = [0.188'f, 0.507'f, 0.936'f, 0.87'f]
 
 type
   Perlin* = object
-    ## Scalar Improved Perlin noise with native 1D through 4D sampling.
+    ## Improved Perlin noise with native 1D through 4D sampling.
     octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
     perm*: array[512, int32]
@@ -163,3 +166,98 @@ func value*(perlin: Perlin, x, y, z: int): float32 {.inline.} =
 func value*(perlin: Perlin, x, y, z, w: int): float32 {.inline.} =
   ## Samples 4D Improved Perlin noise at integer coordinates.
   perlin.value(x.float32, y.float32, z.float32, w.float32)
+
+when useGridNeon:
+  func sampleBatch[N: static[int]](
+    perlin: Perlin, point: array[N, Float4]
+  ): Float4 =
+    ## Layers four independently positioned samples with the scalar settings.
+    var
+      amplitude = perlin.amplitude
+      frequency = perlin.frequency
+      total = float4(0)
+    for _ in 0 ..< perlin.octaves:
+      let scale = float4(frequency)
+      var scaled: array[N, Float4]
+      for axis in 0 ..< N:
+        scaled[axis] = point[axis] * scale
+      let sample = float4(PerlinScales[N - 1]) *
+        samplePerlinGrid4(perlin.perm, scaled)
+      total += sample * float4(amplitude)
+      amplitude *= perlin.gain
+      frequency *= perlin.lacunarity
+    total / float4(perlin.octaves.float32)
+
+  func sample1x4(perlin: Perlin, x: Float4): Float4 =
+    perlin.sampleBatch([x])
+
+  func sample2x4(perlin: Perlin, x, y: Float4): Float4 =
+    perlin.sampleBatch([x, y])
+
+  func sample3x4(perlin: Perlin, x, y, z: Float4): Float4 =
+    perlin.sampleBatch([x, y, z])
+
+  func sample4x4(perlin: Perlin, x, y, z, w: Float4): Float4 =
+    perlin.sampleBatch([x, y, z, w])
+
+func grid*(perlin: Perlin, start: float32, width: int): Grid =
+  ## Samples a 1D Improved Perlin grid at unit intervals from start.
+  when useGridNeon:
+    perlin.fillGrid(start, width, sample1x4)
+  else:
+    perlin.scalarGrid(start, width)
+
+func grid*(perlin: Perlin, start, width: int): Grid {.inline.} =
+  ## Samples a 1D Improved Perlin grid from an integer start.
+  perlin.grid(start.float32, width)
+
+func grid*(
+  perlin: Perlin, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Samples a 2D Improved Perlin grid at unit intervals from start.
+  when useGridNeon:
+    perlin.fillGrid(start, dimens, sample2x4)
+  else:
+    perlin.scalarGrid(start, dimens)
+
+func grid*(
+  perlin: Perlin, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Samples a 2D Improved Perlin grid from an integer start.
+  perlin.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  perlin: Perlin,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Samples a 3D Improved Perlin grid at unit intervals from start.
+  when useGridNeon:
+    perlin.fillGrid(start, dimens, sample3x4)
+  else:
+    perlin.scalarGrid(start, dimens)
+
+func grid*(
+  perlin: Perlin, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Samples a 3D Improved Perlin grid from an integer start.
+  perlin.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
+
+func grid*(
+  perlin: Perlin,
+  start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int)
+): Grid =
+  ## Samples a 4D Improved Perlin grid at unit intervals from start.
+  when useGridNeon:
+    perlin.fillGrid(start, dimens, sample4x4)
+  else:
+    perlin.scalarGrid(start, dimens)
+
+func grid*(
+  perlin: Perlin, start: (int, int, int, int), dimens: (int, int, int, int)
+): Grid {.inline.} =
+  ## Samples a 4D Improved Perlin grid from an integer start.
+  perlin.grid((
+    start[0].float32, start[1].float32, start[2].float32, start[3].float32
+  ), dimens)

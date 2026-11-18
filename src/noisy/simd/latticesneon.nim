@@ -28,6 +28,14 @@ func hash4*(seed: int32, lattice: uint32x4): uint32x4 {.inline.} =
   multiply4(veorq_u32(vmovq_n_u32(cast[uint32](seed)), lattice),
     vmovq_n_u32(HashMultiplier))
 
+func latticeValue4*(seed: int32, lattice: uint32x4): Float4 {.inline.} =
+  ## Converts four wrapped hashes into signed lattice values.
+  let
+    hash = hash4(seed, lattice)
+    square = multiply4(hash, hash)
+    bits = veorq_u32(square, vshlq_n_u32(square, 19))
+  toFloats(cast[Int4](bits)) * float4(1.0'f / 2147483648.0'f)
+
 func loadPairLane(p: ptr float32, values: GradientPair, lane: int32): GradientPair {.
     importc: "vld2q_lane_f32", header: "arm_neon.h".}
   ## Loads an interleaved gradient pair into one NEON lane.

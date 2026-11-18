@@ -1,13 +1,5 @@
 import nimsimd/neon, ../[lattices, simd], latticesneon
 
-func latticeValue4(seed: int32, lattice: uint32x4): Float4 {.inline.} =
-  ## Converts four wrapped hashes into signed lattice values.
-  let
-    hash = hash4(seed, lattice)
-    square = multiply4(hash, hash)
-    bits = veorq_u32(square, vshlq_n_u32(square, 19))
-  toFloats(cast[Int4](bits)) * float4(1.0'f / 2147483648.0'f)
-
 func adjacent4(cell: Int4, stride: uint32): array[4, uint32x4] {.inline.} =
   ## Computes the primed coordinates of the four interpolation points.
   let

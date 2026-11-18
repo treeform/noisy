@@ -1,4 +1,4 @@
-# Scalar noise families
+# FastNoiseLite-compatible noise families
 
 Noisy includes native scalar 2D and 3D implementations of these five types,
 matching the C++ implementation in
@@ -44,17 +44,17 @@ The standalone modules `noisy/opensimplexes`, `noisy/values`, and
 FastNoiseLite license and attribution in
 [`LICENSE.fastnoiselite.txt`](../LICENSE.fastnoiselite.txt).
 
-## OpenSimplex2S and ValueCubic grids
+## Grids
 
-Both types support `grid(start, dimens)` in 2D and 3D. Pass integer or
+All five types support `grid(start, dimens)` in 2D and 3D. Pass integer or
 float32 coordinates in `start` and integer sizes in `dimens`. Samples are one
 unit apart before frequency scaling. Index the result with zero-based offsets
 from `start`, using the same layout as a Simplex grid.
 
 On ARM64, the grids automatically use NEON for groups of four contiguous
 samples. Remaining samples and grids on other architectures use scalar
-sampling. Build with `-d:noisyNoNeon` to select the scalar path for these two
-noise types on ARM64.
+sampling. Build with `-d:noisyNoNeon` to select scalar grids for these types on
+ARM64.
 
 ```nim
 import noisy
@@ -138,7 +138,7 @@ Only the native Nim implementations, their necessary tables, attribution, and
 our test bridge are committed.
 
 ```sh
-python3 tools/gen_references.py --cache-dir /tmp/noisy-references
+nim r tools/gen_references.nim --cache-dir /tmp/noisy-references
 nim r -f -d:noisyReferenceDir=/tmp/noisy-references tests/test_fastnoise_reference.nim
 nim cpp -r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/test_fastnoise_reference.nim
 ```
