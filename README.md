@@ -21,7 +21,8 @@ It supports octave layering through `octaves`, `amplitude`, `frequency`,
 Point sampling with `value()` uses scalar arithmetic. Grid generation selects
 AVX2 on supported x86-64 CPUs, SSE2 on other x86 CPUs, and NEON on ARM64.
 All three backends accelerate all four dimensions, with scalar handling for
-leftover edges. Noisy depends on Nimsimd and supports Nim's C and C++ backends.
+leftover edges. Noisy depends on Nimsimd and supports the C and C++ backends
+with Nim 2.2 and 2.4.
 
 AVX2 generates eight samples at a time and checks both CPU and operating-system
 support before use. Only the AVX2 module receives AVX2 compiler flags, so no
@@ -87,8 +88,8 @@ see [reference tests](tests/reference/README.md). Their pinned sources are
 downloaded into an ignored cache and are not committed.
 
 Apple Silicon uses native ARM64 NEON. The same test command works without
-architecture flags or Rosetta. CI tests native ARM64 on macOS and x86 on Linux
-and Windows in debug and release builds.
+architecture flags or Rosetta. CI tests Nim 2.2 and 2.4 in debug and release
+builds on native ARM64 macOS and x86 Linux and Windows.
 
 ## Benchmarks and image generation
 

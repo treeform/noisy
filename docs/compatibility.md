@@ -25,12 +25,11 @@ The same API fixture is also checked against the baseline, so its expectations
 are valid for old clients. New dimensional APIs are covered separately by
 `tests/test_dimensions.nim`.
 
-The full suite passes with Nim 2.4.0 on ARM64/NEON and x86/SSE2. The legacy API
-fixture also passes with the declared minimum Nim 1.4.8. The unmodified full
-suite on Nim 1.4.8 encounters an existing limitation: `initSimplex(0)` triggers
-that compiler version's `random.initRand` assertion. Baseline Noisy fails the
-same way. A temporary copy omitting only fixed seed-zero cases passed the full
-suite on both architectures with Nim 1.4.8.
+The full suite passed with Nim 2.4.0 on ARM64/NEON and x86/SSE2. The legacy API
+fixture also passed with Nim 1.4.8, the minimum at the time of this audit.
+On Nim 1.4.8, `initSimplex(0)` triggered the `random.initRand` assertion in both
+Noisy versions. A temporary copy omitting only fixed seed-zero cases passed the
+full suite on both architectures with Nim 1.4.8.
 
 Compatibility limits:
 

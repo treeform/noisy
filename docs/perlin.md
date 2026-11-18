@@ -42,9 +42,8 @@ coordinates still applies.
 Initialization shuffles a 256-entry permutation and repeats it into the public
 `perm: array[512, int32]`, using the same seed mapping as `initSimplex` in the
 same Nim runtime. Seed numbers from other libraries do not imply matching
-permutations. As with Simplex, Nim 1.4.8's random generator rejects seed zero.
-The underlying single-octave lattice repeats every 256 units along each axis;
-frequency scaling changes that period in world coordinates.
+permutations. The underlying single-octave lattice repeats every 256 units
+along each axis. Frequency scaling changes that period in world coordinates.
 
 The reference's scale factors are retained: 0.188 (1D), 0.507 (2D), 0.936 (3D),
 and 0.87 (4D). In particular, the 3D result includes Gustavson's 0.936 multiplier
@@ -73,5 +72,4 @@ CI also run these checks. Ordinary offline tests run with `nim r tests/tests.nim
 With Nim 2.4.0 and Apple Clang on ARM64, all 39,308 comparisons passed in C debug
 and C++ release builds with zero observed error. The offline suite also contains
 28 C-generated values using an identity permutation, so it checks numerical
-results without downloading reference sources. New Perlin and legacy API tests
-also pass with Nim 1.4.8.
+results without downloading reference sources.

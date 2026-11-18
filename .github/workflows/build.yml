@@ -13,10 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        nim: ['2.2.14', '2.4.0']
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - uses: treeform/setup-nim-action@v6
+        with:
+          nim-version: ${{ matrix.nim }}
       - name: Install dependencies
         shell: bash
         run: |
