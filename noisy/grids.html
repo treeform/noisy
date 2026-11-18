@@ -91,6 +91,10 @@
 <li><a class="reference" href="#scalarGrid%2CT%2C%2C_2" title="scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid">scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2C%2C_3" title="scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int)): Grid">scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int)): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2Cfloat32%2Cint" title="scalarGrid[T](noise: T; start: float32; width: int): Grid">scalarGrid[T](noise: T; start: float32; width: int): Grid</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">valueIndex
@@ -197,8 +201,8 @@
   <dd>
     
     Fills a plane with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L157" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L157" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L229" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L229" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -208,8 +212,29 @@
   <dd>
     
     Fills a volume with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L163" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L163" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L235" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L235" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,,_3">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2C%2C_3"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
+                   <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills volume slices with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L241" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L241" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,float32,int">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2Cfloat32%2Cint"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills a line with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L225" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L225" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -256,7 +281,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 06:28:22 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 07:02:56 UTC</small>
       </div>
     </div>
   </div>

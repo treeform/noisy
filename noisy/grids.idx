@@ -6,8 +6,10 @@ nim	`[]`	noisy/grids.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 
 nim	`[]`	noisy/grids.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		45
 nim	`[]`	noisy/grids.html#[],Grid,int,int,int,int	proc `[]`(g: Grid; x, y, z, w: int): float32		49
 nim	gridLength	noisy/grids.html#gridLength,openArray[int]	proc gridLength(dimens: openArray[int]): int		64
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,,	proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid		157
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_2	proc scalarGrid[T](noise: T; start: (float32, float32, float32);\n              dimens: (int, int, int)): Grid		163
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,float32,int	proc scalarGrid[T](noise: T; start: float32; width: int): Grid		225
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,	proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid		229
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_2	proc scalarGrid[T](noise: T; start: (float32, float32, float32);\n              dimens: (int, int, int)): Grid		235
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_3	proc scalarGrid[T](noise: T; start: (float32, float32, float32, float32);\n              dimens: (int, int, int, int)): Grid		241
 nimgrp	[]	noisy/grids.html#[]-procs-all	proc		35
-nimgrp	scalargrid	noisy/grids.html#scalarGrid-procs-all	proc		157
+nimgrp	scalargrid	noisy/grids.html#scalarGrid-procs-all	proc		225
 nimgrp	valueindex	noisy/grids.html#valueIndex-procs-all	proc		27
