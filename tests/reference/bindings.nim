@@ -8,6 +8,8 @@ when NoisyReferenceDir.len == 0:
   {.error: "Fetch references with tools/gen_references.py, then pass " &
     "-d:noisyReferenceDir=/cache/path".}
 static:
+  doAssert fileExists(NoisyReferenceDir / "stegu/noise1234.c"),
+    "Perlin reference missing; rerun tools/gen_references.py with --cache-dir"
   doAssert fileExists(NoisyReferenceDir / "caseman/simplex23.c"),
     "Reference cache missing; run tools/gen_references.py with --cache-dir"
 
@@ -22,6 +24,16 @@ proc referenceNoise3*(x, y, z: float32): float32
   ## Samples the unchanged Duncan 3D kernel.
 proc referenceNoise4*(x, y, z, w: float32): float32
   ## Samples the unchanged Gustavson 4D kernel.
+proc referencePerlin1*(x: float32): float32
+  ## Samples Gustavson's unchanged improved Perlin 1D kernel.
+proc referencePerlin2*(x, y: float32): float32
+  ## Samples Gustavson's unchanged improved Perlin 2D kernel.
+proc referencePerlin3*(x, y, z: float32): float32
+  ## Samples Gustavson's unchanged improved Perlin 3D kernel.
+proc referencePerlin4*(x, y, z, w: float32): float32
+  ## Samples Gustavson's unchanged improved Perlin 4D kernel.
+proc referencePerlinPermutation*(index: int32): int32
+  ## Reads the published permutation from the Perlin reference itself.
 proc referencePermutation*(index: int32): int32
   ## Reads the original permutation shared by the references.
 proc referenceGrid*(

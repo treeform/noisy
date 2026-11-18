@@ -19,6 +19,35 @@ namespace SteguReference {
 #include "stegu/simplexnoise1234.c"
 }
 
+// The Perlin reference has a different integer-boundary floor macro.
+#undef FASTFLOOR
+namespace SteguPerlinReference {
+#include "stegu/noise1234.c"
+}
+#undef FADE
+#undef FASTFLOOR
+#undef LERP
+
+float referencePerlin1(float x) {
+  return SteguPerlinReference::noise1(x);
+}
+
+float referencePerlin2(float x, float y) {
+  return SteguPerlinReference::noise2(x, y);
+}
+
+float referencePerlin3(float x, float y, float z) {
+  return SteguPerlinReference::noise3(x, y, z);
+}
+
+float referencePerlin4(float x, float y, float z, float w) {
+  return SteguPerlinReference::noise4(x, y, z, w);
+}
+
+int32_t referencePerlinPermutation(int32_t index) {
+  return SteguPerlinReference::perm[index & 255];
+}
+
 float referenceNoise1(float x) {
   return SimplexNoise::noise(x);
 }

@@ -13,6 +13,13 @@ float referenceNoise2(float x, float y);
 float referenceNoise3(float x, float y, float z);
 float referenceNoise4(float x, float y, float z, float w);
 
+/* Samples Gustavson's unchanged improved Perlin kernels. */
+float referencePerlin1(float x);
+float referencePerlin2(float x, float y);
+float referencePerlin3(float x, float y, float z);
+float referencePerlin4(float x, float y, float z, float w);
+int32_t referencePerlinPermutation(int32_t index);
+
 /* Returns one entry of the original, repeating 256-entry permutation. */
 int32_t referencePermutation(int32_t index);
 

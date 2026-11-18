@@ -1,6 +1,6 @@
 version     = "0.4.5"
 author      = "Ryan Oldenburg, treeform"
-description = "SIMD-accelerated 1D, 2D, 3D, and 4D simplex noise."
+description = "SIMD simplex and scalar Improved Perlin noise in 1D through 4D."
 license     = "MIT"
 
 srcDir = "src"

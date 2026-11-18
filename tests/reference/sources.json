@@ -39,6 +39,16 @@
       "path": "caseman/_simplex.c",
       "url": "https://raw.githubusercontent.com/caseman/noise/bb32991ab97e90882d0e46e578060717c5b90dc5/_simplex.c",
       "sha256": "47a3606dddafcc2d25a8adbd5345d982324bd01de7420b32a3e9f72adece3b84"
+    },
+    {
+      "path": "stegu/noise1234.c",
+      "url": "https://raw.githubusercontent.com/stegu/perlin-noise/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/noise1234.c",
+      "sha256": "a892c250b5a746d92b63e1b74fd4de9e04a7e8902c66561b2af2e0b41a3074a4"
+    },
+    {
+      "path": "stegu/noise1234.h",
+      "url": "https://raw.githubusercontent.com/stegu/perlin-noise/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/noise1234.h",
+      "sha256": "575817c0491d9d18156a1a59fc6aef92ea615646319a69cbe001fba853349779"
     }
   ],
   "extracted": {

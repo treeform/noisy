@@ -1,6 +1,8 @@
 import
   std/[math, random],
-  noisy/simd
+  noisy/[perlins, simd]
+
+export perlins
 
 const
   F2 = (0.5 * (sqrt(3.0) - 1)).float32
@@ -40,8 +42,6 @@ type
     width*, height*, depth*: int
     frames*: int ## Number of fourth-axis slices; one for 1D through 3D grids.
     values*: seq[float32]
-
-  NoisyError* = object of CatchableError
 
 when defined(release):
   {.push checks: off.}

@@ -3,6 +3,10 @@ import
   noisy,
   reference/bindings
 
+{.push warning[UnusedImport]: off.}
+import test_perlin_reference
+{.pop.}
+
 const
   AbsoluteTolerance = 0.0001'f
   RelativeTolerance = 0.00001'f
