@@ -1,21 +1,21 @@
 nimTitle	perlins	noisy/perlins.html	module noisy/perlins		0
 nim	Perlin	noisy/perlins.html#Perlin	object Perlin		14
 nim	initPerlin	noisy/perlins.html#initPerlin,int	proc initPerlin(seed: int): Perlin		20
-nim	value	noisy/perlins.html#value,Perlin,float32	proc value(perlin: Perlin; x: float32): float32		138
-nim	value	noisy/perlins.html#value,Perlin,float32,float32	proc value(perlin: Perlin; x, y: float32): float32		142
-nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32	proc value(perlin: Perlin; x, y, z: float32): float32		146
-nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32,float32	proc value(perlin: Perlin; x, y, z, w: float32): float32		150
-nim	value	noisy/perlins.html#value,Perlin,int	proc value(perlin: Perlin; x: int): float32		154
-nim	value	noisy/perlins.html#value,Perlin,int,int	proc value(perlin: Perlin; x, y: int): float32		158
-nim	value	noisy/perlins.html#value,Perlin,int,int,int	proc value(perlin: Perlin; x, y, z: int): float32		162
-nim	value	noisy/perlins.html#value,Perlin,int,int,int,int	proc value(perlin: Perlin; x, y, z, w: int): float32		166
-nim	grid	noisy/perlins.html#grid,Perlin,float32,int	proc grid(perlin: Perlin; start: float32; width: int): Grid		203
-nim	grid	noisy/perlins.html#grid,Perlin,int,int	proc grid(perlin: Perlin; start, width: int): Grid		212
-nim	grid	noisy/perlins.html#grid,Perlin,,	proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid		216
-nim	grid	noisy/perlins.html#grid,Perlin,,_2	proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid		227
-nim	grid	noisy/perlins.html#grid,Perlin,,_3	proc grid(perlin: Perlin; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		233
-nim	grid	noisy/perlins.html#grid,Perlin,,_4	proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int)): Grid		246
-nim	grid	noisy/perlins.html#grid,Perlin,,_5	proc grid(perlin: Perlin; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int)): Grid		252
-nim	grid	noisy/perlins.html#grid,Perlin,,_6	proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int)): Grid		265
-nimgrp	grid	noisy/perlins.html#grid-procs-all	proc		203
-nimgrp	value	noisy/perlins.html#value-procs-all	proc		138
+nim	value	noisy/perlins.html#value,Perlin,float32	proc value(perlin: Perlin; x: float32): float32		141
+nim	value	noisy/perlins.html#value,Perlin,float32,float32	proc value(perlin: Perlin; x, y: float32): float32		147
+nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32	proc value(perlin: Perlin; x, y, z: float32): float32		153
+nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32,float32	proc value(perlin: Perlin; x, y, z, w: float32): float32		159
+nim	value	noisy/perlins.html#value,Perlin,int	proc value(perlin: Perlin; x: int): float32		165
+nim	value	noisy/perlins.html#value,Perlin,int,int	proc value(perlin: Perlin; x, y: int): float32		169
+nim	value	noisy/perlins.html#value,Perlin,int,int,int	proc value(perlin: Perlin; x, y, z: int): float32		173
+nim	value	noisy/perlins.html#value,Perlin,int,int,int,int	proc value(perlin: Perlin; x, y, z, w: int): float32		177
+nim	grid	noisy/perlins.html#grid,Perlin,float32,int	proc grid(perlin: Perlin; start: float32; width: int): Grid		216
+nim	grid	noisy/perlins.html#grid,Perlin,int,int	proc grid(perlin: Perlin; start, width: int): Grid		225
+nim	grid	noisy/perlins.html#grid,Perlin,,	proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid		229
+nim	grid	noisy/perlins.html#grid,Perlin,,_2	proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid		240
+nim	grid	noisy/perlins.html#grid,Perlin,,_3	proc grid(perlin: Perlin; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		246
+nim	grid	noisy/perlins.html#grid,Perlin,,_4	proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int)): Grid		259
+nim	grid	noisy/perlins.html#grid,Perlin,,_5	proc grid(perlin: Perlin; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int)): Grid		265
+nim	grid	noisy/perlins.html#grid,Perlin,,_6	proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int)): Grid		278
+nimgrp	grid	noisy/perlins.html#grid-procs-all	proc		216
+nimgrp	value	noisy/perlins.html#value-procs-all	proc		141

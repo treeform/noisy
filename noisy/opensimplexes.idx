@@ -3,21 +3,21 @@ nim	OpenSimplex2	noisy/opensimplexes.html#OpenSimplex2	object OpenSimplex2		9
 nim	OpenSimplex2S	noisy/opensimplexes.html#OpenSimplex2S	object OpenSimplex2S		14
 nim	initOpenSimplex2	noisy/opensimplexes.html#initOpenSimplex2,int	proc initOpenSimplex2(seed: int): OpenSimplex2		21
 nim	initOpenSimplex2S	noisy/opensimplexes.html#initOpenSimplex2S,int	proc initOpenSimplex2S(seed: int): OpenSimplex2S		30
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32	proc value(noise: OpenSimplex2; x, y: float32): float32		162
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32,float32	proc value(noise: OpenSimplex2; x, y, z: float32): float32		176
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int	proc value(noise: OpenSimplex2; x, y: int): float32		191
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int,int	proc value(noise: OpenSimplex2; x, y, z: int): float32		195
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32	proc value(noise: OpenSimplex2S; x, y: float32): float32		404
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32,float32	proc value(noise: OpenSimplex2S; x, y, z: float32): float32		418
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int	proc value(noise: OpenSimplex2S; x, y: int): float32		433
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int,int	proc value(noise: OpenSimplex2S; x, y, z: int): float32		437
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,	proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int)): Grid		478
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_2	proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int)): Grid		489
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_3	proc grid(noise: OpenSimplex2; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		495
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_4	proc grid(noise: OpenSimplex2; start: (int, int, int); dimens: (int, int, int)): Grid		508
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,	proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid		514
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_2	proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid		525
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_3	proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		531
-nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_4	proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid		544
-nimgrp	grid	noisy/opensimplexes.html#grid-procs-all	proc		478
-nimgrp	value	noisy/opensimplexes.html#value-procs-all	proc		162
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32	proc value(noise: OpenSimplex2; x, y: float32): float32		164
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32,float32	proc value(noise: OpenSimplex2; x, y, z: float32): float32		178
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int	proc value(noise: OpenSimplex2; x, y: int): float32		193
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int,int	proc value(noise: OpenSimplex2; x, y, z: int): float32		197
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32	proc value(noise: OpenSimplex2S; x, y: float32): float32		406
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32,float32	proc value(noise: OpenSimplex2S; x, y, z: float32): float32		420
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int	proc value(noise: OpenSimplex2S; x, y: int): float32		435
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int,int	proc value(noise: OpenSimplex2S; x, y, z: int): float32		439
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,	proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int)): Grid		482
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_2	proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int)): Grid		493
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_3	proc grid(noise: OpenSimplex2; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		499
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2,,_4	proc grid(noise: OpenSimplex2; start: (int, int, int); dimens: (int, int, int)): Grid		512
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,	proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid		518
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_2	proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid		529
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_3	proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		535
+nim	grid	noisy/opensimplexes.html#grid,OpenSimplex2S,,_4	proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid		548
+nimgrp	grid	noisy/opensimplexes.html#grid-procs-all	proc		482
+nimgrp	value	noisy/opensimplexes.html#value-procs-all	proc		164
