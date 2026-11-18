@@ -68,25 +68,32 @@ int32_t referencePermutation(int32_t index) {
   return CasemanReference::PERM[index & 255];
 }
 
-// Dimension dispatch is outside the sampling loop, so the compiler can inline
-// the unchanged upstream kernel without a per-sample foreign-function call.
-template<int Dimensions>
+// Kernel and dimension dispatch are outside the sampling loop, so the compiler
+// can inline the upstream code without a per-sample foreign-function call.
+template<bool Perlin, int Dimensions>
 static float layeredReference(float x, float y, float z, float w,
                               int32_t octaves, float amplitude, float frequency,
                               float lacunarity, float gain) {
   float total = 0.0f;
   for (int32_t octave = 0; octave < octaves; ++octave) {
+    const float sampleX = x * frequency;
+    const float sampleY = y * frequency;
+    const float sampleZ = z * frequency;
+    const float sampleW = w * frequency;
     float sample;
     if (Dimensions == 1) {
-      sample = SimplexNoise::noise(x * frequency);
+      sample = Perlin ? SteguPerlinReference::noise1(sampleX)
+                      : SimplexNoise::noise(sampleX);
     } else if (Dimensions == 2) {
-      sample = CasemanReference::noise2(x * frequency, y * frequency);
+      sample = Perlin ? SteguPerlinReference::noise2(sampleX, sampleY)
+                      : CasemanReference::noise2(sampleX, sampleY);
     } else if (Dimensions == 3) {
-      sample = CasemanReference::noise3(
-          x * frequency, y * frequency, z * frequency);
+      sample = Perlin ? SteguPerlinReference::noise3(sampleX, sampleY, sampleZ)
+                      : CasemanReference::noise3(sampleX, sampleY, sampleZ);
     } else {
-      sample = SteguReference::snoise4(
-          x * frequency, y * frequency, z * frequency, w * frequency);
+      sample = Perlin
+          ? SteguPerlinReference::noise4(sampleX, sampleY, sampleZ, sampleW)
+          : SteguReference::snoise4(sampleX, sampleY, sampleZ, sampleW);
     }
     total += sample * amplitude;
     amplitude *= gain;
@@ -95,7 +102,7 @@ static float layeredReference(float x, float y, float z, float w,
   return total / static_cast<float>(octaves);
 }
 
-template<int Dimensions>
+template<bool Perlin, int Dimensions>
 static void fillReference(float *output, int32_t width, int32_t height,
                           int32_t depth, int32_t frames, const float *start,
                           int32_t octaves, float amplitude, float frequency,
@@ -112,7 +119,7 @@ static void fillReference(float *output, int32_t width, int32_t height,
         const float worldY = start[1] + static_cast<float>(y);
         for (int32_t z = 0; z < axisDepth; ++z) {
           const float worldZ = start[2] + static_cast<float>(z);
-          *next++ = layeredReference<Dimensions>(
+          *next++ = layeredReference<Perlin, Dimensions>(
               worldX, worldY, worldZ, worldW, octaves, amplitude, frequency,
               lacunarity, gain);
         }
@@ -121,26 +128,46 @@ static void fillReference(float *output, int32_t width, int32_t height,
   }
 }
 
+template<bool Perlin>
+static void dispatchReference(float *output, int32_t dimensions, int32_t width,
+                              int32_t height, int32_t depth, int32_t frames,
+                              const float *start, int32_t octaves,
+                              float amplitude, float frequency,
+                              float lacunarity, float gain) {
+  switch (dimensions) {
+    case 1:
+      fillReference<Perlin, 1>(output, width, height, depth, frames, start,
+                               octaves, amplitude, frequency, lacunarity, gain);
+      break;
+    case 2:
+      fillReference<Perlin, 2>(output, width, height, depth, frames, start,
+                               octaves, amplitude, frequency, lacunarity, gain);
+      break;
+    case 3:
+      fillReference<Perlin, 3>(output, width, height, depth, frames, start,
+                               octaves, amplitude, frequency, lacunarity, gain);
+      break;
+    case 4:
+      fillReference<Perlin, 4>(output, width, height, depth, frames, start,
+                               octaves, amplitude, frequency, lacunarity, gain);
+      break;
+  }
+}
+
 void referenceGrid(float *output, int32_t dimensions, int32_t width,
                    int32_t height, int32_t depth, int32_t frames,
                    const float *start, int32_t octaves, float amplitude,
                    float frequency, float lacunarity, float gain) {
-  switch (dimensions) {
-    case 1:
-      fillReference<1>(output, width, height, depth, frames, start, octaves,
-                       amplitude, frequency, lacunarity, gain);
-      break;
-    case 2:
-      fillReference<2>(output, width, height, depth, frames, start, octaves,
-                       amplitude, frequency, lacunarity, gain);
-      break;
-    case 3:
-      fillReference<3>(output, width, height, depth, frames, start, octaves,
-                       amplitude, frequency, lacunarity, gain);
-      break;
-    case 4:
-      fillReference<4>(output, width, height, depth, frames, start, octaves,
-                       amplitude, frequency, lacunarity, gain);
-      break;
-  }
+  dispatchReference<false>(output, dimensions, width, height, depth, frames,
+                           start, octaves, amplitude, frequency, lacunarity,
+                           gain);
+}
+
+void referencePerlinGrid(float *output, int32_t dimensions, int32_t width,
+                         int32_t height, int32_t depth, int32_t frames,
+                         const float *start, int32_t octaves, float amplitude,
+                         float frequency, float lacunarity, float gain) {
+  dispatchReference<true>(output, dimensions, width, height, depth, frames,
+                          start, octaves, amplitude, frequency, lacunarity,
+                          gain);
 }

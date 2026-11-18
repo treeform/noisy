@@ -44,4 +44,12 @@ proc referenceGrid*(
   amplitude, frequency, lacunarity, gain: float32
 )
   ## Fills caller-owned storage using one C++ call and Noisy's octave rules.
+proc referencePerlinGrid*(
+  output: ptr float32,
+  dimensions, width, height, depth, frames: int32,
+  start: ptr float32,
+  octaves: int32,
+  amplitude, frequency, lacunarity, gain: float32
+)
+  ## Fills a grid using the C reference's kernels and Noisy's octave rules.
 {.pop.}

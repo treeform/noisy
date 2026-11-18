@@ -1,7 +1,8 @@
 import
-  std/[algorithm, json, math, monotimes, strformat, times],
+  std/[algorithm, json, math, monotimes, strformat, strutils, times],
   noisy,
-  reference/bindings
+  noisy/grids,
+  reference/[bindings, fastnoise]
 
 when not defined(release):
   {.error: "Run benchmarks with -d:release.".}
@@ -10,6 +11,11 @@ const
   NoisyBenchmarkRounds {.intdefine.} = 11
   NoisyBenchmarkBatches {.intdefine.} = 4
   NoisyBenchmarkOutput {.strdefine.} = ""
+  Seed = 1988
+  Frequency = 0.075'f
+  Amplitude = 1.0'f
+  Lacunarity = 2.0'f
+  Gain = 0.5'f
   Start = [-1.375'f, 2.125'f, -0.625'f, 0.375'f]
   CompilerBackend =
     when defined(cpp): "C++"
@@ -36,6 +42,10 @@ type
 var checksum: float64
 var results = newJArray()
 
+template supportsVector(noise: typed): bool =
+  noise is Simplex or
+    (useGridNeon and (noise is OpenSimplex2S or noise is ValueCubic))
+
 proc consume(values: seq[float32]) =
   ## Consumes every output outside the timer to prevent dead-code removal.
   var total: float64
@@ -46,21 +56,43 @@ proc consume(values: seq[float32]) =
 proc generate(
   dimensions: static[int],
   backend: Backend,
-  noise: Simplex,
+  noise: auto,
   shape: Shape
 ): seq[float32] =
   ## Allocates and fills the same output layout through each public path.
   case backend
   of Reference:
     result = newSeq[float32](shape[0] * shape[1] * shape[2] * shape[3])
-    referenceGrid(
-      result[0].addr,
-      dimensions.int32,
-      shape[0].int32, shape[1].int32, shape[2].int32, shape[3].int32,
-      Start[0].unsafeAddr,
-      noise.octaves.int32,
-      noise.amplitude, noise.frequency, noise.lacunarity, noise.gain
-    )
+    when noise is Simplex or noise is Perlin:
+      template fill(reference: untyped) =
+        reference(
+          result[0].addr,
+          dimensions.int32,
+          shape[0].int32, shape[1].int32, shape[2].int32, shape[3].int32,
+          Start[0].unsafeAddr,
+          noise.octaves.int32,
+          noise.amplitude, noise.frequency, noise.lacunarity, noise.gain
+        )
+      when noise is Simplex:
+        fill(referenceGrid)
+      else:
+        fill(referencePerlinGrid)
+    else:
+      const algorithm =
+        when noise is OpenSimplex2: 0'i32
+        elif noise is ValueNoise: 1'i32
+        elif noise is Cellular: 2'i32
+        elif noise is OpenSimplex2S: 3'i32
+        elif noise is ValueCubic: 4'i32
+        else: {.error: "Missing FastNoiseLite reference mapping".}
+      referenceFastNoiseGrid(
+        result[0].addr,
+        algorithm, cast[int32](noise.seed), dimensions.int32,
+        shape[0].int32, shape[1].int32, shape[2].int32,
+        Start[0].unsafeAddr,
+        noise.octaves.int32,
+        noise.amplitude, noise.frequency, noise.lacunarity, noise.gain
+      )
   of Scalar:
     result = newSeq[float32](shape[0] * shape[1] * shape[2] * shape[3])
     var index = 0
@@ -95,7 +127,9 @@ proc generate(
               )
               inc index
   of Vector:
-    when dimensions == 1:
+    when not supportsVector(noise):
+      raise newException(AssertionDefect, "No SIMD grid for this noise")
+    elif dimensions == 1:
       result = noise.grid(Start[0], shape[0]).values
     elif dimensions == 2:
       result = noise.grid((Start[0], Start[1]), (shape[0], shape[1])).values
@@ -109,20 +143,27 @@ proc generate(
         (shape[0], shape[1], shape[2], shape[3])
       ).values
 
-proc validate(dimensions: static[int], noise: Simplex, shape: Shape) =
+proc validate(
+  dimensions: static[int],
+  name: string,
+  noise: auto,
+  shape: Shape,
+  backends: openArray[Backend]
+) =
   ## Checks every timed input against the reference before benchmarking.
   let expected = generate(dimensions, Reference, noise, shape)
-  for backend in [Scalar, Vector]:
+  const absoluteTolerance = when noise is Simplex: 0.0001'f else: 0.00001'f
+  for backend in backends:
     let actual = generate(dimensions, backend, noise, shape)
     doAssert actual.len == expected.len
     for i in 0 ..< actual.len:
       let
         error = abs(actual[i] - expected[i])
-        tolerance = 0.0001'f + 0.00001'f *
+        tolerance = absoluteTolerance + 0.00001'f *
           max(abs(actual[i]), abs(expected[i]))
       doAssert abs(actual[i]) < Inf and abs(expected[i]) < Inf and
         error <= tolerance,
-        &"{dimensions}D {noise.octaves} octaves {backend} sample {i}: " &
+        &"{name} {dimensions}D {noise.octaves} octaves {backend} sample {i}: " &
           &"actual={actual[i]}, reference={expected[i]}, error={error}"
     consume(actual)
   consume(expected)
@@ -130,7 +171,7 @@ proc validate(dimensions: static[int], noise: Simplex, shape: Shape) =
 proc measure(
   dimensions: static[int],
   backend: Backend,
-  noise: Simplex,
+  noise: auto,
   shape: Shape
 ): float64 =
   ## Times generation, excluding checksums and output buffer disposal.
@@ -142,22 +183,27 @@ proc measure(
     consume(values)
   result /= NoisyBenchmarkBatches.float64
 
-proc runCase(dimensions: static[int], noise: Simplex, shape: Shape) =
+proc runCase(dimensions: static[int], name: string, noise: auto) =
   ## Warms the paths, rotates measurement order, and reports sorted medians.
-  validate(dimensions, noise, shape)
+  const
+    shape = Shapes[dimensions - 1]
+    backends =
+      when supportsVector(noise): [Reference, Scalar, Vector]
+      else: [Reference, Scalar]
+  validate(dimensions, name, noise, shape, backends.toOpenArray(1, backends.high))
   for warmup in 0 ..< 2:
-    for backend in Backend:
+    for backend in backends:
       consume(generate(dimensions, backend, noise, shape))
   var timings: array[Backend, seq[float64]]
   for round in 0 ..< NoisyBenchmarkRounds:
-    for offset in 0 ..< 3:
-      let backend = Backend((round + offset) mod 3)
+    for offset in 0 ..< backends.len:
+      let backend = backends[(round + offset) mod backends.len]
       timings[backend].add measure(dimensions, backend, noise, shape)
   var rawTimings = newJObject()
-  for backend in Backend:
-    rawTimings[$backend] = %timings[backend]
   var medians: array[Backend, float64]
-  for backend in Backend:
+  var ranges: seq[string]
+  for backend in backends:
+    rawTimings[$backend] = %timings[backend]
     timings[backend].sort()
     let middle = timings[backend].len div 2
     medians[backend] =
@@ -165,61 +211,85 @@ proc runCase(dimensions: static[int], noise: Simplex, shape: Shape) =
         (timings[backend][middle - 1] + timings[backend][middle]) / 2
       else:
         timings[backend][middle]
+    ranges.add &"{backend} {timings[backend][0]:.3f}..{timings[backend][^1]:.3f}"
   let
     reference = medians[Reference]
     scalar = medians[Scalar]
-    vector = medians[Vector]
-  results.add %*{
+  var row = %*{
+    "noise": name,
     "dimensions": dimensions,
     "octaves": noise.octaves,
     "shape": shape,
     "round_means_ms": rawTimings,
     "reference_ms": reference,
-    "scalar_ms": scalar,
-    "simd_ms": vector,
-    "simd_vs_reference": reference / vector,
-    "simd_vs_scalar": scalar / vector
+    "scalar_ms": scalar
   }
-  echo &"| {dimensions}D | {noise.octaves} | {reference:.3f} | " &
-    &"{scalar:.3f} | {vector:.3f} | {reference / scalar:.2f}x | " &
-    &"{reference / vector:.2f}x | {scalar / vector:.2f}x |"
-  echo &"  ms min..max: reference {timings[Reference][0]:.3f}.." &
-    &"{timings[Reference][^1]:.3f}; scalar {timings[Scalar][0]:.3f}.." &
-    &"{timings[Scalar][^1]:.3f}; {SimdName} {timings[Vector][0]:.3f}.." &
-    &"{timings[Vector][^1]:.3f}"
+  let line = &"| {name} | {dimensions}D | {noise.octaves} | " &
+    &"{reference:.3f} | {scalar:.3f} | "
+  when supportsVector(noise):
+    let vector = medians[Vector]
+    row["simd_ms"] = %vector
+    row["simd_vs_reference"] = %(reference / vector)
+    row["simd_vs_scalar"] = %(scalar / vector)
+    echo line & &"{vector:.3f} | {reference / scalar:.2f}x | " &
+      &"{reference / vector:.2f}x | {scalar / vector:.2f}x |"
+  else:
+    row["simd_ms"] = newJNull()
+    row["simd_vs_reference"] = newJNull()
+    row["simd_vs_scalar"] = newJNull()
+    echo line & &"— | {reference / scalar:.2f}x | — | — |"
+  echo "  ms min..max: " & ranges.join(", ")
+  results.add row
+
+proc runNoise(name: string, noise: auto, octaves: int) =
+  ## Runs each dimension supported by this noise with the shared settings.
+  var configured = noise
+  configured.octaves = octaves
+  configured.frequency = Frequency
+  configured.amplitude = Amplitude
+  configured.lacunarity = Lacunarity
+  configured.gain = Gain
+  when noise is Simplex or noise is Perlin:
+    runCase(1, name, configured)
+  runCase(2, name, configured)
+  runCase(3, name, configured)
+  when noise is Simplex or noise is Perlin:
+    runCase(4, name, configured)
 
 static:
   doAssert NoisyBenchmarkRounds >= 3
   doAssert NoisyBenchmarkBatches >= 1
 
-var noise = initSimplex(1988)
-for i in 0 ..< noise.perm.len:
-  noise.perm[i] = referencePermutation(i.int32)
-  noise.permMod12[i] = noise.perm[i] mod 12
-noise.frequency = 0.075'f
-noise.amplitude = 1
-noise.lacunarity = 2
-noise.gain = 0.5
+var
+  simplex = initSimplex(Seed)
+  perlin = initPerlin(Seed)
+for i in 0 ..< simplex.perm.len:
+  simplex.perm[i] = referencePermutation(i.int32)
+  simplex.permMod12[i] = simplex.perm[i] mod 12
+for i in 0 ..< perlin.perm.len:
+  perlin.perm[i] = referencePerlinPermutation(i.int32)
 
 echo &"Nim {NimVersion}, {hostOS}/{hostCPU}, {CompilerBackend}, " &
   &"release, {SimdName}; 262144 samples per grid"
 echo &"{NoisyBenchmarkRounds} rounds, {NoisyBenchmarkBatches} grids per round; " &
   "times are medians of round means, in milliseconds per grid"
-echo &"Start={Start}; frequency={noise.frequency}; " &
-  &"amplitude={noise.amplitude}; lacunarity={noise.lacunarity}; gain={noise.gain}"
+echo &"Start={Start}; frequency={Frequency}; " &
+  &"amplitude={Amplitude}; lacunarity={Lacunarity}; gain={Gain}"
 echo &"Shapes (x,y,z,w): {Shapes}"
 echo "Includes output allocation and writes; validation/checksums excluded."
 echo "Reference and scalar paths fill buffers; references use one batch call."
 echo "Speedup = baseline time / measured time; above 1 means faster."
-echo "| Dim | Octaves | Reference ms | Scalar ms | " & SimdName &
+echo "| Noise | Dim | Octaves | Reference ms | Scalar ms | " & SimdName &
   " ms | Scalar vs ref | " & SimdName & " vs ref | " & SimdName & " vs scalar |"
-echo "| --- | --- | --- | --- | --- | --- | --- | --- |"
+echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
 for octaves in [1, 3]:
-  noise.octaves = octaves
-  runCase(1, noise, Shapes[0])
-  runCase(2, noise, Shapes[1])
-  runCase(3, noise, Shapes[2])
-  runCase(4, noise, Shapes[3])
+  runNoise("Simplex", simplex, octaves)
+  runNoise("Improved Perlin", perlin, octaves)
+  runNoise("OpenSimplex2", initOpenSimplex2(Seed), octaves)
+  runNoise("OpenSimplex2S", initOpenSimplex2S(Seed), octaves)
+  runNoise("Value", initValue(Seed), octaves)
+  runNoise("ValueCubic", initValueCubic(Seed), octaves)
+  runNoise("Cellular", initCellular(Seed), octaves)
 echo &"Consumed checksum: {checksum:.6f}"
 if NoisyBenchmarkOutput.len > 0:
   writeFile(NoisyBenchmarkOutput, pretty(%*{
@@ -232,10 +302,11 @@ if NoisyBenchmarkOutput.len > 0:
     "batches": NoisyBenchmarkBatches,
     "samples_per_grid": 262144,
     "start": Start,
-    "frequency": noise.frequency,
-    "amplitude": noise.amplitude,
-    "lacunarity": noise.lacunarity,
-    "gain": noise.gain,
+    "seed": Seed,
+    "frequency": Frequency,
+    "amplitude": Amplitude,
+    "lacunarity": Lacunarity,
+    "gain": Gain,
     "checksum": checksum,
     "cases": results
   }) & "\n")

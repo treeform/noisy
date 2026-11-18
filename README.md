@@ -106,19 +106,19 @@ nim r tools/gen_noise.nim
 
 The generator writes the preview to `docs/noise.png`.
 
-To download the pinned C/C++ references and benchmark scalar sampling, automatic
-SIMD, and the SSE2 fallback in one command:
+Run the benchmark for all noise families against the pinned C/C++ references.
 
 ```sh
 python tools/gen_references.py --benchmark
 ```
 
-Sources, build files, logs, and JSON results stay in `tests/reference/.cache/`.
+Sources, build files, logs, and results stay in `tests/reference/.cache/`.
 Use `--offline --benchmark` to reuse the verified cache without network access,
 or `--cache-dir /tmp/noisy-references` to keep the files outside the checkout.
-The benchmark uses Nim's standard library and requires no Benchy dependency.
-It reports medians, timing ranges, and speedup ratios for 1D through 4D with one
-and three octaves. See the [methodology and results](tests/reference/README.md#timing).
+The benchmark uses Nim's standard library and writes a Markdown table of median
+grid times, with rows for each supported noise and dimension at one and three
+octaves. Columns show the C/C++ reference, Noisy scalar, and available Noisy
+SIMD backends. [Methodology and results](tests/reference/README.md#timing)
 
 ## Documentation
 

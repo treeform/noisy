@@ -1,4 +1,4 @@
-# Independent simplex references
+# Independent noise references
 
 These tests compare Noisy's scalar and SIMD output directly against established
 C and C++ implementations. This directory contains our wrapper and source
@@ -7,11 +7,13 @@ is not committed to this repository. By default, the cache is the ignored
 `tests/reference/.cache/` directory inside the checkout; `--cache-dir` also
 accepts an external location.
 
-| Dimensions | Upstream source | Pinned revision | License |
-| --- | --- | --- | --- |
-| 1D | [SRombauts/SimplexNoise](https://github.com/SRombauts/SimplexNoise/blob/175add2d2a9ba99a43320b66bb87bb21b879b0f5/src/SimplexNoise.cpp) | `175add2d2a9ba99a43320b66bb87bb21b879b0f5` | [MIT](https://github.com/SRombauts/SimplexNoise/blob/175add2d2a9ba99a43320b66bb87bb21b879b0f5/LICENSE.txt) |
-| 2D, 3D | [caseman/noise](https://github.com/caseman/noise/blob/bb32991ab97e90882d0e46e578060717c5b90dc5/_simplex.c) | `bb32991ab97e90882d0e46e578060717c5b90dc5` | [MIT](https://github.com/caseman/noise/blob/bb32991ab97e90882d0e46e578060717c5b90dc5/LICENSE.txt) |
-| 4D | [stegu/perlin-noise](https://github.com/stegu/perlin-noise/blob/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/simplexnoise1234.c) | `a624f5a18395c0ebc04738191efddf1dbd2cad9d` | Public domain declaration in the source and header |
+| Noise | Dimensions | Upstream source | Pinned revision | License |
+| --- | --- | --- | --- | --- |
+| Simplex | 1D | [SRombauts/SimplexNoise](https://github.com/SRombauts/SimplexNoise/blob/175add2d2a9ba99a43320b66bb87bb21b879b0f5/src/SimplexNoise.cpp) | `175add2d2a9ba99a43320b66bb87bb21b879b0f5` | [MIT](https://github.com/SRombauts/SimplexNoise/blob/175add2d2a9ba99a43320b66bb87bb21b879b0f5/LICENSE.txt) |
+| Simplex | 2D, 3D | [caseman/noise](https://github.com/caseman/noise/blob/bb32991ab97e90882d0e46e578060717c5b90dc5/_simplex.c) | `bb32991ab97e90882d0e46e578060717c5b90dc5` | [MIT](https://github.com/caseman/noise/blob/bb32991ab97e90882d0e46e578060717c5b90dc5/LICENSE.txt) |
+| Simplex | 4D | [stegu/perlin-noise](https://github.com/stegu/perlin-noise/blob/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/simplexnoise1234.c) | `a624f5a18395c0ebc04738191efddf1dbd2cad9d` | Public domain declaration in the source and header |
+| Improved Perlin | 1D–4D | [stegu/perlin-noise](https://github.com/stegu/perlin-noise/blob/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/noise1234.c) | `a624f5a18395c0ebc04738191efddf1dbd2cad9d` | Public domain declaration in the source and header |
+| OpenSimplex2, OpenSimplex2S, Value, ValueCubic, Cellular | 2D, 3D | [FastNoiseLite](https://github.com/Auburn/FastNoiseLite/blob/785f37a9ad76e283586a379675085f2063ae03f7/Cpp/FastNoiseLite.h) | `785f37a9ad76e283586a379675085f2063ae03f7` | [MIT](https://github.com/Auburn/FastNoiseLite/blob/785f37a9ad76e283586a379675085f2063ae03f7/LICENSE) |
 
 ## Reproduce the comparison
 
@@ -38,30 +40,33 @@ To include these comparisons in the complete suite, pass the same definition to
 offline and reports that external comparisons were skipped. CI explicitly
 fetches and runs the C and C++ reference comparisons on all three platforms.
 
-The test prints comparison counts and maximum absolute errors for each dimension.
-Use the separate benchmark below to measure performance.
+The test prints comparison counts and maximum absolute errors for each Simplex
+dimension. The other tests and their settings are described in the
+[Improved Perlin](../../docs/perlin.md) and [scalar noise](../../docs/scalar-noises.md)
+guides.
 
 ## Timing
 
-From the repository root, download the sources and benchmark all four
-dimensions with one and three octaves:
+Run this from the repository root to download the pinned sources and benchmark
+all supported noise families and dimensions with one and three octaves.
 
 ```sh
 python tools/gen_references.py --benchmark
 ```
 
-On x86, this builds and runs automatic SIMD dispatch and a separate
-`-d:noisyNoAvx` SSE2 build, sequentially. On ARM64 it runs NEON once. The summary
-table uses the reference and scalar medians from the automatic-dispatch run;
-the JSON files retain those baselines from both runs. The benchmarks validate
-every output before timing and report the actual selected SIMD backend.
-Git must be available to record the checked-out source revision.
+On x86, automatic dispatch selects AVX2 or SSE2 for Simplex. When it selects
+AVX2, the runner also benchmarks a separate `-d:noisyNoAvx` SSE2 build. On
+ARM64, Simplex, OpenSimplex2S, and ValueCubic use NEON. The table shows a dash
+for a noise without the given SIMD backend. Its reference and scalar medians
+come from the automatic-dispatch run. Git records the checked-out source
+revision in the summary.
 
 All generated files are ignored under `tests/reference/.cache/`. The `results/`
-subdirectory contains `auto.json`, `sse2.json` (x86 only), compiler/run logs,
-`summary.json` with commands and source revision, and `table.md`. The per-backend
-JSON includes each unsorted round mean, not only the reported median. The logs
-include the C/C++ compiler commands. The next run replaces these output files.
+subdirectory contains `auto.json`, `sse2.json` (when both x86 backends run),
+compiler and run logs, `summary.json` with commands and source revision, and
+`table.md`. The JSON includes the individual round means and their medians.
+The logs include the C/C++ compiler commands. Each run overwrites the output
+files for the modes it runs.
 
 Useful variants:
 
@@ -74,19 +79,21 @@ python tools/gen_references.py --benchmark --rounds 3 --batches 1
 nim r -f -d:release -d:noisyReferenceDir=tests/reference/.cache tests/bench_reference.nim
 ```
 
-`bench_reference.nim` uses the standard library, so it does not require Benchy.
-It validates every output against the reference before timing. Each path allocates
-and fills an equally sized buffer of 262,144 samples, using identical coordinates,
-permutations, octave counts, frequency, amplitude, lacunarity, and gain. Shapes are
-262144 in 1D, 512x512 in 2D, 64x64x64 in 3D, and 32x32x32x8 in 4D.
+`bench_reference.nim` uses Nim's standard library. It checks every output against
+the reference before timing. Each path allocates and fills a buffer of 262,144
+samples with matched coordinates, seeds or permutations, and octave settings.
+Shapes are 262144 in 1D, 512×512 in 2D, 64×64×64 in 3D, and 32×32×32×8 in 4D.
+Cellular uses the default squared Euclidean distance, `Distance` return mode,
+and jitter of 1.
 
-The C++ bridge loops over unchanged upstream kernels in one batch call per grid;
-it does not charge a foreign-function call per sample. Noisy scalar measurements
-call `value()` and fill a buffer; SIMD measurements call the public `grid()` API.
-Allocation and output writes are timed. Checksums, validation, and disposal of the
-returned output buffer are outside the timer; the public Grid object's overhead
-remains included. Every output is consumed and a checksum is printed to prevent
-dead-code elimination.
+Each reference grid uses one call into the C++ bridge. The bridge applies
+Noisy's octave composition and uses FastNoiseLite's public `GetNoise()` API
+for its five noise types, with one configuration per grid. Noisy scalar
+measurements fill a buffer with `value()` calls. SIMD measurements call the
+public `grid()` API. The timer
+includes allocation and output writes. Validation, checksums, and freeing
+the output buffer happen outside the timer. A printed checksum consumes
+the output and prevents dead-code elimination.
 
 After two warmups per path, the runner rotates measurement order across 11 rounds,
 each averaging four grids per path. It reports the sorted median of those round
@@ -97,7 +104,7 @@ batch grid throughput measurements; arbitrary point queries can behave different
 Compiler optimizations of the C/C++ references remain enabled, and the 4D
 reference retains its double-precision intermediates.
 
-### AMD Ryzen 9 5900X results
+### AMD Ryzen 9 5900X Simplex results
 
 Recorded on Windows x86-64 with Nim 2.2.10, MinGW-w64 GCC/G++ 11.1.0,
 the Nim C backend, and `-d:release`. These use the default 11 rounds of four
@@ -128,7 +135,7 @@ reference and scalar baselines, which help assess variation between runs.
 The source commit is recorded there; subsequent benchmark/documentation changes
 do not change the measured noise kernels.
 
-### Apple M4 Pro results
+### Apple M4 Pro Simplex results
 
 Recorded with Nim 2.4.0, Apple Clang 21.0.0, the Nim C backend, `-d:release`, and
 native ARM64 NEON. Times below are milliseconds per grid from the first complete

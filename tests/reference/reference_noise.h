@@ -32,6 +32,12 @@ void referenceGrid(float *output, int32_t dimensions, int32_t width,
                    const float *start, int32_t octaves, float amplitude,
                    float frequency, float lacunarity, float gain);
 
+/* Matches referenceGrid's layout and settings, using Improved Perlin. */
+void referencePerlinGrid(float *output, int32_t dimensions, int32_t width,
+                         int32_t height, int32_t depth, int32_t frames,
+                         const float *start, int32_t octaves, float amplitude,
+                         float frequency, float lacunarity, float gain);
+
 #ifdef __cplusplus
 }
 #endif

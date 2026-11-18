@@ -30,4 +30,12 @@ proc referenceFastNoise3*(
   jitter: float32
 ): float32
   ## Samples the unchanged public FastNoiseLite 3D API.
+proc referenceFastNoiseGrid*(
+  output: ptr float32,
+  noiseType, seed, dimensions, width, height, depth: int32,
+  start: ptr float32,
+  octaves: int32,
+  amplitude, frequency, lacunarity, gain: float32
+)
+  ## Fills a grid through the public C++ API with default Cellular settings.
 {.pop.}

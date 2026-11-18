@@ -18,17 +18,16 @@ DEFAULT_CACHE = REPO / "tests/reference/.cache"
 
 
 def benchmark(cache, rounds, batches):
-    """Compare automatic SIMD and the fallback with the same pinned references."""
+    """Compare scalar and available SIMD paths with the pinned references."""
     nim = shutil.which("nim")
     if nim is None:
         raise ValueError("nim is not on PATH; install Nim and dependencies with Nimby")
     output = cache / "results"
     output.mkdir(parents=True, exist_ok=True)
-    modes = ["auto"]
-    if platform.machine().lower() in ("amd64", "x86_64", "i386", "i686"):
-        modes.append("sse2")
     reports, commands = [], []
-    for mode in modes:
+    for mode in ("auto", "sse2"):
+        if mode == "sse2" and reports[0]["simd_backend"] != "AVX2":
+            break
         report = output / f"{mode}.json"
         command = [
             nim, "c", "-r", "-f", "-d:release", "--listCmd",
@@ -67,14 +66,16 @@ def benchmark(cache, rounds, batches):
     }
     (output / "summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    header = ["Dim", "Octaves", "Reference ms", "Scalar ms"]
-    header += [f"{report['simd_backend']} ms" for report in reports]
+    header = ["Noise", "Dim", "Octaves", "C/C++ reference ms", "Noisy scalar ms"]
+    header += [f"Noisy {report['simd_backend']} ms" for report in reports]
     lines = ["| " + " | ".join(header) + " |",
-             "| " + " | ".join(["---"] + ["---:"] * (len(header) - 1)) + " |"]
+             "| " + " | ".join(["---", "---"] + ["---:"] * (len(header) - 2)) + " |"]
     for i, case in enumerate(reports[0]["cases"]):
-        row = [f"{case['dimensions']}D", str(case["octaves"]),
+        row = [case["noise"], f"{case['dimensions']}D", str(case["octaves"]),
                f"{case['reference_ms']:.3f}", f"{case['scalar_ms']:.3f}"]
-        row += [f"{report['cases'][i]['simd_ms']:.3f}" for report in reports]
+        for report in reports:
+            simd_ms = report["cases"][i]["simd_ms"]
+            row.append("—" if simd_ms is None else f"{simd_ms:.3f}")
         lines.append("| " + " | ".join(row) + " |")
     table = "\n".join(lines)
     (output / "table.md").write_text(table + "\n", encoding="utf-8")
@@ -112,7 +113,7 @@ def main():
     parser.add_argument("--offline", action="store_true",
                         help="Verify cached files without downloading anything")
     parser.add_argument("--benchmark", action="store_true",
-                        help="Build and run the reference benchmark with automatic SIMD and SSE2")
+                        help="Benchmark all noise families against the pinned references")
     parser.add_argument("--rounds", type=int, default=11)
     parser.add_argument("--batches", type=int, default=4)
     args = parser.parse_args()
