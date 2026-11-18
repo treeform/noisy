@@ -1,0 +1,32 @@
+nimTitle	avx2base	noisy/simd/avx2base.html	module noisy/simd/avx2base		0
+nim	Float8	noisy/simd/avx2base.html#Float8	type Float8		6
+nim	Int8	noisy/simd/avx2base.html#Int8	type Int8		7
+nim	float8	noisy/simd/avx2base.html#float8.t,float32	template float8(a: float32): Float8		9
+nim	int8	noisy/simd/avx2base.html#int8.t,int32	template int8(a: int32): Int8		10
+nim	uints8	noisy/simd/avx2base.html#uints8.t,uint32	template uints8(a: uint32): Int8		11
+nim	`+`	noisy/simd/avx2base.html#+.t,M256,M256	template `+`(a, b: Float8): Float8		12
+nim	`-`	noisy/simd/avx2base.html#-.t,M256,M256	template `-`(a, b: Float8): Float8		13
+nim	`*`	noisy/simd/avx2base.html#*.t,M256,M256	template `*`(a, b: Float8): Float8		14
+nim	`/`	noisy/simd/avx2base.html#/.t,M256,M256	template `/`(a, b: Float8): Float8		15
+nim	`xor`	noisy/simd/avx2base.html#xor.t,M256,M256	template `xor`(a, b: Float8): Float8		16
+nim	`and`	noisy/simd/avx2base.html#and.t,M256i,M256i	template `and`(a, b: Int8): Int8		17
+nim	`+=`	noisy/simd/avx2base.html#+=.t,M256,M256	template `+=`(a: var Float8; b: Float8)		18
+nim	`+`	noisy/simd/avx2base.html#+.t,M256i,M256i	template `+`(a, b: Int8): Int8		19
+nim	toFloats	noisy/simd/avx2base.html#toFloats.t,M256i	template toFloats(a: Int8): Float8		20
+nim	truncate	noisy/simd/avx2base.html#truncate.t,M256	template truncate(a: Float8): Int8		21
+nim	less	noisy/simd/avx2base.html#less.t,M256,M256	template less(a, b: Float8): Int8		22
+nim	greaterEqual	noisy/simd/avx2base.html#greaterEqual.t,M256,M256	template greaterEqual(a, b: Float8): Int8		24
+nim	`<`	noisy/simd/avx2base.html#<.t,M256,M256	template `<`(a, b: Float8): Int8		26
+nim	lessInt	noisy/simd/avx2base.html#lessInt.t,M256i,M256i	template lessInt(a, b: Int8): Int8		27
+nim	bitClear	noisy/simd/avx2base.html#bitClear.t,M256i,M256i	template bitClear(a, b: Int8): Int8		28
+nim	bitNot	noisy/simd/avx2base.html#bitNot.t,M256i	template bitNot(a: Int8): Int8		29
+nim	select	noisy/simd/avx2base.html#select.t,M256i,M256,M256	template select(mask: Int8; yes, no: Float8): Float8		30
+nim	select	noisy/simd/avx2base.html#select.t,M256i,M256i,M256i	template select(mask: Int8; yes, no: Int8): Int8		32
+nim	abs8	noisy/simd/avx2base.html#abs8.t,M256	template abs8(a: Float8): Float8		34
+nim	sqrt8	noisy/simd/avx2base.html#sqrt8.t,M256	template sqrt8(a: Float8): Float8		36
+nim	gather	noisy/simd/avx2base.html#gather,ptr.int32,M256i,int32	proc gather(p: ptr int32; indexes: Int8; scale: int32): Int8		39
+nim	gather	noisy/simd/avx2base.html#gather,ptr.float32,M256i,int32	proc gather(p: ptr float32; indexes: Int8; scale: int32): Float8		41
+nim	coordinates8	noisy/simd/avx2base.html#coordinates8.t,float32,int	template coordinates8(start: float32; offset: int): Float8		44
+nimgrp	gather	noisy/simd/avx2base.html#gather-procs-all	proc		39
+nimgrp	+	noisy/simd/avx2base.html#+-templates-all	template		12
+nimgrp	select	noisy/simd/avx2base.html#select-templates-all	template		30

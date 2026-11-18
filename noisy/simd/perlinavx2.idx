@@ -1,0 +1,2 @@
+nimTitle	perlinavx2	noisy/simd/perlinavx2.html	module noisy/simd/perlinavx2		0
+nim	samplePerlinGrid8	noisy/simd/perlinavx2.html#samplePerlinGrid8,array[,int32],array[N,M256]	proc samplePerlinGrid8[N: static[int]](perm: array[512, int32];\n                                  point: array[N, Float8]): Float8		67

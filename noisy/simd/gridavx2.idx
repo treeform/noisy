@@ -1,0 +1,11 @@
+nimTitle	gridavx2	noisy/simd/gridavx2.html	module noisy/simd/gridavx2		0
+nim	avxPerlin	noisy/simd/gridavx2.html#avxPerlin	AvxKind.avxPerlin		8
+nim	avxOpenSimplex2	noisy/simd/gridavx2.html#avxOpenSimplex2	AvxKind.avxOpenSimplex2		8
+nim	avxOpenSimplex2S	noisy/simd/gridavx2.html#avxOpenSimplex2S	AvxKind.avxOpenSimplex2S		8
+nim	avxValue	noisy/simd/gridavx2.html#avxValue	AvxKind.avxValue		8
+nim	avxValueCubic	noisy/simd/gridavx2.html#avxValueCubic	AvxKind.avxValueCubic		8
+nim	avxCellular	noisy/simd/gridavx2.html#avxCellular	AvxKind.avxCellular		8
+nim	AvxKind	noisy/simd/gridavx2.html#AvxKind	enum AvxKind		8
+nim	AvxSettings	noisy/simd/gridavx2.html#AvxSettings	object AvxSettings		11
+nim	AvxBatch	noisy/simd/gridavx2.html#AvxBatch	object AvxBatch		17
+nim	fillRowAvx2	noisy/simd/gridavx2.html#fillRowAvx2,AvxBatch,array[,float32],int,int,ptr.float32	proc fillRowAvx2(batch: AvxBatch; start: array[4, float32]; dimensions, length: int;\n            output: ptr float32)		98

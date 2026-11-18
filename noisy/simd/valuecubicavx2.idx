@@ -1,0 +1,4 @@
+nimTitle	valuecubicavx2	noisy/simd/valuecubicavx2.html	module noisy/simd/valuecubicavx2		0
+nim	sampleCubic8	noisy/simd/valuecubicavx2.html#sampleCubic8,int32,M256,M256	proc sampleCubic8(seed: int32; x, y: Float8): Float8		45
+nim	sampleCubic8	noisy/simd/valuecubicavx2.html#sampleCubic8,int32,M256,M256,M256	proc sampleCubic8(seed: int32; x, y, z: Float8): Float8		55
+nimgrp	samplecubic8	noisy/simd/valuecubicavx2.html#sampleCubic8-procs-all	proc		45

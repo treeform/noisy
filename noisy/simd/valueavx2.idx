@@ -1,0 +1,4 @@
+nimTitle	valueavx2	noisy/simd/valueavx2.html	module noisy/simd/valueavx2		0
+nim	sampleValue8	noisy/simd/valueavx2.html#sampleValue8,int32,M256,M256	proc sampleValue8(seed: int32; x, y: Float8): Float8		36
+nim	sampleValue8	noisy/simd/valueavx2.html#sampleValue8,int32,M256,M256,M256	proc sampleValue8(seed: int32; x, y, z: Float8): Float8		47
+nimgrp	samplevalue8	noisy/simd/valueavx2.html#sampleValue8-procs-all	proc		36

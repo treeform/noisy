@@ -1,0 +1,3 @@
+nimTitle	cellularavx2	noisy/simd/cellularavx2.html	module noisy/simd/cellularavx2		0
+nim	NearestFeatures	noisy/simd/cellularavx2.html#NearestFeatures	object NearestFeatures		8
+nim	searchFeatures8	noisy/simd/cellularavx2.html#searchFeatures8,int32,float32,array[N,M256],static[bool],static[bool],static[bool],static[bool]	proc searchFeatures8[N: static[int]](seed: int32; jitter: float32;\n                                point: array[N, Float8]; squared, manhattan,\n    trackSecond, trackHash: static[bool]): NearestFeatures		41

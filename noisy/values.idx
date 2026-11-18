@@ -12,12 +12,12 @@ nim	value	noisy/values.html#value,ValueCubic,float32,float32,float32	proc value(
 nim	value	noisy/values.html#value,ValueCubic,int,int	proc value(noise: ValueCubic; x, y: int): float32		221
 nim	value	noisy/values.html#value,ValueCubic,int,int,int	proc value(noise: ValueCubic; x, y, z: int): float32		225
 nim	grid	noisy/values.html#grid,ValueNoise,,	proc grid(noise: ValueNoise; start: (float32, float32); dimens: (int, int)): Grid		264
-nim	grid	noisy/values.html#grid,ValueNoise,,_2	proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int)): Grid		273
-nim	grid	noisy/values.html#grid,ValueNoise,,_3	proc grid(noise: ValueNoise; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		279
-nim	grid	noisy/values.html#grid,ValueNoise,,_4	proc grid(noise: ValueNoise; start: (int, int, int); dimens: (int, int, int)): Grid		290
-nim	grid	noisy/values.html#grid,ValueCubic,,	proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid		296
-nim	grid	noisy/values.html#grid,ValueCubic,,_2	proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid		305
-nim	grid	noisy/values.html#grid,ValueCubic,,_3	proc grid(noise: ValueCubic; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		311
-nim	grid	noisy/values.html#grid,ValueCubic,,_4	proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid		322
+nim	grid	noisy/values.html#grid,ValueNoise,,_2	proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int)): Grid		275
+nim	grid	noisy/values.html#grid,ValueNoise,,_3	proc grid(noise: ValueNoise; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		281
+nim	grid	noisy/values.html#grid,ValueNoise,,_4	proc grid(noise: ValueNoise; start: (int, int, int); dimens: (int, int, int)): Grid		294
+nim	grid	noisy/values.html#grid,ValueCubic,,	proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid		300
+nim	grid	noisy/values.html#grid,ValueCubic,,_2	proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid		311
+nim	grid	noisy/values.html#grid,ValueCubic,,_3	proc grid(noise: ValueCubic; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		317
+nim	grid	noisy/values.html#grid,ValueCubic,,_4	proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid		330
 nimgrp	grid	noisy/values.html#grid-procs-all	proc		264
 nimgrp	value	noisy/values.html#value-procs-all	proc		81

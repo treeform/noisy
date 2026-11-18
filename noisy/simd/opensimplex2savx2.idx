@@ -1,0 +1,4 @@
+nimTitle	opensimplex2savx2	noisy/simd/opensimplex2savx2.html	module noisy/simd/opensimplex2savx2		0
+nim	sampleSmooth8	noisy/simd/opensimplex2savx2.html#sampleSmooth8,int32,M256,M256	proc sampleSmooth8(seed: int32; x, y: Float8): Float8		39
+nim	sampleSmooth8	noisy/simd/opensimplex2savx2.html#sampleSmooth8,int32,M256,M256,M256	proc sampleSmooth8(seed: int32; x, y, z: Float8): Float8		121
+nimgrp	samplesmooth8	noisy/simd/opensimplex2savx2.html#sampleSmooth8-procs-all	proc		39

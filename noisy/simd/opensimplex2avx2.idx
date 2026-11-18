@@ -1,0 +1,4 @@
+nimTitle	opensimplex2avx2	noisy/simd/opensimplex2avx2.html	module noisy/simd/opensimplex2avx2		0
+nim	sample8	noisy/simd/opensimplex2avx2.html#sample8,int32,M256,M256	proc sample8(seed: int32; x, y: Float8): Float8		11
+nim	sample8	noisy/simd/opensimplex2avx2.html#sample8,int32,M256,M256,M256	proc sample8(seed: int32; x, y, z: Float8): Float8		111
+nimgrp	sample8	noisy/simd/opensimplex2avx2.html#sample8-procs-all	proc		11

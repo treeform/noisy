@@ -13,14 +13,14 @@ nim	Distance2Mul	noisy/cellulars.html#Distance2Mul	CellularReturn.Distance2Mul		
 nim	Distance2Div	noisy/cellulars.html#Distance2Div	CellularReturn.Distance2Div		14
 nim	CellularReturn	noisy/cellulars.html#CellularReturn	enum CellularReturn		14
 nim	Cellular	noisy/cellulars.html#Cellular	object Cellular		18
-nim	initCellular	noisy/cellulars.html#initCellular,int	proc initCellular(seed: int): Cellular		26
-nim	value	noisy/cellulars.html#value,Cellular,float32,float32	proc value(cellular: Cellular; x, y: float32): float32		156
-nim	value	noisy/cellulars.html#value,Cellular,float32,float32,float32	proc value(cellular: Cellular; x, y, z: float32): float32		160
-nim	value	noisy/cellulars.html#value,Cellular,int,int	proc value(cellular: Cellular; x, y: int): float32		164
-nim	value	noisy/cellulars.html#value,Cellular,int,int,int	proc value(cellular: Cellular; x, y, z: int): float32		168
-nim	grid	noisy/cellulars.html#grid,Cellular,,	proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid		244
-nim	grid	noisy/cellulars.html#grid,Cellular,,_2	proc grid(cellular: Cellular; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		254
-nim	grid	noisy/cellulars.html#grid,Cellular,,_3	proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid		266
-nim	grid	noisy/cellulars.html#grid,Cellular,,_4	proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid		272
-nimgrp	grid	noisy/cellulars.html#grid-procs-all	proc		244
-nimgrp	value	noisy/cellulars.html#value-procs-all	proc		156
+nim	initCellular	noisy/cellulars.html#initCellular,int	proc initCellular(seed: int): Cellular		34
+nim	value	noisy/cellulars.html#value,Cellular,float32,float32	proc value(cellular: Cellular; x, y: float32): float32		164
+nim	value	noisy/cellulars.html#value,Cellular,float32,float32,float32	proc value(cellular: Cellular; x, y, z: float32): float32		168
+nim	value	noisy/cellulars.html#value,Cellular,int,int	proc value(cellular: Cellular; x, y: int): float32		172
+nim	value	noisy/cellulars.html#value,Cellular,int,int,int	proc value(cellular: Cellular; x, y, z: int): float32		176
+nim	grid	noisy/cellulars.html#grid,Cellular,,	proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid		252
+nim	grid	noisy/cellulars.html#grid,Cellular,,_2	proc grid(cellular: Cellular; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		264
+nim	grid	noisy/cellulars.html#grid,Cellular,,_3	proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid		278
+nim	grid	noisy/cellulars.html#grid,Cellular,,_4	proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid		284
+nimgrp	grid	noisy/cellulars.html#grid-procs-all	proc		252
+nimgrp	value	noisy/cellulars.html#value-procs-all	proc		164

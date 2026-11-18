@@ -28,22 +28,32 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/grids.html">noisy/grids</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/grids.html">noisy/grids</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/avx2base.html">noisy/simd/avx2base</a>, <a href="noisy/simd/cellularavx2.html">noisy/simd/cellularavx2</a>, <a href="noisy/simd/gridavx2.html">noisy/simd/gridavx2</a>, <a href="noisy/simd/latticesavx2.html">noisy/simd/latticesavx2</a>, <a href="noisy/simd/opensimplex2avx2.html">noisy/simd/opensimplex2avx2</a>, <a href="noisy/simd/opensimplex2savx2.html">noisy/simd/opensimplex2savx2</a>, <a href="noisy/simd/perlinavx2.html">noisy/simd/perlinavx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simd/valueavx2.html">noisy/simd/valueavx2</a>, <a href="noisy/simd/valuecubicavx2.html">noisy/simd/valuecubicavx2</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `*`(a, b: Float8): Float8" href="noisy/simd/avx2base.html#%2A.t%2CM256%2CM256">avx2base: template `*`(a, b: Float8): Float8</a></li>
           </ul></dd>
 <dt><a name="%60%2B%3D%60" href="#%60%2B%3D%60"><span>`+=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `+=`(a: var Float4; b: Float4)" href="noisy/simd.html#%2B%3D%2CM128%2CM128">simd: proc `+=`(a: var Float4; b: Float4)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `+=`(a: var Float8; b: Float8)" href="noisy/simd/avx2base.html#%2B%3D.t%2CM256%2CM256">avx2base: template `+=`(a: var Float8; b: Float8)</a></li>
           </ul></dd>
 <dt><a name="%60%2B%60" href="#%60%2B%60"><span>`+`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `+`(a, b: Float4): Float4" href="noisy/simd.html#%2B%2CM128%2CM128">simd: proc `+`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `+`(a, b: Float8): Float8" href="noisy/simd/avx2base.html#%2B.t%2CM256%2CM256">avx2base: template `+`(a, b: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `+`(a, b: Int8): Int8" href="noisy/simd/avx2base.html#%2B.t%2CM256i%2CM256i">avx2base: template `+`(a, b: Int8): Int8</a></li>
           </ul></dd>
 <dt><a name="%60-%60" href="#%60-%60"><span>`-`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `-`(a, b: Float4): Float4" href="noisy/simd.html#-%2CM128%2CM128">simd: proc `-`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `-`(a, b: Float8): Float8" href="noisy/simd/avx2base.html#-.t%2CM256%2CM256">avx2base: template `-`(a, b: Float8): Float8</a></li>
           </ul></dd>
 <dt><a name="%60/%3D%60" href="#%60/%3D%60"><span>`/=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -52,6 +62,8 @@
 <dt><a name="%60/%60" href="#%60/%60"><span>`/`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `/`(a, b: Float4): Float4" href="noisy/simd.html#/%2CM128%2CM128">simd: proc `/`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `/`(a, b: Float8): Float8" href="noisy/simd/avx2base.html#/.t%2CM256%2CM256">avx2base: template `/`(a, b: Float8): Float8</a></li>
           </ul></dd>
 <dt><a name="%60%26lt%3B%3D%60" href="#%60%26lt%3B%3D%60"><span>`&lt;=`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -60,6 +72,8 @@
 <dt><a name="%60%26lt%3B%60" href="#%60%26lt%3B%60"><span>`&lt;`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `&lt;`(a, b: Float4): Float4" href="noisy/simd.html#%3C%2CM128%2CM128">simd: proc `&lt;`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `&lt;`(a, b: Float8): Int8" href="noisy/simd/avx2base.html#%3C.t%2CM256%2CM256">avx2base: template `&lt;`(a, b: Float8): Int8</a></li>
           </ul></dd>
 <dt><a name="%60%5B%5D%60" href="#%60%5B%5D%60"><span>`[]`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -74,6 +88,8 @@
           data-doc-search-tag="simd: proc `and`(a, b: Float4): Float4" href="noisy/simd.html#and%2CM128%2CM128">simd: proc `and`(a, b: Float4): Float4</a></li>
           <li><a class="reference external"
           data-doc-search-tag="simd: proc `and`(a, b: Int4): Int4" href="noisy/simd.html#and%2CM128i%2CM128i">simd: proc `and`(a, b: Int4): Int4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `and`(a, b: Int8): Int8" href="noisy/simd/avx2base.html#and.t%2CM256i%2CM256i">avx2base: template `and`(a, b: Int8): Int8</a></li>
           </ul></dd>
 <dt><a name="%60or%60" href="#%60or%60"><span>`or`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -82,10 +98,66 @@
 <dt><a name="%60xor%60" href="#%60xor%60"><span>`xor`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `xor`(a, b: Float4): Float4" href="noisy/simd.html#xor%2CM128%2CM128">simd: proc `xor`(a, b: Float4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template `xor`(a, b: Float8): Float8" href="noisy/simd/avx2base.html#xor.t%2CM256%2CM256">avx2base: template `xor`(a, b: Float8): Float8</a></li>
+          </ul></dd>
+<dt><a name="abs8" href="#abs8"><span>abs8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template abs8(a: Float8): Float8" href="noisy/simd/avx2base.html#abs8.t%2CM256">avx2base: template abs8(a: Float8): Float8</a></li>
           </ul></dd>
 <dt><a name="addInts" href="#addInts"><span>addInts:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc addInts(a, b: Int4): Int4" href="noisy/simd.html#addInts%2CM128i%2CM128i">simd: proc addInts(a, b: Int4): Int4</a></li>
+          </ul></dd>
+<dt><a name="AvxBatch" href="#AvxBatch"><span>AvxBatch:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: object AvxBatch" href="noisy/simd/gridavx2.html#AvxBatch">gridavx2: object AvxBatch</a></li>
+          </ul></dd>
+<dt><a name="avxCellular" href="#avxCellular"><span>avxCellular:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxCellular" href="noisy/simd/gridavx2.html#avxCellular">gridavx2: AvxKind.avxCellular</a></li>
+          </ul></dd>
+<dt><a name="avxGrid" href="#avxGrid"><span>avxGrid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
+                        kind: static[AvxKind]): Grid" href="noisy/grids.html#avxGrid%2CT%2CStart%2CSize%2Cstatic%5BAvxKind%5D">grids: proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
+                        kind: static[AvxKind]): Grid</a></li>
+          </ul></dd>
+<dt><a name="AvxKind" href="#AvxKind"><span>AvxKind:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: enum AvxKind" href="noisy/simd/gridavx2.html#AvxKind">gridavx2: enum AvxKind</a></li>
+          </ul></dd>
+<dt><a name="avxOpenSimplex2" href="#avxOpenSimplex2"><span>avxOpenSimplex2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxOpenSimplex2" href="noisy/simd/gridavx2.html#avxOpenSimplex2">gridavx2: AvxKind.avxOpenSimplex2</a></li>
+          </ul></dd>
+<dt><a name="avxOpenSimplex2S" href="#avxOpenSimplex2S"><span>avxOpenSimplex2S:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxOpenSimplex2S" href="noisy/simd/gridavx2.html#avxOpenSimplex2S">gridavx2: AvxKind.avxOpenSimplex2S</a></li>
+          </ul></dd>
+<dt><a name="avxPerlin" href="#avxPerlin"><span>avxPerlin:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxPerlin" href="noisy/simd/gridavx2.html#avxPerlin">gridavx2: AvxKind.avxPerlin</a></li>
+          </ul></dd>
+<dt><a name="AvxSettings" href="#AvxSettings"><span>AvxSettings:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: object AvxSettings" href="noisy/simd/gridavx2.html#AvxSettings">gridavx2: object AvxSettings</a></li>
+          </ul></dd>
+<dt><a name="avxValue" href="#avxValue"><span>avxValue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxValue" href="noisy/simd/gridavx2.html#avxValue">gridavx2: AvxKind.avxValue</a></li>
+          </ul></dd>
+<dt><a name="avxValueCubic" href="#avxValueCubic"><span>avxValueCubic:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: AvxKind.avxValueCubic" href="noisy/simd/gridavx2.html#avxValueCubic">gridavx2: AvxKind.avxValueCubic</a></li>
+          </ul></dd>
+<dt><a name="bitClear" href="#bitClear"><span>bitClear:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template bitClear(a, b: Int8): Int8" href="noisy/simd/avx2base.html#bitClear.t%2CM256i%2CM256i">avx2base: template bitClear(a, b: Int8): Int8</a></li>
+          </ul></dd>
+<dt><a name="bitNot" href="#bitNot"><span>bitNot:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template bitNot(a: Int8): Int8" href="noisy/simd/avx2base.html#bitNot.t%2CM256i">avx2base: template bitNot(a: Int8): Int8</a></li>
           </ul></dd>
 <dt><a name="Cellular" href="#Cellular"><span>Cellular:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -102,6 +174,10 @@
 <dt><a name="CellValue" href="#CellValue"><span>CellValue:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="cellulars: CellularReturn.CellValue" href="noisy/cellulars.html#CellValue">cellulars: CellularReturn.CellValue</a></li>
+          </ul></dd>
+<dt><a name="coordinates8" href="#coordinates8"><span>coordinates8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template coordinates8(start: float32; offset: int): Float8" href="noisy/simd/avx2base.html#coordinates8.t%2Cfloat32%2Cint">avx2base: template coordinates8(start: float32; offset: int): Float8</a></li>
           </ul></dd>
 <dt><a name="Distance" href="#Distance"><span>Distance:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -151,6 +227,10 @@
 <li><a class="reference external"
           data-doc-search-tag="lattices: proc fastFloor(value: float32): int32" href="noisy/lattices.html#fastFloor%2Cfloat32">lattices: proc fastFloor(value: float32): int32</a></li>
           </ul></dd>
+<dt><a name="fastFloor8" href="#fastFloor8"><span>fastFloor8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="latticesavx2: proc fastFloor8(a: Float8): Int8" href="noisy/simd/latticesavx2.html#fastFloor8%2CM256">latticesavx2: proc fastFloor8(a: Float8): Int8</a></li>
+          </ul></dd>
 <dt><a name="fastRound" href="#fastRound"><span>fastRound:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: proc fastRound(value: float32): int32" href="noisy/lattices.html#fastRound%2Cfloat32">lattices: proc fastRound(value: float32): int32</a></li>
@@ -167,6 +247,12 @@
           <li><a class="reference external"
           data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2Cfloat32%2CGrid">avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)</a></li>
           </ul></dd>
+<dt><a name="fillRowAvx2" href="#fillRowAvx2"><span>fillRowAvx2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="gridavx2: proc fillRowAvx2(batch: AvxBatch; start: array[4, float32]; dimensions, length: int;
+            output: ptr float32)" href="noisy/simd/gridavx2.html#fillRowAvx2%2CAvxBatch%2Carray%5B%2Cfloat32%5D%2Cint%2Cint%2Cptr.float32">gridavx2: proc fillRowAvx2(batch: AvxBatch; start: array[4, float32]; dimensions, length: int;
+            output: ptr float32)</a></li>
+          </ul></dd>
 <dt><a name="Float4" href="#Float4"><span>Float4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: type Float4" href="noisy/simd.html#Float4">simd: type Float4</a></li>
@@ -174,6 +260,14 @@
 <dt><a name="float4" href="#float4"><span>float4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc float4(a: float32): Float4" href="noisy/simd.html#float4%2Cfloat32">simd: proc float4(a: float32): Float4</a></li>
+          </ul></dd>
+<dt><a name="Float8" href="#Float8"><span>Float8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: type Float8" href="noisy/simd/avx2base.html#Float8">avx2base: type Float8</a></li>
+          </ul></dd>
+<dt><a name="float8" href="#float8"><span>float8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template float8(a: float32): Float8" href="noisy/simd/avx2base.html#float8.t%2Cfloat32">avx2base: template float8(a: float32): Float8</a></li>
           </ul></dd>
 <dt><a name="G2" href="#G2"><span>G2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -186,6 +280,12 @@
 <dt><a name="G4" href="#G4"><span>G4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: const G4" href="noisy/simplexcommon.html#G4">simplexcommon: const G4</a></li>
+          </ul></dd>
+<dt><a name="gather" href="#gather"><span>gather:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: proc gather(p: ptr float32; indexes: Int8; scale: int32): Float8" href="noisy/simd/avx2base.html#gather%2Cptr.float32%2CM256i%2Cint32">avx2base: proc gather(p: ptr float32; indexes: Int8; scale: int32): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: proc gather(p: ptr int32; indexes: Int8; scale: int32): Int8" href="noisy/simd/avx2base.html#gather%2Cptr.int32%2CM256i%2Cint32">avx2base: proc gather(p: ptr int32; indexes: Int8; scale: int32): Int8</a></li>
           </ul></dd>
 <dt><a name="grad3" href="#grad3"><span>grad3:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -201,6 +301,12 @@
           <li><a class="reference external"
           data-doc-search-tag="lattices: proc gradient(seed: int32; x, y, z: uint32; dx, dy, dz: float32): float32" href="noisy/lattices.html#gradient%2Cint32%2Cuint32%2Cuint32%2Cuint32%2Cfloat32%2Cfloat32%2Cfloat32">lattices: proc gradient(seed: int32; x, y, z: uint32; dx, dy, dz: float32): float32</a></li>
           </ul></dd>
+<dt><a name="gradient8" href="#gradient8"><span>gradient8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="latticesavx2: proc gradient8(seed: int32; x, y: Int8; dx, dy: Float8): Float8" href="noisy/simd/latticesavx2.html#gradient8%2Cint32%2CM256i%2CM256i%2CM256%2CM256">latticesavx2: proc gradient8(seed: int32; x, y: Int8; dx, dy: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="latticesavx2: proc gradient8(seed: int32; x, y, z: Int8; dx, dy, dz: Float8): Float8" href="noisy/simd/latticesavx2.html#gradient8%2Cint32%2CM256i%2CM256i%2CM256i%2CM256%2CM256%2CM256">latticesavx2: proc gradient8(seed: int32; x, y, z: Int8; dx, dy, dz: Float8): Float8</a></li>
+          </ul></dd>
 <dt><a name="Gradients2D" href="#Gradients2D"><span>Gradients2D:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: const Gradients2D" href="noisy/lattices.html#Gradients2D">lattices: const Gradients2D</a></li>
@@ -208,6 +314,10 @@
 <dt><a name="Gradients3D" href="#Gradients3D"><span>Gradients3D:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: const Gradients3D" href="noisy/lattices.html#Gradients3D">lattices: const Gradients3D</a></li>
+          </ul></dd>
+<dt><a name="greaterEqual" href="#greaterEqual"><span>greaterEqual:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template greaterEqual(a, b: Float8): Int8" href="noisy/simd/avx2base.html#greaterEqual.t%2CM256%2CM256">avx2base: template greaterEqual(a, b: Float8): Int8</a></li>
           </ul></dd>
 <dt><a name="grid" href="#grid"><span>grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -323,6 +433,10 @@
           <li><a class="reference external"
           data-doc-search-tag="lattices: proc hash(seed: int32; x, y, z: uint32): uint32" href="noisy/lattices.html#hash%2Cint32%2Cuint32%2Cuint32%2Cuint32">lattices: proc hash(seed: int32; x, y, z: uint32): uint32</a></li>
           </ul></dd>
+<dt><a name="hash8" href="#hash8"><span>hash8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="latticesavx2: proc hash8(seed: int32; lattice: Int8): Int8" href="noisy/simd/latticesavx2.html#hash8%2Cint32%2CM256i">latticesavx2: proc hash8(seed: int32; lattice: Int8): Int8</a></li>
+          </ul></dd>
 <dt><a name="HashMultiplier" href="#HashMultiplier"><span>HashMultiplier:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: const HashMultiplier" href="noisy/lattices.html#HashMultiplier">lattices: const HashMultiplier</a></li>
@@ -371,19 +485,43 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc int4(a: int32): Int4" href="noisy/simd.html#int4%2Cint32">simd: proc int4(a: int32): Int4</a></li>
           </ul></dd>
+<dt><a name="Int8" href="#Int8"><span>Int8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: type Int8" href="noisy/simd/avx2base.html#Int8">avx2base: type Int8</a></li>
+          </ul></dd>
+<dt><a name="int8" href="#int8"><span>int8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template int8(a: int32): Int8" href="noisy/simd/avx2base.html#int8.t%2Cint32">avx2base: template int8(a: int32): Int8</a></li>
+          </ul></dd>
 <dt><a name="latticeValue" href="#latticeValue"><span>latticeValue:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: proc latticeValue(seed: int32; x, y: uint32): float32" href="noisy/lattices.html#latticeValue%2Cint32%2Cuint32%2Cuint32">lattices: proc latticeValue(seed: int32; x, y: uint32): float32</a></li>
           <li><a class="reference external"
           data-doc-search-tag="lattices: proc latticeValue(seed: int32; x, y, z: uint32): float32" href="noisy/lattices.html#latticeValue%2Cint32%2Cuint32%2Cuint32%2Cuint32">lattices: proc latticeValue(seed: int32; x, y, z: uint32): float32</a></li>
           </ul></dd>
+<dt><a name="latticeValue8" href="#latticeValue8"><span>latticeValue8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="latticesavx2: proc latticeValue8(seed: int32; lattice: Int8): Float8" href="noisy/simd/latticesavx2.html#latticeValue8%2Cint32%2CM256i">latticesavx2: proc latticeValue8(seed: int32; lattice: Int8): Float8</a></li>
+          </ul></dd>
 <dt><a name="lerp" href="#lerp"><span>lerp:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lattices: proc lerp(a, b, t: float32): float32" href="noisy/lattices.html#lerp%2Cfloat32%2Cfloat32%2Cfloat32">lattices: proc lerp(a, b, t: float32): float32</a></li>
           </ul></dd>
+<dt><a name="less" href="#less"><span>less:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template less(a, b: Float8): Int8" href="noisy/simd/avx2base.html#less.t%2CM256%2CM256">avx2base: template less(a, b: Float8): Int8</a></li>
+          </ul></dd>
+<dt><a name="lessInt" href="#lessInt"><span>lessInt:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template lessInt(a, b: Int8): Int8" href="noisy/simd/avx2base.html#lessInt.t%2CM256i%2CM256i">avx2base: template lessInt(a, b: Int8): Int8</a></li>
+          </ul></dd>
 <dt><a name="Manhattan" href="#Manhattan"><span>Manhattan:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="cellulars: CellularDistance.Manhattan" href="noisy/cellulars.html#Manhattan">cellulars: CellularDistance.Manhattan</a></li>
+          </ul></dd>
+<dt><a name="NearestFeatures" href="#NearestFeatures"><span>NearestFeatures:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellularavx2: object NearestFeatures" href="noisy/simd/cellularavx2.html#NearestFeatures">cellularavx2: object NearestFeatures</a></li>
           </ul></dd>
 <dt><a name="NoisyError" href="#NoisyError"><span>NoisyError:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -425,6 +563,36 @@
 <li><a class="reference external"
           data-doc-search-tag="lattices: const RandVecs3D" href="noisy/lattices.html#RandVecs3D">lattices: const RandVecs3D</a></li>
           </ul></dd>
+<dt><a name="sample8" href="#sample8"><span>sample8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="opensimplex2avx2: proc sample8(seed: int32; x, y: Float8): Float8" href="noisy/simd/opensimplex2avx2.html#sample8%2Cint32%2CM256%2CM256">opensimplex2avx2: proc sample8(seed: int32; x, y: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplex2avx2: proc sample8(seed: int32; x, y, z: Float8): Float8" href="noisy/simd/opensimplex2avx2.html#sample8%2Cint32%2CM256%2CM256%2CM256">opensimplex2avx2: proc sample8(seed: int32; x, y, z: Float8): Float8</a></li>
+          </ul></dd>
+<dt><a name="sampleCubic8" href="#sampleCubic8"><span>sampleCubic8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="valuecubicavx2: proc sampleCubic8(seed: int32; x, y: Float8): Float8" href="noisy/simd/valuecubicavx2.html#sampleCubic8%2Cint32%2CM256%2CM256">valuecubicavx2: proc sampleCubic8(seed: int32; x, y: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="valuecubicavx2: proc sampleCubic8(seed: int32; x, y, z: Float8): Float8" href="noisy/simd/valuecubicavx2.html#sampleCubic8%2Cint32%2CM256%2CM256%2CM256">valuecubicavx2: proc sampleCubic8(seed: int32; x, y, z: Float8): Float8</a></li>
+          </ul></dd>
+<dt><a name="samplePerlinGrid8" href="#samplePerlinGrid8"><span>samplePerlinGrid8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="perlinavx2: proc samplePerlinGrid8[N: static[int]](perm: array[512, int32];
+                                  point: array[N, Float8]): Float8" href="noisy/simd/perlinavx2.html#samplePerlinGrid8%2Carray%5B%2Cint32%5D%2Carray%5BN%2CM256%5D">perlinavx2: proc samplePerlinGrid8[N: static[int]](perm: array[512, int32];
+                                  point: array[N, Float8]): Float8</a></li>
+          </ul></dd>
+<dt><a name="sampleSmooth8" href="#sampleSmooth8"><span>sampleSmooth8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y: Float8): Float8" href="noisy/simd/opensimplex2savx2.html#sampleSmooth8%2Cint32%2CM256%2CM256">opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y, z: Float8): Float8" href="noisy/simd/opensimplex2savx2.html#sampleSmooth8%2Cint32%2CM256%2CM256%2CM256">opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y, z: Float8): Float8</a></li>
+          </ul></dd>
+<dt><a name="sampleValue8" href="#sampleValue8"><span>sampleValue8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="valueavx2: proc sampleValue8(seed: int32; x, y: Float8): Float8" href="noisy/simd/valueavx2.html#sampleValue8%2Cint32%2CM256%2CM256">valueavx2: proc sampleValue8(seed: int32; x, y: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="valueavx2: proc sampleValue8(seed: int32; x, y, z: Float8): Float8" href="noisy/simd/valueavx2.html#sampleValue8%2Cint32%2CM256%2CM256%2CM256">valueavx2: proc sampleValue8(seed: int32; x, y, z: Float8): Float8</a></li>
+          </ul></dd>
 <dt><a name="scalarGrid" href="#scalarGrid"><span>scalarGrid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/grids.html#scalarGrid%2CT%2C%2C">grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid</a></li>
@@ -439,9 +607,27 @@
           <li><a class="reference external"
           data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: float32; width: int): Grid" href="noisy/grids.html#scalarGrid%2CT%2Cfloat32%2Cint">grids: proc scalarGrid[T](noise: T; start: float32; width: int): Grid</a></li>
           </ul></dd>
+<dt><a name="searchFeatures8" href="#searchFeatures8"><span>searchFeatures8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellularavx2: proc searchFeatures8[N: static[int]](seed: int32; jitter: float32;
+                                point: array[N, Float8]; squared, manhattan,
+    trackSecond, trackHash: static[bool]): NearestFeatures" href="noisy/simd/cellularavx2.html#searchFeatures8%2Cint32%2Cfloat32%2Carray%5BN%2CM256%5D%2Cstatic%5Bbool%5D%2Cstatic%5Bbool%5D%2Cstatic%5Bbool%5D%2Cstatic%5Bbool%5D">cellularavx2: proc searchFeatures8[N: static[int]](seed: int32; jitter: float32;
+                                point: array[N, Float8]; squared, manhattan,
+    trackSecond, trackHash: static[bool]): NearestFeatures</a></li>
+          </ul></dd>
+<dt><a name="select" href="#select"><span>select:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template select(mask: Int8; yes, no: Float8): Float8" href="noisy/simd/avx2base.html#select.t%2CM256i%2CM256%2CM256">avx2base: template select(mask: Int8; yes, no: Float8): Float8</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template select(mask: Int8; yes, no: Int8): Int8" href="noisy/simd/avx2base.html#select.t%2CM256i%2CM256i%2CM256i">avx2base: template select(mask: Int8; yes, no: Int8): Int8</a></li>
+          </ul></dd>
 <dt><a name="Simplex" href="#Simplex"><span>Simplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: object Simplex" href="noisy/simplexcommon.html#Simplex">simplexcommon: object Simplex</a></li>
+          </ul></dd>
+<dt><a name="sqrt8" href="#sqrt8"><span>sqrt8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template sqrt8(a: Float8): Float8" href="noisy/simd/avx2base.html#sqrt8.t%2CM256">avx2base: template sqrt8(a: Float8): Float8</a></li>
           </ul></dd>
 <dt><a name="store" href="#store"><span>store:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -450,6 +636,8 @@
 <dt><a name="toFloats" href="#toFloats"><span>toFloats:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc toFloats(a: Int4): Float4" href="noisy/simd.html#toFloats%2CM128i">simd: proc toFloats(a: Int4): Float4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template toFloats(a: Int8): Float8" href="noisy/simd/avx2base.html#toFloats.t%2CM256i">avx2base: template toFloats(a: Int8): Float8</a></li>
           </ul></dd>
 <dt><a name="toInts" href="#toInts"><span>toInts:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -458,6 +646,16 @@
 <dt><a name="truncate" href="#truncate"><span>truncate:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc truncate(a: Float4): Int4" href="noisy/simd.html#truncate%2CM128">simd: proc truncate(a: Float4): Int4</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2base: template truncate(a: Float8): Int8" href="noisy/simd/avx2base.html#truncate.t%2CM256">avx2base: template truncate(a: Float8): Int8</a></li>
+          </ul></dd>
+<dt><a name="uints8" href="#uints8"><span>uints8:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2base: template uints8(a: uint32): Int8" href="noisy/simd/avx2base.html#uints8.t%2Cuint32">avx2base: template uints8(a: uint32): Int8</a></li>
+          </ul></dd>
+<dt><a name="useGridAvx2" href="#useGridAvx2"><span>useGridAvx2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: const useGridAvx2" href="noisy/grids.html#useGridAvx2">grids: const useGridAvx2</a></li>
           </ul></dd>
 <dt><a name="useGridNeon" href="#useGridNeon"><span>useGridNeon:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -555,7 +753,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 07:02:56 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 15:25:09 UTC</small>
       </div>
     </div>
   </div>

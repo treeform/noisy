@@ -1,15 +1,17 @@
 nimTitle	grids	noisy/grids.html	module noisy/grids		0
 nim	useGridNeon	noisy/grids.html#useGridNeon	const useGridNeon		6
-nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int	proc valueIndex(g: Grid; x, y, z: int): int		27
-nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int,int	proc valueIndex(g: Grid; x, y, z, w: int): int		31
-nim	`[]`	noisy/grids.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 0): float32		35
-nim	`[]`	noisy/grids.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		45
-nim	`[]`	noisy/grids.html#[],Grid,int,int,int,int	proc `[]`(g: Grid; x, y, z, w: int): float32		49
-nim	gridLength	noisy/grids.html#gridLength,openArray[int]	proc gridLength(dimens: openArray[int]): int		64
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,float32,int	proc scalarGrid[T](noise: T; start: float32; width: int): Grid		225
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,,	proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid		229
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_2	proc scalarGrid[T](noise: T; start: (float32, float32, float32);\n              dimens: (int, int, int)): Grid		235
-nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_3	proc scalarGrid[T](noise: T; start: (float32, float32, float32, float32);\n              dimens: (int, int, int, int)): Grid		241
-nimgrp	[]	noisy/grids.html#[]-procs-all	proc		35
-nimgrp	scalargrid	noisy/grids.html#scalarGrid-procs-all	proc		225
-nimgrp	valueindex	noisy/grids.html#valueIndex-procs-all	proc		27
+nim	useGridAvx2	noisy/grids.html#useGridAvx2	const useGridAvx2		9
+nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int	proc valueIndex(g: Grid; x, y, z: int): int		40
+nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int,int	proc valueIndex(g: Grid; x, y, z, w: int): int		44
+nim	`[]`	noisy/grids.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 0): float32		48
+nim	`[]`	noisy/grids.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		58
+nim	`[]`	noisy/grids.html#[],Grid,int,int,int,int	proc `[]`(g: Grid; x, y, z, w: int): float32		62
+nim	gridLength	noisy/grids.html#gridLength,openArray[int]	proc gridLength(dimens: openArray[int]): int		77
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,float32,int	proc scalarGrid[T](noise: T; start: float32; width: int): Grid		267
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,	proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid		271
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_2	proc scalarGrid[T](noise: T; start: (float32, float32, float32);\n              dimens: (int, int, int)): Grid		277
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_3	proc scalarGrid[T](noise: T; start: (float32, float32, float32, float32);\n              dimens: (int, int, int, int)): Grid		283
+nim	avxGrid	noisy/grids.html#avxGrid,T,Start,Size,static[AvxKind]	proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;\n                        kind: static[AvxKind]): Grid		344
+nimgrp	[]	noisy/grids.html#[]-procs-all	proc		48
+nimgrp	scalargrid	noisy/grids.html#scalarGrid-procs-all	proc		267
+nimgrp	valueindex	noisy/grids.html#valueIndex-procs-all	proc		40

@@ -1,0 +1,7 @@
+nimTitle	latticesavx2	noisy/simd/latticesavx2.html	module noisy/simd/latticesavx2		0
+nim	fastFloor8	noisy/simd/latticesavx2.html#fastFloor8,M256	proc fastFloor8(a: Float8): Int8		4
+nim	hash8	noisy/simd/latticesavx2.html#hash8,int32,M256i	proc hash8(seed: int32; lattice: Int8): Int8		8
+nim	latticeValue8	noisy/simd/latticesavx2.html#latticeValue8,int32,M256i	proc latticeValue8(seed: int32; lattice: Int8): Float8		12
+nim	gradient8	noisy/simd/latticesavx2.html#gradient8,int32,M256i,M256i,M256,M256	proc gradient8(seed: int32; x, y: Int8; dx, dy: Float8): Float8		23
+nim	gradient8	noisy/simd/latticesavx2.html#gradient8,int32,M256i,M256i,M256i,M256,M256,M256	proc gradient8(seed: int32; x, y, z: Int8; dx, dy, dz: Float8): Float8		28
+nimgrp	gradient8	noisy/simd/latticesavx2.html#gradient8-procs-all	proc		23
