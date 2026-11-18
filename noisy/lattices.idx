@@ -2,6 +2,9 @@ nimTitle	lattices	noisy/lattices.html	module noisy/lattices		0
 nim	PrimeX	noisy/lattices.html#PrimeX	const PrimeX		6
 nim	PrimeY	noisy/lattices.html#PrimeY	const PrimeY		7
 nim	PrimeZ	noisy/lattices.html#PrimeZ	const PrimeZ		8
+nim	HashMultiplier	noisy/lattices.html#HashMultiplier	const HashMultiplier		9
+nim	Gradients2D	noisy/lattices.html#Gradients2D	const Gradients2D		10
+nim	Gradients3D	noisy/lattices.html#Gradients3D	const Gradients3D		98
 nim	RandVecs2D	noisy/lattices.html#RandVecs2D	const RandVecs2D		126
 nim	RandVecs3D	noisy/lattices.html#RandVecs3D	const RandVecs3D		256
 nim	prime	noisy/lattices.html#prime,int32,uint32	proc prime(coordinate: int32; multiplier: uint32): uint32		465
