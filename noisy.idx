@@ -1,0 +1,27 @@
+nimTitle	noisy	noisy.html	module noisy		0
+nim	Simplex	noisy.html#Simplex	object Simplex		61
+nim	Grid	noisy.html#Grid	type Grid		67
+nim	NoisyError	noisy.html#NoisyError	object NoisyError		72
+nim	initSimplex	noisy.html#initSimplex,int	proc initSimplex(seed: int): Simplex		88
+nim	`[]`	noisy.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 0): float32		114
+nim	`[]`	noisy.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		124
+nim	`[]`	noisy.html#[],Grid,int,int,int,int	proc `[]`(g: Grid; x, y, z, w: int): float32		128
+nim	value	noisy.html#value,Simplex,float32,float32	proc value(simplex: Simplex; x, y: float32): float32		248
+nim	value	noisy.html#value,Simplex,float32,float32,float32	proc value(simplex: Simplex; x, y, z: float32): float32		266
+nim	value	noisy.html#value,Simplex,int,int	proc value(simplex: Simplex; x, y: int): float32		286
+nim	value	noisy.html#value,Simplex,int,int,int	proc value(simplex: Simplex; x, y, z: int): float32		290
+nim	grid	noisy.html#grid,Simplex,,	proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid		723
+nim	grid	noisy.html#grid,Simplex,,_2	proc grid(simplex: Simplex; start: (int, int); dimens: (int, int)): Grid		763
+nim	grid	noisy.html#grid,Simplex,,_3	proc grid(simplex: Simplex; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		769
+nim	grid	noisy.html#grid,Simplex,,_4	proc grid(simplex: Simplex; start: (int, int, int); dimens: (int, int, int)): Grid		826
+nim	value	noisy.html#value,Simplex,float32	proc value(simplex: Simplex; x: float32): float32		854
+nim	value	noisy.html#value,Simplex,int	proc value(simplex: Simplex; x: int): float32		868
+nim	value	noisy.html#value,Simplex,float32,float32,float32,float32	proc value(simplex: Simplex; x, y, z, w: float32): float32		1009
+nim	value	noisy.html#value,Simplex,int,int,int,int	proc value(simplex: Simplex; x, y, z, w: int): float32		1028
+nim	grid	noisy.html#grid,Simplex,float32,int	proc grid(simplex: Simplex; start: float32; width: int): Grid		1069
+nim	grid	noisy.html#grid,Simplex,int,int	proc grid(simplex: Simplex; start, width: int): Grid		1089
+nim	grid	noisy.html#grid,Simplex,,_5	proc grid(simplex: Simplex; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int)): Grid		1093
+nim	grid	noisy.html#grid,Simplex,,_6	proc grid(simplex: Simplex; start: (int, int, int, int);\n     dimens: (int, int, int, int)): Grid		1139
+nimgrp	grid	noisy.html#grid-procs-all	proc		723
+nimgrp	[]	noisy.html#[]-procs-all	proc		114
+nimgrp	value	noisy.html#value-procs-all	proc		248
