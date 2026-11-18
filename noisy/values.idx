@@ -1,8 +1,14 @@
 nimTitle	values	noisy/values.html	module noisy/values		0
 nim	ValueNoise	noisy/values.html#ValueNoise	object ValueNoise		6
-nim	initValue	noisy/values.html#initValue,int	proc initValue(seed: int): ValueNoise		11
-nim	value	noisy/values.html#value,ValueNoise,float32,float32	proc value(noise: ValueNoise; x, y: float32): float32		64
-nim	value	noisy/values.html#value,ValueNoise,float32,float32,float32	proc value(noise: ValueNoise; x, y, z: float32): float32		78
-nim	value	noisy/values.html#value,ValueNoise,int,int	proc value(noise: ValueNoise; x, y: int): float32		93
-nim	value	noisy/values.html#value,ValueNoise,int,int,int	proc value(noise: ValueNoise; x, y, z: int): float32		97
-nimgrp	value	noisy/values.html#value-procs-all	proc		64
+nim	ValueCubic	noisy/values.html#ValueCubic	object ValueCubic		11
+nim	initValue	noisy/values.html#initValue,int	proc initValue(seed: int): ValueNoise		16
+nim	initValueCubic	noisy/values.html#initValueCubic,int	proc initValueCubic(seed: int): ValueCubic		25
+nim	value	noisy/values.html#value,ValueNoise,float32,float32	proc value(noise: ValueNoise; x, y: float32): float32		78
+nim	value	noisy/values.html#value,ValueNoise,float32,float32,float32	proc value(noise: ValueNoise; x, y, z: float32): float32		92
+nim	value	noisy/values.html#value,ValueNoise,int,int	proc value(noise: ValueNoise; x, y: int): float32		107
+nim	value	noisy/values.html#value,ValueNoise,int,int,int	proc value(noise: ValueNoise; x, y, z: int): float32		111
+nim	value	noisy/values.html#value,ValueCubic,float32,float32	proc value(noise: ValueCubic; x, y: float32): float32		183
+nim	value	noisy/values.html#value,ValueCubic,float32,float32,float32	proc value(noise: ValueCubic; x, y, z: float32): float32		200
+nim	value	noisy/values.html#value,ValueCubic,int,int	proc value(noise: ValueCubic; x, y: int): float32		218
+nim	value	noisy/values.html#value,ValueCubic,int,int,int	proc value(noise: ValueCubic; x, y, z: int): float32		222
+nimgrp	value	noisy/values.html#value-procs-all	proc		78

@@ -70,6 +70,9 @@
       <li><a class="reference" href="#OpenSimplex2" title="OpenSimplex2 = object
   seed*, octaves*: int
   amplitude*, frequency*, lacunarity*, gain*: float32">OpenSimplex2</a></li>
+<li><a class="reference" href="#OpenSimplex2S" title="OpenSimplex2S = object
+  seed*, octaves*: int
+  amplitude*, frequency*, lacunarity*, gain*: float32">OpenSimplex2S</a></li>
 
     </ul>
   </details>
@@ -82,11 +85,19 @@
   <li><a class="reference" href="#initOpenSimplex2%2Cint" title="initOpenSimplex2(seed: int): OpenSimplex2">initOpenSimplex2(seed: int): OpenSimplex2</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">initOpenSimplex2S
+  <li><a class="reference" href="#initOpenSimplex2S%2Cint" title="initOpenSimplex2S(seed: int): OpenSimplex2S">initOpenSimplex2S(seed: int): OpenSimplex2S</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">value
   <li><a class="reference" href="#value%2COpenSimplex2%2Cfloat32%2Cfloat32%2Cfloat32" title="value(noise: OpenSimplex2; x, y, z: float32): float32">value(noise: OpenSimplex2; x, y, z: float32): float32</a></li>
 <li><a class="reference" href="#value%2COpenSimplex2%2Cint%2Cint%2Cint" title="value(noise: OpenSimplex2; x, y, z: int): float32">value(noise: OpenSimplex2; x, y, z: int): float32</a></li>
 <li><a class="reference" href="#value%2COpenSimplex2%2Cfloat32%2Cfloat32" title="value(noise: OpenSimplex2; x, y: float32): float32">value(noise: OpenSimplex2; x, y: float32): float32</a></li>
 <li><a class="reference" href="#value%2COpenSimplex2%2Cint%2Cint" title="value(noise: OpenSimplex2; x, y: int): float32">value(noise: OpenSimplex2; x, y: int): float32</a></li>
+<li><a class="reference" href="#value%2COpenSimplex2S%2Cfloat32%2Cfloat32%2Cfloat32" title="value(noise: OpenSimplex2S; x, y, z: float32): float32">value(noise: OpenSimplex2S; x, y, z: float32): float32</a></li>
+<li><a class="reference" href="#value%2COpenSimplex2S%2Cint%2Cint%2Cint" title="value(noise: OpenSimplex2S; x, y, z: int): float32">value(noise: OpenSimplex2S; x, y, z: int): float32</a></li>
+<li><a class="reference" href="#value%2COpenSimplex2S%2Cfloat32%2Cfloat32" title="value(noise: OpenSimplex2S; x, y: float32): float32">value(noise: OpenSimplex2S; x, y: float32): float32</a></li>
+<li><a class="reference" href="#value%2COpenSimplex2S%2Cint%2Cint" title="value(noise: OpenSimplex2S; x, y: int): float32">value(noise: OpenSimplex2S; x, y: int): float32</a></li>
 
 </ul>
 
@@ -128,6 +139,18 @@
 
   </dd>
 </div>
+<div id="OpenSimplex2S">
+  <dt><pre><a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">seed</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">octaves</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">amplitude</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">frequency</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">lacunarity</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">gain</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">float32</span></pre></dt>
+  <dd>
+    
+    Scalar OpenSimplex2S using FastNoiseLite's 2D and 3D conventions.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L11" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L11" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
 
   </dl>
 </div>
@@ -141,8 +164,22 @@
   <dd>
     
     Initializes OpenSimplex2 with a seed and one octave.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L11" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L11" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L18" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L18" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="initOpenSimplex2S-procs-all">
+  <div id="initOpenSimplex2S,int">
+  <dt><pre><span class="Keyword">func</span> <a href="#initOpenSimplex2S%2Cint"><span class="Identifier">initOpenSimplex2S</span></a><span class="Other">(</span><span class="Identifier">seed</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Initializes the smoother OpenSimplex2 variant with one octave.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L27" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L27" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -155,8 +192,8 @@
   <dd>
     
     Samples native 3D OpenSimplex2 with the configured octave settings.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L157" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L157" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L173" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L173" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -166,8 +203,8 @@
   <dd>
     
     Samples 3D OpenSimplex2 at integer coordinates.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L176" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L176" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L192" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L192" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -177,8 +214,8 @@
   <dd>
     
     Samples native 2D OpenSimplex2 with the configured octave settings.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L143" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L143" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L159" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L159" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -188,8 +225,52 @@
   <dd>
     
     Samples 2D OpenSimplex2 at integer coordinates.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L172" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L172" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L188" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L188" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="value,OpenSimplex2S,float32,float32,float32">
+  <dt><pre><span class="Keyword">func</span> <a href="#value%2COpenSimplex2S%2Cfloat32%2Cfloat32%2Cfloat32"><span class="Identifier">value</span></a><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">z</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float32</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Samples native 3D OpenSimplex2S with the configured octave settings.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L415" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L415" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="value,OpenSimplex2S,int,int,int">
+  <dt><pre><span class="Keyword">func</span> <a href="#value%2COpenSimplex2S%2Cint%2Cint%2Cint"><span class="Identifier">value</span></a><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">,</span> <span class="Identifier">z</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float32</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Samples 3D OpenSimplex2S at integer coordinates.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L434" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L434" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="value,OpenSimplex2S,float32,float32">
+  <dt><pre><span class="Keyword">func</span> <a href="#value%2COpenSimplex2S%2Cfloat32%2Cfloat32"><span class="Identifier">value</span></a><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float32</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Samples native 2D OpenSimplex2S with the configured octave settings.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L401" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L401" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="value,OpenSimplex2S,int,int">
+  <dt><pre><span class="Keyword">func</span> <a href="#value%2COpenSimplex2S%2Cint%2Cint"><span class="Identifier">value</span></a><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <a href="#OpenSimplex2S"><span class="Identifier">OpenSimplex2S</span></a><span class="Other">;</span> <span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">float32</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Samples 2D OpenSimplex2S at integer coordinates.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/opensimplexes.nim#L430" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/opensimplexes.nim#L430" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -211,7 +292,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 02:29:39 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 04:53:32 UTC</small>
       </div>
     </div>
   </div>

@@ -1,8 +1,14 @@
 nimTitle	opensimplexes	noisy/opensimplexes.html	module noisy/opensimplexes		0
 nim	OpenSimplex2	noisy/opensimplexes.html#OpenSimplex2	object OpenSimplex2		6
-nim	initOpenSimplex2	noisy/opensimplexes.html#initOpenSimplex2,int	proc initOpenSimplex2(seed: int): OpenSimplex2		11
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32	proc value(noise: OpenSimplex2; x, y: float32): float32		143
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32,float32	proc value(noise: OpenSimplex2; x, y, z: float32): float32		157
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int	proc value(noise: OpenSimplex2; x, y: int): float32		172
-nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int,int	proc value(noise: OpenSimplex2; x, y, z: int): float32		176
-nimgrp	value	noisy/opensimplexes.html#value-procs-all	proc		143
+nim	OpenSimplex2S	noisy/opensimplexes.html#OpenSimplex2S	object OpenSimplex2S		11
+nim	initOpenSimplex2	noisy/opensimplexes.html#initOpenSimplex2,int	proc initOpenSimplex2(seed: int): OpenSimplex2		18
+nim	initOpenSimplex2S	noisy/opensimplexes.html#initOpenSimplex2S,int	proc initOpenSimplex2S(seed: int): OpenSimplex2S		27
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32	proc value(noise: OpenSimplex2; x, y: float32): float32		159
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32,float32	proc value(noise: OpenSimplex2; x, y, z: float32): float32		173
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int	proc value(noise: OpenSimplex2; x, y: int): float32		188
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int,int	proc value(noise: OpenSimplex2; x, y, z: int): float32		192
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32	proc value(noise: OpenSimplex2S; x, y: float32): float32		401
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,float32,float32,float32	proc value(noise: OpenSimplex2S; x, y, z: float32): float32		415
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int	proc value(noise: OpenSimplex2S; x, y: int): float32		430
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2S,int,int,int	proc value(noise: OpenSimplex2S; x, y, z: int): float32		434
+nimgrp	value	noisy/opensimplexes.html#value-procs-all	proc		159
