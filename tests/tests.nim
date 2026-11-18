@@ -1,5 +1,5 @@
 {.push warning[UnusedImport]: off.}
-import test_noisy, test_dimensions, test_simd
+import test_api, test_noisy, test_dimensions, test_simd
 when defined(noisyReferenceDir):
   import test_reference
 else:
