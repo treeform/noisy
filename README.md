@@ -18,9 +18,10 @@ Noisy generates seeded simplex noise in one, two, three, and four dimensions.
 It supports octave layering through `octaves`, `amplitude`, `frequency`,
 `lacunarity`, and `gain`.
 
-Point sampling with `value()` uses scalar arithmetic. Grid generation uses SSE2
-for groups of samples, with scalar handling for leftover edges. Noisy depends on
-Nimsimd and supports both Nim's C and C++ backends.
+Point sampling with `value()` uses scalar arithmetic. Grid generation selects
+SSE2 on x86 and NEON on ARM64 automatically, with scalar handling for leftover
+edges. Both backends accelerate all four dimensions. Noisy depends on Nimsimd
+and supports both Nim's C and C++ backends.
 
 Originally created by Ryan Oldenburg in
 [guzba/noisy](https://github.com/guzba/noisy).
@@ -76,12 +77,9 @@ nim r tests/tests.nim
 The suite covers independent reference values, continuity, grid bounds, octave
 composition, and scalar/SIMD comparisons across seeds and parameters.
 
-SSE2 requires an x86 target. On Apple Silicon, compile for x86_64 and run through
-Rosetta:
-
-```sh
-nim r --cpu:amd64 --passC:"-arch x86_64" --passL:"-arch x86_64" tests/tests.nim
-```
+Apple Silicon uses native ARM64 NEON. The same test command works without
+architecture flags or Rosetta. CI tests native ARM64 on macOS and x86 on Linux
+and Windows in debug and release builds.
 
 ## Benchmarks and image generation
 
@@ -96,8 +94,7 @@ nim r -d:release tests/bench_noisy.nim
 nim r tools/gen_noise.nim
 ```
 
-The generator writes the preview to `docs/noise.png`. On Apple Silicon, use the
-same x86_64 compiler flags shown above for these commands.
+The generator writes the preview to `docs/noise.png`.
 
 ## Documentation
 

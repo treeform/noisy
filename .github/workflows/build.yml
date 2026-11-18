@@ -24,11 +24,6 @@ jobs:
           nimby create
           nimby install "${{ github.event.repository.name }}/noisy.nimble"
       - name: Run tests
-        if: runner.os != 'macOS'
         run: nim r tests/tests.nim
-      - name: Run SSE2 tests on macOS
-        if: runner.os == 'macOS'
-        # The ARM64 runner includes Rosetta for x86 SSE2 executables.
-        run: >-
-          nim r --cpu:amd64 --passC:"-arch x86_64" --passL:"-arch x86_64"
-          tests/tests.nim
+      - name: Run release tests
+        run: nim r -d:release tests/tests.nim

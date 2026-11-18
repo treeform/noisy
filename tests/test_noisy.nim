@@ -1,4 +1,21 @@
-import std/math, noisy
+import
+  std/[math, strformat],
+  noisy
+
+proc checkClose(actual, expected: float32, context: string) =
+  ## Allows small rounding differences between scalar and SIMD samples.
+  const
+    AbsoluteTolerance = 0.0001'f
+    RelativeTolerance = 0.00001'f
+  doAssert abs(actual) < Inf and abs(expected) < Inf,
+    context & &" non-finite sample: SIMD={actual}, scalar={expected}"
+  let
+    error = abs(actual - expected)
+    tolerance = AbsoluteTolerance +
+      RelativeTolerance * max(abs(actual), abs(expected))
+  doAssert error <= tolerance,
+    context & &" SIMD={actual}, scalar={expected}, " &
+      &"error={error}, tolerance={tolerance}"
 
 let simplex = initSimplex(1988) # 1988 is the random seed, generate this however
 
@@ -48,7 +65,7 @@ block basic_2d:
     for y in 0 ..< 17:
       let value = simplex.value(x, y)
       doAssert value >= -1.0 and value <= 1.0
-      doAssert grid[x, y] == value
+      checkClose(grid[x, y], value, &"basic 2D index=({x}, {y})")
 
 block basic_3d:
   let grid = simplex.grid((0, 0, 0), (19, 19, 17))
@@ -57,7 +74,7 @@ block basic_3d:
       for z in 0 ..< 17:
         let value = simplex.value(x, y, z)
         doAssert value >= -1.0 and value <= 1.0
-        doAssert grid[x, y, z] == value
+        checkClose(grid[x, y, z], value, &"basic 3D index=({x}, {y}, {z})")
 
 block range_2d:
   var total: float32
@@ -67,7 +84,7 @@ block range_2d:
       for y in 0 ..< 4:
         let n = simplex.value(x + offset, y + offset)
         total += n
-        assert simd[x, y] == n
+        checkClose(simd[x, y], n, &"range 2D offset={offset}, index=({x}, {y})")
   echo total
 
 block range_3d:
@@ -79,5 +96,9 @@ block range_3d:
         for z in 0 ..< 4:
           let n = simplex.value(x + offset, y + offset, z + offset)
           total += n
-          assert simd[x, y, z] == n
+          checkClose(
+            simd[x, y, z],
+            n,
+            &"range 3D offset={offset}, index=({x}, {y}, {z})"
+          )
   echo total

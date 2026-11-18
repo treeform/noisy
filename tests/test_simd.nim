@@ -1,5 +1,5 @@
 import
-  std/[random, strformat],
+  std/[math, random, strformat],
   noisy
 
 const
@@ -133,6 +133,37 @@ block:
           (4, 4, 4), (5, 7, 9), (8, 8, 8), (9, 10, 11)
         ]:
           compareGrid(noise, start, dimens, context, comparison3d)
+
+echo "Testing lattice boundaries in every SIMD lane and scalar tails"
+block:
+  const F2 = ((sqrt(3.0) - 1) / 2).float32
+  for seed in [1, 42, 1988]:
+    let noise = initSimplex(seed)
+    for boundary in [-256.0'f, -1.0'f, 0.0'f, 255.0'f]:
+      for delta in [-0.0001'f, 0.0'f, 0.0001'f]:
+        for lane in 0 .. 4:
+          let
+            x = -0.125'f
+            y = 0.25'f
+            # Place a skewed lattice boundary in each lane, then in the tail.
+            boundary2d = (boundary - x * F2) / (1 + F2)
+            boundary3d = (3 * boundary - x - y) / 4
+            context = &"seed={seed}, boundary={boundary}, delta={delta}, " &
+              &"lane={lane}"
+          compareGrid(
+            noise,
+            (x, boundary2d + delta - lane.float32),
+            (4, 5),
+            context,
+            comparison2d
+          )
+          compareGrid(
+            noise,
+            (x, y, boundary3d + delta - lane.float32),
+            (4, 4, 5),
+            context,
+            comparison3d
+          )
 
 echo "Testing scalar/SIMD parity across reproducible random configurations"
 block:
