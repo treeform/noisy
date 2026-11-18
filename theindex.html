@@ -28,7 +28,7 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
@@ -87,6 +87,30 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc addInts(a, b: Int4): Int4" href="noisy/simd.html#addInts%2CM128i%2CM128i">simd: proc addInts(a, b: Int4): Int4</a></li>
           </ul></dd>
+<dt><a name="F2" href="#F2"><span>F2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const F2" href="noisy/simplexcommon.html#F2">simplexcommon: const F2</a></li>
+          </ul></dd>
+<dt><a name="F3" href="#F3"><span>F3:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const F3" href="noisy/simplexcommon.html#F3">simplexcommon: const F3</a></li>
+          </ul></dd>
+<dt><a name="F4" href="#F4"><span>F4:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const F4" href="noisy/simplexcommon.html#F4">simplexcommon: const F4</a></li>
+          </ul></dd>
+<dt><a name="fillGridAvx2" href="#fillGridAvx2"><span>fillGridAvx2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); grid: Grid)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32); grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid_2">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32); grid: Grid)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);
+             grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid_3">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);
+             grid: Grid)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2Cfloat32%2CGrid">avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)</a></li>
+          </ul></dd>
 <dt><a name="Float4" href="#Float4"><span>Float4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: type Float4" href="noisy/simd.html#Float4">simd: type Float4</a></li>
@@ -95,9 +119,25 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc float4(a: float32): Float4" href="noisy/simd.html#float4%2Cfloat32">simd: proc float4(a: float32): Float4</a></li>
           </ul></dd>
-<dt><a name="Grid" href="#Grid"><span>Grid:</span></a></dt><dd><ul class="simple">
+<dt><a name="G2" href="#G2"><span>G2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="noisy: type Grid" href="noisy.html#Grid">noisy: type Grid</a></li>
+          data-doc-search-tag="simplexcommon: const G2" href="noisy/simplexcommon.html#G2">simplexcommon: const G2</a></li>
+          </ul></dd>
+<dt><a name="G3" href="#G3"><span>G3:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const G3" href="noisy/simplexcommon.html#G3">simplexcommon: const G3</a></li>
+          </ul></dd>
+<dt><a name="G4" href="#G4"><span>G4:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const G4" href="noisy/simplexcommon.html#G4">simplexcommon: const G4</a></li>
+          </ul></dd>
+<dt><a name="grad3" href="#grad3"><span>grad3:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const grad3" href="noisy/simplexcommon.html#grad3">simplexcommon: const grad3</a></li>
+          </ul></dd>
+<dt><a name="Grad4" href="#Grad4"><span>Grad4:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: const Grad4" href="noisy/simplexcommon.html#Grad4">simplexcommon: const Grad4</a></li>
           </ul></dd>
 <dt><a name="grid" href="#grid"><span>grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -122,6 +162,14 @@
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid" href="noisy.html#grid%2CSimplex%2Cfloat32%2Cint">noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start, width: int): Grid" href="noisy.html#grid%2CSimplex%2Cint%2Cint">noisy: proc grid(simplex: Simplex; start, width: int): Grid</a></li>
+          </ul></dd>
+<dt><a name="Grid" href="#Grid"><span>Grid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="simplexcommon: type Grid" href="noisy/simplexcommon.html#Grid">simplexcommon: type Grid</a></li>
+          </ul></dd>
+<dt><a name="hasAvx2" href="#hasAvx2"><span>hasAvx2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="runtimecheck: proc hasAvx2(): bool" href="noisy/simd/runtimecheck.html#hasAvx2">runtimecheck: proc hasAvx2(): bool</a></li>
           </ul></dd>
 <dt><a name="initPerlin" href="#initPerlin"><span>initPerlin:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -149,7 +197,7 @@
           </ul></dd>
 <dt><a name="Simplex" href="#Simplex"><span>Simplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="noisy: object Simplex" href="noisy.html#Simplex">noisy: object Simplex</a></li>
+          data-doc-search-tag="simplexcommon: object Simplex" href="noisy/simplexcommon.html#Simplex">simplexcommon: object Simplex</a></li>
           </ul></dd>
 <dt><a name="store" href="#store"><span>store:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -205,7 +253,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 01:54:19 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 01:57:00 UTC</small>
       </div>
     </div>
   </div>

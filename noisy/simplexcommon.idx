@@ -1,0 +1,11 @@
+nimTitle	simplexcommon	noisy/simplexcommon.html	module noisy/simplexcommon		0
+nim	F2	noisy/simplexcommon.html#F2	const F2		6
+nim	G2	noisy/simplexcommon.html#G2	const G2		7
+nim	F3	noisy/simplexcommon.html#F3	const F3		8
+nim	G3	noisy/simplexcommon.html#G3	const G3		9
+nim	F4	noisy/simplexcommon.html#F4	const F4		10
+nim	G4	noisy/simplexcommon.html#G4	const G4		11
+nim	Grad4	noisy/simplexcommon.html#Grad4	const Grad4		13
+nim	grad3	noisy/simplexcommon.html#grad3	const grad3		25
+nim	Simplex	noisy/simplexcommon.html#Simplex	object Simplex		33
+nim	Grid	noisy/simplexcommon.html#Grid	type Grid		39

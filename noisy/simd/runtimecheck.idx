@@ -1,0 +1,2 @@
+nimTitle	runtimecheck	noisy/simd/runtimecheck.html	module noisy/simd/runtimecheck		0
+nim	hasAvx2	noisy/simd/runtimecheck.html#hasAvx2	proc hasAvx2(): bool		43

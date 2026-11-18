@@ -1,0 +1,6 @@
+nimTitle	avx2	noisy/simd/avx2.html	module noisy/simd/avx2		0
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,float32,Grid	proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)		262
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,Grid	proc fillGridAvx2(simplex: Simplex; start: (float32, float32); grid: Grid)		277
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,Grid_2	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32); grid: Grid)		299
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,Grid_3	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);\n             grid: Grid)		328
+nimgrp	fillgridavx2	noisy/simd/avx2.html#fillGridAvx2-procs-all	proc		262
