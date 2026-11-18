@@ -1,8 +1,12 @@
 import
   std/[math, random],
-  noisy/[perlins, simd, simplexcommon]
+  noisy/[perlins, opensimplexes, values, cellulars, simd, simplexcommon]
 
-export perlins, Simplex, Grid, NoisyError
+export Simplex, Grid, NoisyError
+export perlins except NoisyError
+export opensimplexes except NoisyError
+export values except NoisyError
+export cellulars except NoisyError
 
 const allowAvx2 = defined(amd64) and
   (defined(gcc) or defined(clang) or defined(vcc)) and not defined(noisyNoAvx)

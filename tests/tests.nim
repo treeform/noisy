@@ -1,5 +1,6 @@
 {.push warning[UnusedImport]: off.}
 import test_api, test_noisy, test_dimensions, test_simd, test_perlin, test_avx2
+import test_opensimplex2, test_values, test_cellular
 when defined(noisyReferenceDir):
   import test_reference
 else:

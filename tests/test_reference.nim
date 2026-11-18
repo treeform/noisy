@@ -4,7 +4,7 @@ import
   reference/bindings
 
 {.push warning[UnusedImport]: off.}
-import test_perlin_reference
+import test_perlin_reference, test_fastnoise_reference
 {.pop.}
 
 const
