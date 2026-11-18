@@ -1,5 +1,5 @@
 {.push warning[UnusedImport]: off.}
-import test_api, test_noisy, test_dimensions, test_simd, test_perlin
+import test_api, test_noisy, test_dimensions, test_simd, test_perlin, test_avx2
 when defined(noisyReferenceDir):
   import test_reference
 else:
@@ -9,4 +9,9 @@ else:
 when defined(arm64):
   echo "All noisy tests passed (ARM64 NEON)"
 else:
-  echo "All noisy tests passed (x86 SSE2)"
+  when defined(amd64) and (defined(gcc) or defined(clang) or defined(vcc)) and
+      not defined(noisyNoAvx):
+    import noisy/simd/runtimecheck
+    echo "All noisy tests passed (x86 ", (if hasAvx2(): "AVX2" else: "SSE2"), ")"
+  else:
+    echo "All noisy tests passed (x86 SSE2)"

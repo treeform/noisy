@@ -1,47 +1,14 @@
 import
   std/[math, random],
-  noisy/[perlins, simd]
+  noisy/[perlins, simd, simplexcommon]
 
-export perlins
+export perlins, Simplex, Grid, NoisyError
 
-const
-  F2 = (0.5 * (sqrt(3.0) - 1)).float32
-  G2 = ((3 - sqrt(3.0)) / 6).float32
-  F3 = (1.0 / 3.0).float32
-  G3 = (1.0 / 6.0).float32
-  F4 = ((sqrt(5.0) - 1) / 4).float32
-  G4 = ((5 - sqrt(5.0)) / 20).float32
-  # Gradients follow Gustavson's public-domain simplexnoise1234 reference.
-  Grad4 = block:
-    var gradients: array[32, array[4, float32]]
-    for i in 0 ..< 32:
-      let
-        first = if i < 24: 0 else: 1
-        second = if i < 16: 1 else: 2
-        third = if i < 8: 2 else: 3
-      gradients[i][first] = if (i and 1) == 0: 1.0'f else: -1.0'f
-      gradients[i][second] = if (i and 2) == 0: 1.0'f else: -1.0'f
-      gradients[i][third] = if (i and 4) == 0: 1.0'f else: -1.0'f
-    gradients
+const allowAvx2 = defined(amd64) and
+  (defined(gcc) or defined(clang) or defined(vcc)) and not defined(noisyNoAvx)
 
-  grad3 = [
-    [1.float32, 1, 0], [-1.float32, 1, 0], [1.float32, -1, 0],
-    [-1.float32, -1, 0], [1.float32, 0, 1], [-1.float32, 0, 1],
-    [1.float32, 0, -1], [-1.float32, 0, -1], [0.float32, 1, 1],
-    [0.float32, -1, 1], [0.float32, 1, -1], [0.float32, -1, -1]
-  ]
-
-type
-  Simplex* = object
-    octaves*: int
-    amplitude*, frequency*, lacunarity*, gain*: float32
-    perm*: array[512, int32]
-    permMod12*: array[512, int32]
-
-  Grid* = ref object
-    width*, height*, depth*: int
-    frames*: int ## Number of fourth-axis slices; one for 1D through 3D grids.
-    values*: seq[float32]
+when allowAvx2:
+  import noisy/simd/[avx2, runtimecheck]
 
 when defined(release):
   {.push checks: off.}
@@ -711,16 +678,27 @@ func grid*(
   result.values.setLen(width * height)
 
   var widthDone, heightDone: int
-  for i in countup(0, width - 4, 4):
-    for j in countup(0, height - 4, 4):
-      let grid4 = simplex.grid4(x, y, i, j)
-      for a in 0 ..< 4:
-        store(
-          result.values[result.valueIndex(a + i, j, 0)].unsafeAddr,
-          grid4[a]
-        )
-      widthDone = i + 4
-      heightDone = j + 4
+  template fillSse2OrNeon() =
+    for i in countup(0, width - 4, 4):
+      for j in countup(0, height - 4, 4):
+        let grid4 = simplex.grid4(x, y, i, j)
+        for a in 0 ..< 4:
+          store(
+            result.values[result.valueIndex(a + i, j, 0)].unsafeAddr,
+            grid4[a]
+          )
+        widthDone = i + 4
+        heightDone = j + 4
+
+  when allowAvx2:
+    if hasAvx2() and width > 0 and height >= 8:
+      simplex.fillGridAvx2(start, result)
+      widthDone = width
+      heightDone = height - height mod 8
+    else:
+      fillSse2OrNeon()
+  else:
+    fillSse2OrNeon()
 
   # Fill any width leftover
   for i in widthDone ..< width:
@@ -757,19 +735,31 @@ func grid*(
   result.values.setLen(width * height * depth)
 
   var widthDone, heightDone, depthDone: int
-  for i in countup(0, width - 4, 4):
-    for j in countup(0, height - 4, 4):
-      for k in countup(0, depth - 4, 4):
-        let grid4 = simplex.grid4(x, y, z, i, j, k)
-        for a in 0 ..< 4:
-          for b in 0 ..< 4:
-            store(
-              result.values[result.valueIndex(a + i, b + j, k)].unsafeAddr,
-              grid4[a][b]
-            )
-        widthDone = i + 4
-        heightDone = j + 4
-        depthDone = k + 4
+  template fillSse2OrNeon() =
+    for i in countup(0, width - 4, 4):
+      for j in countup(0, height - 4, 4):
+        for k in countup(0, depth - 4, 4):
+          let grid4 = simplex.grid4(x, y, z, i, j, k)
+          for a in 0 ..< 4:
+            for b in 0 ..< 4:
+              store(
+                result.values[result.valueIndex(a + i, b + j, k)].unsafeAddr,
+                grid4[a][b]
+              )
+          widthDone = i + 4
+          heightDone = j + 4
+          depthDone = k + 4
+
+  when allowAvx2:
+    if hasAvx2() and width > 0 and height > 0 and depth >= 8:
+      simplex.fillGridAvx2(start, result)
+      widthDone = width
+      heightDone = height
+      depthDone = depth - depth mod 8
+    else:
+      fillSse2OrNeon()
+  else:
+    fillSse2OrNeon()
 
   # Fill any width leftover
   for i in widthDone ..< width:
@@ -1039,7 +1029,7 @@ func gridLength(dimens: openArray[int]): int =
     result *= size
 
 func grid*(simplex: Simplex, start: float32, width: int): Grid =
-  ## Generates 1D noise at unit intervals using SIMD for groups of four samples.
+  ## Generates 1D noise at unit intervals using SIMD for complete groups of samples.
   if simplex.octaves <= 0:
     failOctaves()
   let length = gridLength([width])
@@ -1050,7 +1040,12 @@ func grid*(simplex: Simplex, start: float32, width: int): Grid =
     frames: 1,
     values: newSeq[float32](length)
   )
-  for x in countup(0, width - 4, 4):
+  var widthDone: int
+  when allowAvx2:
+    if hasAvx2() and width >= 8:
+      simplex.fillGridAvx2(start, result)
+      widthDone = width - width mod 8
+  for x in countup(widthDone, width - 4, 4):
     store(
       result.values[x].unsafeAddr,
       simplex.values1x4(coordinates(start, x))
@@ -1083,6 +1078,11 @@ func grid*(
   )
   if length == 0:
     return
+  var depthDone: int
+  when allowAvx2:
+    if hasAvx2() and depth >= 8:
+      simplex.fillGridAvx2(start, result)
+      depthDone = depth - depth mod 8
   for w in 0 ..< frames:
     let
       worldW = start[3] + w.float32
@@ -1095,7 +1095,7 @@ func grid*(
         let
           worldY = start[1] + y.float32
           ys = float4(worldY)
-        for z in countup(0, depth - 4, 4):
+        for z in countup(depthDone, depth - 4, 4):
           store(
             result.values[result.valueIndex(x, y, z, w)].unsafeAddr,
             simplex.values4x4(xs, ys, coordinates(start[2], z), ws)

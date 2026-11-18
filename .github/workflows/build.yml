@@ -27,6 +27,8 @@ jobs:
         run: nim r tests/tests.nim
       - name: Run release tests
         run: nim r -d:release tests/tests.nim
+      - name: Run release tests with AVX2 disabled
+        run: nim r -d:release -d:noisyNoAvx tests/tests.nim
       - name: Fetch pinned reference sources
         run: python tools/gen_references.py --cache-dir "${{ runner.temp }}/noisy-references"
       - name: Compare against C and C++ references

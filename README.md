@@ -19,9 +19,14 @@ It supports octave layering through `octaves`, `amplitude`, `frequency`,
 `lacunarity`, and `gain`.
 
 Point sampling with `value()` uses scalar arithmetic. Grid generation selects
-SSE2 on x86 and NEON on ARM64 automatically, with scalar handling for leftover
-edges. Both backends accelerate all four dimensions. Noisy depends on Nimsimd
-and supports both Nim's C and C++ backends.
+AVX2 on supported x86-64 CPUs, SSE2 on other x86 CPUs, and NEON on ARM64.
+All three backends accelerate all four dimensions, with scalar handling for
+leftover edges. Noisy depends on Nimsimd and supports Nim's C and C++ backends.
+
+AVX2 generates eight samples at a time and checks both CPU and operating-system
+support before use. Only the AVX2 module receives AVX2 compiler flags, so no
+global `-mavx2` flag is needed. Use `-d:noisyNoAvx` to test or benchmark the SSE2
+fallback. GCC, Clang, and MSVC builds are supported.
 
 Originally created by Ryan Oldenburg in
 [guzba/noisy](https://github.com/guzba/noisy).
