@@ -28,7 +28,7 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/simd.html">noisy/simd</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
@@ -123,6 +123,10 @@
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start, width: int): Grid" href="noisy.html#grid%2CSimplex%2Cint%2Cint">noisy: proc grid(simplex: Simplex; start, width: int): Grid</a></li>
           </ul></dd>
+<dt><a name="initPerlin" href="#initPerlin"><span>initPerlin:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="perlins: proc initPerlin(seed: int): Perlin" href="noisy/perlins.html#initPerlin%2Cint">perlins: proc initPerlin(seed: int): Perlin</a></li>
+          </ul></dd>
 <dt><a name="initSimplex" href="#initSimplex"><span>initSimplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="noisy: proc initSimplex(seed: int): Simplex" href="noisy.html#initSimplex%2Cint">noisy: proc initSimplex(seed: int): Simplex</a></li>
@@ -137,7 +141,11 @@
           </ul></dd>
 <dt><a name="NoisyError" href="#NoisyError"><span>NoisyError:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="noisy: object NoisyError" href="noisy.html#NoisyError">noisy: object NoisyError</a></li>
+          data-doc-search-tag="common: object NoisyError" href="noisy/common.html#NoisyError">common: object NoisyError</a></li>
+          </ul></dd>
+<dt><a name="Perlin" href="#Perlin"><span>Perlin:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="perlins: object Perlin" href="noisy/perlins.html#Perlin">perlins: object Perlin</a></li>
           </ul></dd>
 <dt><a name="Simplex" href="#Simplex"><span>Simplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -176,12 +184,28 @@
           data-doc-search-tag="noisy: proc value(simplex: Simplex; x, y, z: int): float32" href="noisy.html#value%2CSimplex%2Cint%2Cint%2Cint">noisy: proc value(simplex: Simplex; x, y, z: int): float32</a></li>
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc value(simplex: Simplex; x, y, z, w: int): float32" href="noisy.html#value%2CSimplex%2Cint%2Cint%2Cint%2Cint">noisy: proc value(simplex: Simplex; x, y, z, w: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32">perlins: proc value(perlin: Perlin; x: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32%2Cfloat32">perlins: proc value(perlin: Perlin; x, y: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32%2Cfloat32%2Cfloat32">perlins: proc value(perlin: Perlin; x, y, z: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z, w: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32%2Cfloat32%2Cfloat32%2Cfloat32">perlins: proc value(perlin: Perlin; x, y, z, w: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint">perlins: proc value(perlin: Perlin; x: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint%2Cint">perlins: proc value(perlin: Perlin; x, y: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint%2Cint%2Cint">perlins: proc value(perlin: Perlin; x, y, z: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z, w: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint%2Cint%2Cint%2Cint">perlins: proc value(perlin: Perlin; x, y, z, w: int): float32</a></li>
           </ul></dd>
 </dl>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 01:43:56 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 01:54:19 UTC</small>
       </div>
     </div>
   </div>

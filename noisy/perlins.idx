@@ -1,0 +1,12 @@
+nimTitle	perlins	noisy/perlins.html	module noisy/perlins		0
+nim	Perlin	noisy/perlins.html#Perlin	object Perlin		11
+nim	initPerlin	noisy/perlins.html#initPerlin,int	proc initPerlin(seed: int): Perlin		17
+nim	value	noisy/perlins.html#value,Perlin,float32	proc value(perlin: Perlin; x: float32): float32		135
+nim	value	noisy/perlins.html#value,Perlin,float32,float32	proc value(perlin: Perlin; x, y: float32): float32		139
+nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32	proc value(perlin: Perlin; x, y, z: float32): float32		143
+nim	value	noisy/perlins.html#value,Perlin,float32,float32,float32,float32	proc value(perlin: Perlin; x, y, z, w: float32): float32		147
+nim	value	noisy/perlins.html#value,Perlin,int	proc value(perlin: Perlin; x: int): float32		151
+nim	value	noisy/perlins.html#value,Perlin,int,int	proc value(perlin: Perlin; x, y: int): float32		155
+nim	value	noisy/perlins.html#value,Perlin,int,int,int	proc value(perlin: Perlin; x, y, z: int): float32		159
+nim	value	noisy/perlins.html#value,Perlin,int,int,int,int	proc value(perlin: Perlin; x, y, z, w: int): float32		163
+nimgrp	value	noisy/perlins.html#value-procs-all	proc		135

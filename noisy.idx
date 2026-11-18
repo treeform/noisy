@@ -1,7 +1,6 @@
 nimTitle	noisy	noisy.html	module noisy		0
-nim	Simplex	noisy.html#Simplex	object Simplex		33
-nim	Grid	noisy.html#Grid	type Grid		39
-nim	NoisyError	noisy.html#NoisyError	object NoisyError		44
+nim	Simplex	noisy.html#Simplex	object Simplex		35
+nim	Grid	noisy.html#Grid	type Grid		41
 nim	initSimplex	noisy.html#initSimplex,int	proc initSimplex(seed: int): Simplex		60
 nim	`[]`	noisy.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 0): float32		86
 nim	`[]`	noisy.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		96
