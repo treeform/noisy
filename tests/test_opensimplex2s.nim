@@ -95,8 +95,10 @@ block:
 echo "Testing OpenSimplex2S initialization and native scalar sampling"
 block:
   static:
-    doAssert not compiles(initOpenSimplex2S(1).grid((0, 0), (5, 5)))
-    doAssert not compiles(initOpenSimplex2S(1).grid((0, 0, 0), (5, 5, 5)))
+    doAssert compiles(initOpenSimplex2S(1).grid((0, 0), (5, 5)))
+    doAssert compiles(initOpenSimplex2S(1).grid((0, 0, 0), (5, 5, 5)))
+    doAssert compiles(initValueCubic(1).grid((0, 0), (5, 5)))
+    doAssert compiles(initValueCubic(1).grid((0, 0, 0), (5, 5, 5)))
     doAssert not compiles(initOpenSimplex2S(1).value(0.5'f))
     doAssert not compiles(initOpenSimplex2S(1).value(0.5'f, 1.0'f, 2.0'f, 3.0'f))
   var rng = initRand(42187)

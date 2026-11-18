@@ -1,8 +1,8 @@
 import
   std/[math, random],
-  noisy/[perlins, opensimplexes, values, cellulars, simd, simplexcommon]
+  noisy/[perlins, opensimplexes, values, cellulars, grids, simd, simplexcommon]
 
-export Simplex, Grid, NoisyError
+export Simplex, Grid, NoisyError, `[]`
 export perlins except NoisyError
 export opensimplexes except NoisyError
 export values except NoisyError
@@ -46,39 +46,6 @@ func initSimplex*(seed: int): Simplex =
   for i in 0 ..< result.perm.len:
     result.perm[i] = permutation[i and 255]
     result.permMod12[i] = result.perm[i] mod 12
-
-func valueIndex(g: Grid, x, y, z: int): int {.inline.} =
-  z + y * g.depth + x * g.height * g.depth
-
-func valueIndex(g: Grid, x, y, z, w: int): int {.inline.} =
-  ## Stores fourth-axis slices consecutively, retaining the 3D layout.
-  w * g.width * g.height * g.depth + g.valueIndex(x, y, z)
-
-func `[]`*(g: Grid, x, y: int, z = 0): float32 {.inline.} =
-  ## Returns the noise value at (x, y) or (x, y, z).
-  if x < 0 or x >= g.width:
-    raise newException(IndexDefect, "Index x out of bounds")
-  if y < 0 or y >= g.height:
-    raise newException(IndexDefect, "Index y out of bounds")
-  if z < 0 or z >= g.depth:
-    raise newException(IndexDefect, "Index z out of bounds")
-  g.values[g.valueIndex(x, y, z)]
-
-func `[]`*(g: Grid, x: int): float32 {.inline.} =
-  ## Returns the noise value at x in a 1D grid.
-  g[x, 0, 0]
-
-func `[]`*(g: Grid, x, y, z, w: int): float32 {.inline.} =
-  ## Returns a 4D sample, with w selecting a whole 3D slice.
-  if x < 0 or x >= g.width:
-    raise newException(IndexDefect, "Index x out of bounds")
-  if y < 0 or y >= g.height:
-    raise newException(IndexDefect, "Index y out of bounds")
-  if z < 0 or z >= g.depth:
-    raise newException(IndexDefect, "Index z out of bounds")
-  if w < 0 or w >= g.frames:
-    raise newException(IndexDefect, "Index w out of bounds")
-  g.values[g.valueIndex(x, y, z, w)]
 
 func `[]=`(g: var Grid, x, y, z: int, value: float32) {.inline.} =
   g.values[g.valueIndex(x, y, z)] = value
@@ -1015,22 +982,6 @@ func values4x4(simplex: Simplex, x, y, z, w: Float4): Float4 =
     amplitude = amplitude * gain
     frequency *= simplex.lacunarity
   total / float4(simplex.octaves.float32)
-
-func gridLength(dimens: openArray[int]): int =
-  ## Validates dimensions and computes a representable storage size.
-  var empty = false
-  for size in dimens:
-    if size < 0:
-      raise newException(NoisyError, "Grid dimensions must be >= 0")
-    if size == 0:
-      empty = true
-  if empty:
-    return 0
-  result = 1
-  for size in dimens:
-    if result > (int.high div sizeof(float32)) div size:
-      raise newException(NoisyError, "Grid dimensions are too large")
-    result *= size
 
 func grid*(simplex: Simplex, start: float32, width: int): Grid =
   ## Generates 1D noise at unit intervals using SIMD for complete groups of samples.

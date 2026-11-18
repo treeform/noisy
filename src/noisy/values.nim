@@ -1,6 +1,6 @@
-import common, lattices
+import common, grids, lattices
 
-export common
+export common, Grid, `[]`
 
 type
   ValueNoise* = object
@@ -222,3 +222,29 @@ func value*(noise: ValueCubic, x, y: int): float32 {.inline.} =
 func value*(noise: ValueCubic, x, y, z: int): float32 {.inline.} =
   ## Samples 3D cubic Value noise at integer coordinates.
   noise.value(x.float32, y.float32, z.float32)
+
+func grid*(
+  noise: ValueCubic, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Samples a 2D ValueCubic grid at unit intervals from start.
+  noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: ValueCubic, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Samples a 2D ValueCubic grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  noise: ValueCubic,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Samples a 3D ValueCubic grid at unit intervals from start.
+  noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: ValueCubic, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Samples a 3D ValueCubic grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)

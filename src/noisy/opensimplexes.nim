@@ -1,6 +1,6 @@
-import common, lattices
+import common, grids, lattices
 
-export common
+export common, Grid, `[]`
 
 type
   OpenSimplex2* = object
@@ -434,3 +434,29 @@ func value*(noise: OpenSimplex2S, x, y: int): float32 {.inline.} =
 func value*(noise: OpenSimplex2S, x, y, z: int): float32 {.inline.} =
   ## Samples 3D OpenSimplex2S at integer coordinates.
   noise.value(x.float32, y.float32, z.float32)
+
+func grid*(
+  noise: OpenSimplex2S, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Samples a 2D OpenSimplex2S grid at unit intervals from start.
+  noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: OpenSimplex2S, start: (int, int), dimens: (int, int)
+): Grid {.inline.} =
+  ## Samples a 2D OpenSimplex2S grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  noise: OpenSimplex2S,
+  start: (float32, float32, float32),
+  dimens: (int, int, int)
+): Grid =
+  ## Samples a 3D OpenSimplex2S grid at unit intervals from start.
+  noise.scalarGrid(start, dimens)
+
+func grid*(
+  noise: OpenSimplex2S, start: (int, int, int), dimens: (int, int, int)
+): Grid {.inline.} =
+  ## Samples a 3D OpenSimplex2S grid from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)

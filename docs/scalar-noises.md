@@ -44,6 +44,25 @@ The standalone modules `noisy/opensimplexes`, `noisy/values`, and
 SIMD backend. The ports retain the FastNoiseLite license and attribution in
 [`LICENSE.fastnoiselite.txt`](../LICENSE.fastnoiselite.txt).
 
+## OpenSimplex2S and ValueCubic grids
+
+Both types support scalar `grid(start, dimens)` in 2D and 3D. Pass integer or
+float32 coordinates in `start` and integer sizes in `dimens`. Samples are one
+unit apart before frequency scaling. Index the result with zero-based offsets
+from `start`, using the same layout as a Simplex grid.
+
+```nim
+import noisy
+
+let surface = initOpenSimplex2S(1988).grid((-2.5'f, 4.0'f), (16, 24))
+let volume = initValueCubic(42).grid((0, 0, 0), (16, 24, 8))
+let height = surface[2, 3]
+let density = volume[2, 3, 4]
+```
+
+A zero dimension returns an empty grid. Negative dimensions, sizes that
+overflow storage, and nonpositive octave counts raise `NoisyError`.
+
 ## Settings and seed compatibility
 
 All five types expose `seed` and share these octave defaults.
