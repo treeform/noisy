@@ -1149,24 +1149,3 @@ func grid*(
 
 when defined(release):
   {.pop.}
-
-when isMainModule:
-  ## Draw an image to see what the noise looks like
-
-  import pixie
-
-  var s = initSimplex(1988)
-  s.frequency = 0.1
-  let
-    image = newImage(480, 480)
-    g = s.grid((0, 0), (480, 480))
-  for x in 0 ..< 480:
-    for y in 0 ..< 480:
-      # for z in 0 ..< 1:
-      let
-        # v = s.value(x.float32, y.float32)#, z.float32)
-        v = g[x, y] #, z]
-        c = (((v + 1) / 2) * 255).uint8
-      image[x, y] = rgba(c, c, c, 255)
-
-  image.writeFile("examples/noise.png")

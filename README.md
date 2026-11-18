@@ -1,156 +1,114 @@
-# Noisy
+<img src="docs/noise.png" alt="2D simplex noise" width="480">
 
-![Github Actions](https://github.com/guzba/noisy/workflows/Github%20Actions/badge.svg)
+# Noisy - SIMD-accelerated simplex noise.
 
-`nimble install noisy`
+`nimby install https://github.com/treeform/noisy`
 
-Noisy is a SIMD-accelerated Nim implementation of Simplex (Perlin) noise. The goal of this library is to be easy to use, performant and dependency-free.
+![Github Actions](https://github.com/treeform/noisy/workflows/Github%20Actions/badge.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/treeform/noisy)
+![GitHub Repo stars](https://img.shields.io/github/stars/treeform/noisy)
+![GitHub](https://img.shields.io/github/license/treeform/noisy)
+![GitHub issues](https://img.shields.io/github/issues/treeform/noisy)
 
-Noisy works well using Nim's relatively new `--gc:arc` and `--gc:orc` as well as the default garbage collector. This library also works using both `nim c` and `nim cpp`, in addition to `--cc:vcc` on Windows.
+[API reference](https://treeform.github.io/noisy)
 
-I have also verified that Noisy builds with `--experimental:strictFuncs` on Nim 1.4.0.
+## About
 
-![2D Simplex Noise](examples/noise.png)
+Noisy generates seeded simplex noise in one, two, three, and four dimensions.
+It supports octave layering through `octaves`, `amplitude`, `frequency`,
+`lacunarity`, and `gain`.
 
-## Example
+Point sampling with `value()` uses scalar arithmetic. Grid generation uses SSE2
+for groups of samples, with scalar handling for leftover edges. Noisy depends on
+Nimsimd and supports both Nim's C and C++ backends.
+
+Originally created by Ryan Oldenburg in
+[guzba/noisy](https://github.com/guzba/noisy).
+
+> **AI disclaimer: Portions of this library and its tests were developed with AI assistance.**
+
+## Examples
 
 ```nim
-import noisy, strformat
+import noisy
 
 var simplex = initSimplex(1988)
 simplex.frequency = 0.1
 
-# Starting at (0, 0) generate a 16x16 grid of 2D noise values.
-let values = simplex.grid((0, 0), (16, 16))
-for x in 0 ..< 16:
-  for y in 0 ..< 16:
-    let value = values[x, y]
-    echo &"({x},{y}): {value}"
+let line = simplex.grid(-4.5'f, 16)
+echo line[3]
+
+let surface = simplex.grid((0, 0), (16, 16))
+echo surface[3, 4]
+
+let volume = simplex.grid((0, 0, 0), (8, 8, 8))
+echo volume[1, 2, 3]
+
+let animation = simplex.grid((0, 0, 0, 0), (8, 8, 8, 4))
+echo animation[1, 2, 3, 0]
 ```
 
-## Performance
+Grid coordinates advance in unit intervals before applying `frequency`.
+The fourth grid dimension is `frames`. Each frame stores one 3D slice, with z
+as its fastest-changing coordinate. A 1D grid has height, depth, and frames set
+to one. All sampling methods accept integer or float32 coordinates.
 
-Benchmarks can be run comparing methods for generating noise values. Check the performance yourself by running [tests/benchmark.nim](https://github.com/guzba/noisy/blob/master/tests/benchmark.nim).
+See [examples/basic.nim](examples/basic.nim) and
+[examples/dimensions.nim](examples/dimensions.nim) for runnable examples.
 
-`nim c -d:release -r .\tests\benchmark.nim` (256 x 256 x 256 cube of 3D simplex noise with 3 octaves, lower time is better)
+## Development
 
-Method | Time
---- | ---:
-Point by point using `value(x, y, z)` | 1.6066s
-Using `grid()` (SIMD accelerated, GCC default) | 1.0281s
-Using `grid()` (SIMD accelerated, `--passC:"-mavx"`) | 0.7476s
+Install dependencies from the workspace directory containing your checkout:
 
-## Testing
-
-`nimble test`
-
-# API: noisy
-
-```nim
-import noisy
+```sh
+cd ..
+nimby create
+nimby install noisy/noisy.nimble
+cd noisy
 ```
 
-## **type** Simplex
+Run the full test suite through its single entry point:
 
-
-```nim
-Simplex = object
- octaves*: int
- amplitude*, frequency*, lacunarity*, gain*: float32
+```sh
+nim r tests/tests.nim
 ```
 
-## **type** Grid
+The suite covers independent reference values, continuity, grid bounds, octave
+composition, and scalar/SIMD comparisons across seeds and parameters.
 
+SSE2 requires an x86 target. On Apple Silicon, compile for x86_64 and run through
+Rosetta:
 
-```nim
-Grid = ref object
- width*, height*, depth*: int
- values*: seq[float32]
+```sh
+nim r --cpu:amd64 --passC:"-arch x86_64" --passL:"-arch x86_64" tests/tests.nim
 ```
 
-## **type** NoisyError
+## Benchmarks and image generation
 
+Optional development tools have separate dependencies. From the workspace
+parent, install `benchy` for benchmarks or `pixie` for image generation with
+`nimby install benchy` or `nimby install pixie`.
 
-```nim
-NoisyError = object of ValueError
+Run these commands from the repository root:
+
+```sh
+nim r -d:release tests/bench_noisy.nim
+nim r tools/gen_noise.nim
 ```
 
-## **func** initSimplex
+The generator writes the preview to `docs/noise.png`. On Apple Silicon, use the
+same x86_64 compiler flags shown above for these commands.
 
+## Documentation
 
-```nim
-func initSimplex(seed: int): Simplex
+The docs workflow builds the [API reference](https://treeform.github.io/noisy)
+from `src/noisy.nim`. To build it locally:
+
+```sh
+nim doc --index:on --project --git.url:https://github.com/treeform/noisy \
+  --git.commit:master --out:.gh-pages src/noisy.nim
 ```
 
-## **func** `[]`
+## License
 
-Returns the noise value at (x, y) or (x, y, z).
-
-```nim
-func `[]`(g: Grid; x, y: int; z = 0): float32 {.inline.}
-```
-
-## **func** value
-
-Generates the 2D noise value at (x, y) based on the Simplex parameters.
-
-```nim
-func value(simplex: Simplex; x, y: float32): float32 {.raises: [NoisyError], tags: [].}
-```
-
-## **func** value
-
-Generates the 3D noise value at (x, y, z) based on the Simplex parameters.
-
-```nim
-func value(simplex: Simplex; x, y, z: float32): float32 {.raises: [NoisyError], tags: [].}
-```
-
-## **func** value
-
-Helper for working with ints.
-
-```nim
-func value(simplex: Simplex; x, y: int): float32 {.inline, raises: [NoisyError], tags: [].}
-```
-
-## **func** value
-
-Helper for working with ints
-
-```nim
-func value(simplex: Simplex; x, y, z: int): float32 {.inline, raises: [NoisyError].}
-```
-
-## **func** grid
-
-Beginning at position start, generate a grid of 2D noise based on the Simplex parameters. The width and height of the grid is set by the dimens parameter.
-
-```nim
-func grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid {.raises: [NoisyError].}
-```
-
-## **func** grid
-
-Helper for working with ints.
-
-```nim
-func grid(simplex: Simplex; start: (int, int); dimens: (int, int)): Grid {. inline, raises: [NoisyError].}
-```
-
-## **func** grid
-
-Beginning at position start, generate a grid of 3D noise based on the Simplex parameters. The width, depth, and height of the grid is set by the dimens parameter.
-
-```nim
-func grid(simplex: Simplex; start: (float32, float32, float32);
- dimens: (int, int, int)): Grid {.raises: [NoisyError].}
-```
-
-## **func** grid
-
-Helper for working with ints.
-
-```nim
-func grid(simplex: Simplex; start: (int, int, int); dimens: (int, int, int)): Grid {. inline, raises: [NoisyError].}
-```
+Noisy is distributed under the [MIT license](LICENSE).
