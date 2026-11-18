@@ -1,0 +1,23 @@
+nimTitle	simd	noisy/simd.html	module noisy/simd		0
+nim	Float4	noisy/simd.html#Float4	type Float4		15
+nim	Int4	noisy/simd.html#Int4	type Int4		16
+nim	float4	noisy/simd.html#float4,float32	proc float4(a: float32): Float4		20
+nim	int4	noisy/simd.html#int4,int32	proc int4(a: int32): Int4		27
+nim	`and`	noisy/simd.html#and,M128,M128	proc `and`(a, b: Float4): Float4		34
+nim	`and`	noisy/simd.html#and,M128i,M128i	proc `and`(a, b: Int4): Int4		41
+nim	`or`	noisy/simd.html#or,M128,M128	proc `or`(a, b: Float4): Float4		48
+nim	`xor`	noisy/simd.html#xor,M128,M128	proc `xor`(a, b: Float4): Float4		55
+nim	`<`	noisy/simd.html#<,M128,M128	proc `<`(a, b: Float4): Float4		62
+nim	`<=`	noisy/simd.html#<=,M128,M128	proc `<=`(a, b: Float4): Float4		69
+nim	`+`	noisy/simd.html#+,M128,M128	proc `+`(a, b: Float4): Float4		76
+nim	`+=`	noisy/simd.html#+=,M128,M128	proc `+=`(a: var Float4; b: Float4)		83
+nim	`-`	noisy/simd.html#-,M128,M128	proc `-`(a, b: Float4): Float4		87
+nim	`*`	noisy/simd.html#*,M128,M128	proc `*`(a, b: Float4): Float4		94
+nim	`/`	noisy/simd.html#/,M128,M128	proc `/`(a, b: Float4): Float4		101
+nim	`/=`	noisy/simd.html#/=,M128,M128	proc `/=`(a: var Float4; b: Float4)		108
+nim	addInts	noisy/simd.html#addInts,M128i,M128i	proc addInts(a, b: Int4): Int4		112
+nim	truncate	noisy/simd.html#truncate,M128	proc truncate(a: Float4): Int4		119
+nim	toInts	noisy/simd.html#toInts,M128	proc toInts(a: Float4): Int4		126
+nim	toFloats	noisy/simd.html#toFloats,M128i	proc toFloats(a: Int4): Float4		130
+nim	store	noisy/simd.html#store,ptr.float32,M128	proc store(p: ptr float32; a: Float4)		137
+nimgrp	and	noisy/simd.html#and-procs-all	proc		34
