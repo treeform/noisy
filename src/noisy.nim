@@ -35,6 +35,20 @@ const
   G2 = ((3 - sqrt(3.0)) / 6).float32
   F3 = (1.0 / 3.0).float32
   G3 = (1.0 / 6.0).float32
+  F4 = ((sqrt(5.0) - 1) / 4).float32
+  G4 = ((5 - sqrt(5.0)) / 20).float32
+  # Gradients follow Gustavson's public-domain simplexnoise1234 reference.
+  Grad4 = block:
+    var gradients: array[32, array[4, float32]]
+    for i in 0 ..< 32:
+      let
+        first = if i < 24: 0 else: 1
+        second = if i < 16: 1 else: 2
+        third = if i < 8: 2 else: 3
+      gradients[i][first] = if (i and 1) == 0: 1.0'f else: -1.0'f
+      gradients[i][second] = if (i and 2) == 0: 1.0'f else: -1.0'f
+      gradients[i][third] = if (i and 4) == 0: 1.0'f else: -1.0'f
+    gradients
 
   grad3 = [
     [1.float32, 1, 0], [-1.float32, 1, 0], [1.float32, -1, 0],
@@ -52,6 +66,7 @@ type
 
   Grid* = ref object
     width*, height*, depth*: int
+    frames*: int ## Number of fourth-axis slices; one for 1D through 3D grids.
     values*: seq[float32]
 
   NoisyError* = object of CatchableError
@@ -92,6 +107,10 @@ func initSimplex*(seed: int): Simplex =
 func valueIndex(g: Grid, x, y, z: int): int {.inline.} =
   z + y * g.depth + x * g.height * g.depth
 
+func valueIndex(g: Grid, x, y, z, w: int): int {.inline.} =
+  ## Stores fourth-axis slices consecutively, retaining the 3D layout.
+  w * g.width * g.height * g.depth + g.valueIndex(x, y, z)
+
 func `[]`*(g: Grid, x, y: int, z = 0): float32 {.inline.} =
   ## Returns the noise value at (x, y) or (x, y, z).
   if x < 0 or x >= g.width:
@@ -101,6 +120,22 @@ func `[]`*(g: Grid, x, y: int, z = 0): float32 {.inline.} =
   if z < 0 or z >= g.depth:
     raise newException(IndexDefect, "Index z out of bounds")
   g.values[g.valueIndex(x, y, z)]
+
+func `[]`*(g: Grid, x: int): float32 {.inline.} =
+  ## Returns the noise value at x in a 1D grid.
+  g[x, 0, 0]
+
+func `[]`*(g: Grid, x, y, z, w: int): float32 {.inline.} =
+  ## Returns a 4D sample, with w selecting a whole 3D slice.
+  if x < 0 or x >= g.width:
+    raise newException(IndexDefect, "Index x out of bounds")
+  if y < 0 or y >= g.height:
+    raise newException(IndexDefect, "Index y out of bounds")
+  if z < 0 or z >= g.depth:
+    raise newException(IndexDefect, "Index z out of bounds")
+  if w < 0 or w >= g.frames:
+    raise newException(IndexDefect, "Index w out of bounds")
+  g.values[g.valueIndex(x, y, z, w)]
 
 func `[]=`(g: var Grid, x, y, z: int, value: float32) {.inline.} =
   g.values[g.valueIndex(x, y, z)] = value
@@ -700,6 +735,7 @@ func grid*(
   result.width = width
   result.height = height
   result.depth = 1
+  result.frames = 1
   result.values.setLen(width * height)
 
   var widthDone, heightDone: int
@@ -745,6 +781,7 @@ func grid*(
   result.width = width
   result.height = height
   result.depth = depth
+  result.frames = 1
   result.values.setLen(width * height * depth)
 
   var widthDone, heightDone, depthDone: int
@@ -791,6 +828,324 @@ func grid*(
 ): Grid {.inline.} =
   ## Helper for working with ints.
   simplex.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
+
+func gradient1(hash: int32): float32 {.inline.} =
+  ## Selects one of the sixteen signed 1D gradients.
+  result = (1 + (hash and 7)).float32
+  if (hash and 8) != 0:
+    result = -result
+
+func noise(simplex: Simplex, x: float32): float32 =
+  ## Evaluates native 1D simplex noise from its two lattice endpoints.
+  let
+    cell = floor(x)
+    index = cell.int32 and 255
+    x0 = x - cell
+    x1 = x0 - 1.0'f
+    t0 = 1.0'f - x0 * x0
+    t1 = 1.0'f - x1 * x1
+    t0Squared = t0 * t0
+    t1Squared = t1 * t1
+    n0 = t0Squared * t0Squared * (gradient1(simplex.perm[index]) * x0)
+    n1 = t1Squared * t1Squared * (gradient1(simplex.perm[index + 1]) * x1)
+  # The unscaled maximum is 8 * (3 / 4)^4 = 2.53125.
+  0.395'f * (n0 + n1)
+
+func value*(simplex: Simplex, x: float32): float32 =
+  ## Generates the 1D noise value at x based on the Simplex parameters.
+  if simplex.octaves <= 0:
+    failOctaves()
+  var
+    total: float32
+    amplitude = simplex.amplitude
+    frequency = simplex.frequency
+  for _ in 0 ..< simplex.octaves:
+    total += simplex.noise(x * frequency) * amplitude
+    amplitude *= simplex.gain
+    frequency *= simplex.lacunarity
+  total / simplex.octaves.float32
+
+func value*(simplex: Simplex, x: int): float32 {.inline.} =
+  ## Samples native 1D simplex noise at an integer coordinate.
+  simplex.value(x.float32)
+
+func noise1x4(simplex: Simplex, x: M128): M128 =
+  ## Evaluates four native 1D samples at already scaled coordinates.
+  let
+    cell = floor(x)
+    indices = cast[array[4, int32]](mm_cvtps_epi32(cell) and m128i(255))
+    x0 = x - cell
+    x1 = x0 - m128(1)
+    t0 = m128(1) - x0 * x0
+    t1 = m128(1) - x1 * x1
+    t0Squared = t0 * t0
+    t1Squared = t1 * t1
+  var gradients0, gradients1: array[4, float32]
+  for i in 0 ..< 4:
+    gradients0[i] = gradient1(simplex.perm[indices[i]])
+    gradients1[i] = gradient1(simplex.perm[indices[i] + 1])
+  let
+    n0 = t0Squared * t0Squared * (cast[M128](gradients0) * x0)
+    n1 = t1Squared * t1Squared * (cast[M128](gradients1) * x1)
+  m128(0.395'f) * (n0 + n1)
+
+func values1x4(simplex: Simplex, x: M128): M128 =
+  ## Evaluates four world coordinates with the configured octave layering.
+  if simplex.octaves <= 0:
+    failOctaves()
+  var
+    total = m128(0)
+    amplitude = m128(simplex.amplitude)
+    frequency = simplex.frequency
+  let gain = m128(simplex.gain)
+  for _ in 0 ..< simplex.octaves:
+    total += simplex.noise1x4(x * m128(frequency)) * amplitude
+    amplitude = amplitude * gain
+    frequency *= simplex.lacunarity
+  total / m128(simplex.octaves.float32)
+
+func noise(simplex: Simplex, x, y, z, w: float32): float32 =
+  ## Evaluates native 4D simplex noise at five simplex corners.
+  let
+    point = [x, y, z, w]
+    skew = (x + y + z + w) * F4
+    cells = [floor(x + skew), floor(y + skew),
+      floor(z + skew), floor(w + skew)]
+    unskew = (cells[0] + cells[1] + cells[2] + cells[3]) * G4
+  var
+    origin: array[4, float32]
+    ranks: array[4, int]
+  for axis in 0 ..< 4:
+    origin[axis] = point[axis] - (cells[axis] - unskew)
+  for i in 0 ..< 3:
+    for j in i + 1 ..< 4:
+      if origin[i] > origin[j]:
+        inc ranks[i]
+      else:
+        inc ranks[j]
+
+  for corner in 0 .. 4:
+    var
+      coordinates: array[4, int32]
+      distances: array[4, float32]
+      falloff = 0.5'f
+    for axis in 0 ..< 4:
+      let offset = (ranks[axis] >= 4 - corner).int32
+      coordinates[axis] = (cells[axis].int32 and 255) + offset
+      distances[axis] = origin[axis] - offset.float32 + corner.float32 * G4
+      falloff -= distances[axis] * distances[axis]
+    if falloff > 0:
+      let gradient = Grad4[simplex.perm[
+        coordinates[0] + simplex.perm[
+          coordinates[1] + simplex.perm[
+            coordinates[2] + simplex.perm[coordinates[3]]
+          ]
+        ]
+      ] and 31]
+      var projection: float32
+      for axis in 0 ..< 4:
+        projection += gradient[axis] * distances[axis]
+      result += falloff * falloff * falloff * falloff * projection
+  result *= 62
+
+func noise4x4(simplex: Simplex, x, y, z, w: M128): M128 =
+  ## Evaluates four native 4D simplex samples using SSE2 arithmetic.
+  let
+    point = [x, y, z, w]
+    zero = m128(0)
+    one = m128(1)
+    skew = (x + y + z + w) * m128(F4)
+    cells = [floor(x + skew), floor(y + skew),
+      floor(z + skew), floor(w + skew)]
+    unskew = (cells[0] + cells[1] + cells[2] + cells[3]) * m128(G4)
+  var
+    origin, ranks: array[4, M128]
+    indices: array[4, M128i]
+    total = zero
+  for axis in 0 ..< 4:
+    origin[axis] = point[axis] - (cells[axis] - unskew)
+    ranks[axis] = zero
+    indices[axis] = mm_cvtps_epi32(cells[axis]) and m128i(255)
+  for i in 0 ..< 3:
+    for j in i + 1 ..< 4:
+      let greater = origin[i] > origin[j]
+      ranks[i] += blend(zero, one, greater)
+      ranks[j] += blend(one, zero, greater)
+
+  for corner in 0 .. 4:
+    let shift = m128(corner.float32 * G4)
+    var
+      coordinates: array[4, array[4, int32]]
+      distances: array[4, M128]
+      gradients: array[4, array[4, float32]]
+      falloff = m128(0.5'f)
+      projection = zero
+    for axis in 0 ..< 4:
+      let offset = blend(zero, one, ranks[axis] >= m128((4 - corner).float32))
+      coordinates[axis] = cast[array[4, int32]](mm_add_epi32(
+        indices[axis], mm_cvtps_epi32(offset)
+      ))
+      distances[axis] = origin[axis] - offset + shift
+      falloff = falloff - distances[axis] * distances[axis]
+    for lane in 0 ..< 4:
+      let gradient = Grad4[simplex.perm[
+        coordinates[0][lane] + simplex.perm[
+          coordinates[1][lane] + simplex.perm[
+            coordinates[2][lane] + simplex.perm[coordinates[3][lane]]
+          ]
+        ]
+      ] and 31]
+      for axis in 0 ..< 4:
+        gradients[axis][lane] = gradient[axis]
+    for axis in 0 ..< 4:
+      projection += cast[M128](gradients[axis]) * distances[axis]
+    total += blend(
+      zero,
+      falloff * falloff * falloff * falloff * projection,
+      falloff > zero
+    )
+  m128(62) * total
+
+func value*(simplex: Simplex, x, y, z, w: float32): float32 =
+  ## Generates the 4D noise value using the configured octave parameters.
+  if simplex.octaves <= 0:
+    failOctaves()
+  var
+    total: float32
+    amplitude = simplex.amplitude
+    frequency = simplex.frequency
+  for _ in 0 ..< simplex.octaves:
+    total += simplex.noise(
+      x * frequency,
+      y * frequency,
+      z * frequency,
+      w * frequency
+    ) * amplitude
+    amplitude *= simplex.gain
+    frequency *= simplex.lacunarity
+  total / simplex.octaves.float32
+
+func value*(simplex: Simplex, x, y, z, w: int): float32 {.inline.} =
+  ## Samples 4D noise at integer coordinates.
+  simplex.value(x.float32, y.float32, z.float32, w.float32)
+
+func values4x4(simplex: Simplex, x, y, z, w: M128): M128 =
+  ## Samples four world positions with the configured 4D noise octaves.
+  if simplex.octaves <= 0:
+    failOctaves()
+  var
+    total = m128(0)
+    amplitude = m128(simplex.amplitude)
+    frequency = simplex.frequency
+  let gain = m128(simplex.gain)
+  for _ in 0 ..< simplex.octaves:
+    let scale = m128(frequency)
+    total += simplex.noise4x4(
+      x * scale,
+      y * scale,
+      z * scale,
+      w * scale
+    ) * amplitude
+    amplitude = amplitude * gain
+    frequency *= simplex.lacunarity
+  total / m128(simplex.octaves.float32)
+
+func gridLength(dimens: openArray[int]): int =
+  ## Validates dimensions and computes a representable storage size.
+  var empty = false
+  for size in dimens:
+    if size < 0:
+      raise newException(NoisyError, "Grid dimensions must be >= 0")
+    if size == 0:
+      empty = true
+  if empty:
+    return 0
+  result = 1
+  for size in dimens:
+    if result > (int.high div sizeof(float32)) div size:
+      raise newException(NoisyError, "Grid dimensions are too large")
+    result *= size
+
+func grid*(simplex: Simplex, start: float32, width: int): Grid =
+  ## Generates 1D noise at unit intervals using SSE2 for groups of four samples.
+  if simplex.octaves <= 0:
+    failOctaves()
+  let length = gridLength([width])
+  result = Grid(
+    width: width,
+    height: 1,
+    depth: 1,
+    frames: 1,
+    values: newSeq[float32](length)
+  )
+  for x in countup(0, width - 4, 4):
+    mm_storeu_ps(
+      result.values[x].unsafeAddr,
+      simplex.values1x4(coordinates(start, x))
+    )
+  for x in width div 4 * 4 ..< width:
+    result.values[x] = simplex.value(start + x.float32)
+
+func grid*(simplex: Simplex, start, width: int): Grid {.inline.} =
+  ## Generates a 1D grid beginning at an integer coordinate.
+  simplex.grid(start.float32, width)
+
+func grid*(
+  simplex: Simplex,
+  start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int)
+): Grid =
+  ## Generates a 4D grid at unit intervals, with SSE2 along the z axis.
+  ## The fourth dimension is frames; each frame contains one 3D slice.
+  if simplex.octaves <= 0:
+    failOctaves()
+  let
+    (width, height, depth, frames) = dimens
+    length = gridLength([width, height, depth, frames])
+  result = Grid(
+    width: width,
+    height: height,
+    depth: depth,
+    frames: frames,
+    values: newSeq[float32](length)
+  )
+  if length == 0:
+    return
+  for w in 0 ..< frames:
+    let
+      worldW = start[3] + w.float32
+      ws = m128(worldW)
+    for x in 0 ..< width:
+      let
+        worldX = start[0] + x.float32
+        xs = m128(worldX)
+      for y in 0 ..< height:
+        let
+          worldY = start[1] + y.float32
+          ys = m128(worldY)
+        for z in countup(0, depth - 4, 4):
+          mm_storeu_ps(
+            result.values[result.valueIndex(x, y, z, w)].unsafeAddr,
+            simplex.values4x4(xs, ys, coordinates(start[2], z), ws)
+          )
+        for z in depth div 4 * 4 ..< depth:
+          result.values[result.valueIndex(x, y, z, w)] = simplex.value(
+            worldX,
+            worldY,
+            start[2] + z.float32,
+            worldW
+          )
+
+func grid*(
+  simplex: Simplex,
+  start: (int, int, int, int),
+  dimens: (int, int, int, int)
+): Grid {.inline.} =
+  ## Generates a 4D grid beginning at integer coordinates.
+  simplex.grid(
+    (start[0].float32, start[1].float32, start[2].float32, start[3].float32),
+    dimens
+  )
 
 when defined(release):
   {.pop.}
