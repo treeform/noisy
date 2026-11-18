@@ -84,7 +84,7 @@ composition, and scalar/SIMD comparisons across seeds and parameters.
 
 For reproducible comparisons against independent C and C++ implementations,
 see [reference tests](tests/reference/README.md). Their pinned sources are
-fetched into an external cache and are not stored in this repository.
+downloaded into an ignored cache and are not committed.
 
 Apple Silicon uses native ARM64 NEON. The same test command works without
 architecture flags or Rosetta. CI tests native ARM64 on macOS and x86 on Linux
@@ -105,14 +105,17 @@ nim r tools/gen_noise.nim
 
 The generator writes the preview to `docs/noise.png`.
 
-To time scalar sampling and SIMD grids against the pinned C/C++ references:
+To download the pinned C/C++ references and benchmark scalar sampling, automatic
+SIMD, and the SSE2 fallback in one command:
 
 ```sh
-python3 tools/gen_references.py --cache-dir /tmp/noisy-references
-nim r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/bench_reference.nim
+python tools/gen_references.py --benchmark
 ```
 
-This benchmark uses Nim's standard library and the external reference cache.
+Sources, build files, logs, and JSON results stay in `tests/reference/.cache/`.
+Use `--offline --benchmark` to reuse the verified cache without network access,
+or `--cache-dir /tmp/noisy-references` to keep the files outside the checkout.
+The benchmark uses Nim's standard library and requires no Benchy dependency.
 It reports medians, timing ranges, and speedup ratios for 1D through 4D with one
 and three octaves. See the [methodology and results](tests/reference/README.md#timing).
 

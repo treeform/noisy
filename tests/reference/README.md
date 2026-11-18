@@ -2,8 +2,10 @@
 
 These tests compare Noisy's scalar and SIMD output directly against established
 C and C++ implementations. This directory contains our wrapper and source
-metadata only. Third-party source code is downloaded into an external cache and
-is not committed to this repository.
+metadata only. Third-party source code is downloaded into a verified cache and
+is not committed to this repository. By default, the cache is the ignored
+`tests/reference/.cache/` directory inside the checkout; `--cache-dir` also
+accepts an external location.
 
 | Dimensions | Upstream source | Pinned revision | License |
 | --- | --- | --- | --- |
@@ -18,17 +20,18 @@ needs Python 3.8 or newer for downloading, a C++ compiler, and network access fo
 the initial fetch. From the repository root on macOS or Linux:
 
 ```sh
-python3 tools/gen_references.py --cache-dir /tmp/noisy-references
-nim r -f -d:noisyReferenceDir=/tmp/noisy-references tests/test_reference.nim
-nim cpp -r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/test_reference.nim
+python tools/gen_references.py
+nim r -f -d:noisyReferenceDir=tests/reference/.cache tests/test_reference.nim
+nim cpp -r -f -d:release -d:noisyReferenceDir=tests/reference/.cache tests/test_reference.nim
 ```
 
-On Windows, use `python` and an external cache such as `C:/Temp/noisy-references`.
-Quote the whole `-d:noisyReferenceDir=...` argument when the path contains spaces.
-The fetch script also prints the exact command for its resolved cache path.
+Use `python3` if that is the name of your Python 3 executable. Quote the whole
+`-d:noisyReferenceDir=...` argument when the path contains spaces. The fetch
+script also prints the exact command for its resolved cache path.
 
 The fetch verifies all SHA-256 hashes from `sources.json`, including already
-cached files. A valid cache can be reused offline. `-f` forces recompilation so
+cached files. `--offline` verifies a cache without making network requests and
+fails if any pinned file is missing or altered. `-f` forces recompilation so
 changes to external include files cannot leave stale compiled reference code.
 To include these comparisons in the complete suite, pass the same definition to
 `nim r -f tests/tests.nim`. Without the definition, the normal test suite runs
@@ -40,12 +43,35 @@ Use the separate benchmark below to measure performance.
 
 ## Timing
 
-From the repository root, use the same external cache to benchmark all four
-dimensions, with one and three octaves:
+From the repository root, download the sources and benchmark all four
+dimensions with one and three octaves:
 
 ```sh
-python3 tools/gen_references.py --cache-dir /tmp/noisy-references
-nim r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/bench_reference.nim
+python tools/gen_references.py --benchmark
+```
+
+On x86, this builds and runs automatic SIMD dispatch and a separate
+`-d:noisyNoAvx` SSE2 build, sequentially. On ARM64 it runs NEON once. The summary
+table uses the reference and scalar medians from the automatic-dispatch run;
+the JSON files retain those baselines from both runs. The benchmarks validate
+every output before timing and report the actual selected SIMD backend.
+Git must be available to record the checked-out source revision.
+
+All generated files are ignored under `tests/reference/.cache/`. The `results/`
+subdirectory contains `auto.json`, `sse2.json` (x86 only), compiler/run logs,
+`summary.json` with commands and source revision, and `table.md`. The per-backend
+JSON includes each unsorted round mean, not only the reported median. The logs
+include the C/C++ compiler commands. The next run replaces these output files.
+
+Useful variants:
+
+```sh
+# Reuse verified downloads without network access.
+python tools/gen_references.py --offline --benchmark
+# Short smoke test; use the default settings for reported measurements.
+python tools/gen_references.py --benchmark --rounds 3 --batches 1
+# Run one configuration directly, optionally adding -d:noisyNoAvx.
+nim r -f -d:release -d:noisyReferenceDir=tests/reference/.cache tests/bench_reference.nim
 ```
 
 `bench_reference.nim` uses the standard library, so it does not require Benchy.
@@ -70,6 +96,37 @@ divided by the measured path's time, so values above 1 mean faster. These are
 batch grid throughput measurements; arbitrary point queries can behave differently.
 Compiler optimizations of the C/C++ references remain enabled, and the 4D
 reference retains its double-precision intermediates.
+
+### AMD Ryzen 9 5900X results
+
+Recorded on Windows x86-64 with Nim 2.2.10, MinGW-w64 GCC/G++ 11.1.0,
+the Nim C backend, and `-d:release`. These use the default 11 rounds of four
+grids per path, with 262,144 samples per grid. Both SIMD configurations passed
+the full reference validation before timing. The full suite also passes with
+automatic AVX2 and forced SSE2.
+
+| Dimensions | Octaves | C/C++ reference ms | Noisy scalar ms | Noisy SSE2 ms | Noisy AVX2 ms | AVX2 vs reference |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1D | 1 | 1.299 | 8.681 | 3.421 | 1.157 | 1.12x |
+| 2D | 1 | 4.414 | 18.551 | 2.965 | 2.054 | 2.15x |
+| 3D | 1 | 7.324 | 24.837 | 4.144 | 3.316 | 2.21x |
+| 4D | 1 | 13.017 | 24.217 | 7.542 | 6.937 | 1.88x |
+| 1D | 3 | 3.267 | 11.069 | 8.436 | 1.518 | 2.15x |
+| 2D | 3 | 12.618 | 41.304 | 7.810 | 4.778 | 2.64x |
+| 3D | 3 | 22.614 | 62.805 | 11.496 | 8.403 | 2.69x |
+| 4D | 3 | 58.749 | 68.583 | 19.028 | 18.640 | 3.15x |
+
+AVX2 was 1.12x to 3.15x faster than these selected C/C++ references. Its gain
+over SSE2 varied substantially: 1D was about 3x to 5.6x faster, while the 4D
+three-octave case was roughly tied (a measured advantage of about 2%).
+Noisy scalar was slower than the
+references in every case on this machine. These results compare the pinned,
+matching Simplex implementations above, not all noise libraries or Perlin.
+
+[Raw round means and metadata](results/ryzen-5900x.json) include both runs'
+reference and scalar baselines, which help assess variation between runs.
+The source commit is recorded there; subsequent benchmark/documentation changes
+do not change the measured noise kernels.
 
 ### Apple M4 Pro results
 

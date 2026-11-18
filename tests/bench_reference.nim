@@ -1,5 +1,5 @@
 import
-  std/[algorithm, math, monotimes, strformat, times],
+  std/[algorithm, json, math, monotimes, strformat, times],
   noisy,
   reference/bindings
 
@@ -9,10 +9,8 @@ when not defined(release):
 const
   NoisyBenchmarkRounds {.intdefine.} = 11
   NoisyBenchmarkBatches {.intdefine.} = 4
+  NoisyBenchmarkOutput {.strdefine.} = ""
   Start = [-1.375'f, 2.125'f, -0.625'f, 0.375'f]
-  SimdName =
-    when defined(arm64): "NEON"
-    else: "SSE2"
   CompilerBackend =
     when defined(cpp): "C++"
     else: "C"
@@ -23,12 +21,20 @@ const
     [32, 32, 32, 8]
   ]
 
+when defined(amd64) and (defined(gcc) or defined(clang) or defined(vcc)) and
+    not defined(noisyNoAvx):
+  import noisy/simd/runtimecheck
+  let SimdName = if hasAvx2(): "AVX2" else: "SSE2"
+else:
+  const SimdName = when defined(arm64): "NEON" else: "SSE2"
+
 type
   Backend = enum
     Reference, Scalar, Vector
   Shape = array[4, int]
 
 var checksum: float64
+var results = newJArray()
 
 proc consume(values: seq[float32]) =
   ## Consumes every output outside the timer to prevent dead-code removal.
@@ -147,6 +153,9 @@ proc runCase(dimensions: static[int], noise: Simplex, shape: Shape) =
     for offset in 0 ..< 3:
       let backend = Backend((round + offset) mod 3)
       timings[backend].add measure(dimensions, backend, noise, shape)
+  var rawTimings = newJObject()
+  for backend in Backend:
+    rawTimings[$backend] = %timings[backend]
   var medians: array[Backend, float64]
   for backend in Backend:
     timings[backend].sort()
@@ -160,6 +169,17 @@ proc runCase(dimensions: static[int], noise: Simplex, shape: Shape) =
     reference = medians[Reference]
     scalar = medians[Scalar]
     vector = medians[Vector]
+  results.add %*{
+    "dimensions": dimensions,
+    "octaves": noise.octaves,
+    "shape": shape,
+    "round_means_ms": rawTimings,
+    "reference_ms": reference,
+    "scalar_ms": scalar,
+    "simd_ms": vector,
+    "simd_vs_reference": reference / vector,
+    "simd_vs_scalar": scalar / vector
+  }
   echo &"| {dimensions}D | {noise.octaves} | {reference:.3f} | " &
     &"{scalar:.3f} | {vector:.3f} | {reference / scalar:.2f}x | " &
     &"{reference / vector:.2f}x | {scalar / vector:.2f}x |"
@@ -201,3 +221,21 @@ for octaves in [1, 3]:
   runCase(3, noise, Shapes[2])
   runCase(4, noise, Shapes[3])
 echo &"Consumed checksum: {checksum:.6f}"
+if NoisyBenchmarkOutput.len > 0:
+  writeFile(NoisyBenchmarkOutput, pretty(%*{
+    "nim_version": NimVersion,
+    "os": hostOS,
+    "cpu": hostCPU,
+    "compiler_backend": CompilerBackend,
+    "simd_backend": SimdName,
+    "rounds": NoisyBenchmarkRounds,
+    "batches": NoisyBenchmarkBatches,
+    "samples_per_grid": 262144,
+    "start": Start,
+    "frequency": noise.frequency,
+    "amplitude": noise.amplitude,
+    "lacunarity": noise.lacunarity,
+    "gain": noise.gain,
+    "checksum": checksum,
+    "cases": results
+  }) & "\n")

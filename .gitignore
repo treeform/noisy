@@ -16,3 +16,6 @@ nimcache
 *.pdb
 *.ilk
 *.out
+
+# Downloaded benchmark sources, binaries, and run results.
+/tests/reference/.cache/
