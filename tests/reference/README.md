@@ -104,6 +104,66 @@ batch grid throughput measurements; arbitrary point queries can behave different
 Compiler optimizations of the C/C++ references remain enabled, and the 4D
 reference retains its double-precision intermediates.
 
+### Scalar kernel optimization results
+
+Recorded on 2026-11-18 at commit `3bd36ec` with a clean working tree, on the
+same Ryzen 9 5900X, Windows, Nim 2.2.10, and GCC/G++ 11.1.0 setup above.
+Both measurements use release builds, ORC, **threads enabled**, and the default
+goto exception backend. No global danger/checks-off flag is used. Each median
+covers 11 rounds of four grids of 262,144 samples, including allocation and
+output writes. All timed outputs passed reference validation.
+
+The before column is the earlier recorded `0de468a` run; the after column
+uses the audited kernels with checks and exception bookkeeping removed.
+These are separate runs on the same machine, rather than interleaved revisions.
+Scalar speedups range from **1.17x to 2.56x** across the 36 workloads.
+The fixed lookup tables were already constants; these gains do not come from
+changing their storage. See [kernel safety](../../docs/kernels.md).
+
+| Workload (dimensions / octaves) | Before ms | After ms | Speedup |
+| --- | ---: | ---: | ---: |
+| Simplex 1D / 1 | 8.299 | 5.722 | 1.45x |
+| Simplex 2D / 1 | 17.066 | 9.122 | 1.87x |
+| Simplex 3D / 1 | 23.466 | 10.430 | 2.25x |
+| Simplex 4D / 1 | 23.420 | 16.898 | 1.39x |
+| Improved Perlin 1D / 1 | 10.249 | 6.409 | 1.60x |
+| Improved Perlin 2D / 1 | 13.623 | 7.143 | 1.91x |
+| Improved Perlin 3D / 1 | 19.021 | 13.502 | 1.41x |
+| Improved Perlin 4D / 1 | 29.743 | 22.778 | 1.31x |
+| OpenSimplex2 2D / 1 | 11.323 | 7.160 | 1.58x |
+| OpenSimplex2 3D / 1 | 13.828 | 9.558 | 1.45x |
+| OpenSimplex2S 2D / 1 | 11.992 | 7.030 | 1.71x |
+| OpenSimplex2S 3D / 1 | 15.817 | 10.393 | 1.52x |
+| Value 2D / 1 | 10.904 | 6.304 | 1.73x |
+| Value 3D / 1 | 12.084 | 7.293 | 1.66x |
+| ValueCubic 2D / 1 | 13.805 | 8.930 | 1.55x |
+| ValueCubic 3D / 1 | 24.508 | 16.544 | 1.48x |
+| Cellular 2D / 1 | 24.346 | 17.672 | 1.38x |
+| Cellular 3D / 1 | 60.782 | 49.255 | 1.23x |
+| Simplex 1D / 3 | 10.624 | 8.092 | 1.31x |
+| Simplex 2D / 3 | 39.420 | 16.100 | 2.45x |
+| Simplex 3D / 3 | 60.320 | 23.549 | 2.56x |
+| Simplex 4D / 3 | 67.656 | 56.241 | 1.20x |
+| Improved Perlin 1D / 3 | 19.728 | 9.002 | 2.19x |
+| Improved Perlin 2D / 3 | 32.726 | 17.108 | 1.91x |
+| Improved Perlin 3D / 3 | 49.626 | 33.972 | 1.46x |
+| Improved Perlin 4D / 3 | 85.769 | 64.702 | 1.33x |
+| OpenSimplex2 2D / 3 | 22.684 | 12.243 | 1.85x |
+| OpenSimplex2 3D / 3 | 31.704 | 23.901 | 1.33x |
+| OpenSimplex2S 2D / 3 | 24.493 | 13.767 | 1.78x |
+| OpenSimplex2S 3D / 3 | 39.576 | 25.730 | 1.54x |
+| Value 2D / 3 | 20.667 | 8.152 | 2.54x |
+| Value 3D / 3 | 23.756 | 12.511 | 1.90x |
+| ValueCubic 2D / 3 | 29.123 | 17.305 | 1.68x |
+| ValueCubic 3D / 3 | 60.847 | 40.942 | 1.49x |
+| Cellular 2D / 3 | 76.598 | 62.147 | 1.23x |
+| Cellular 3D / 3 | 196.239 | 167.742 | 1.17x |
+
+[Raw results](results/ryzen-5900x-kernel-optimization.json) include every round
+and current C/C++ reference, scalar, and AVX2 measurements, plus the SSE2/scalar
+fallback run. The prior results remain in
+[the original record](results/ryzen-5900x-all-noises-avx2.json).
+
 ### AMD Ryzen 9 5900X expanded AVX2 results
 
 Recorded on 2026-11-18 at commit `0de468a` with a clean working tree, Windows

@@ -85,3 +85,6 @@ nim r tests/tests.nim
 nim r -d:release -d:noisyCheckKernels tests/tests.nim
 nim r -d:release -d:noisyCheckKernels -d:noisyNoAvx -d:noisyNoNeon tests/tests.nim
 ```
+
+Measured results and raw timings are recorded in the
+[four-column scalar comparison](../tests/reference/README.md#scalar-kernel-optimization-results).
