@@ -40,16 +40,21 @@ let edge = cells.value(0.25'f, 0.75'f)
 ```
 
 The standalone modules `noisy/opensimplexes`, `noisy/values`, and
-`noisy/cellulars` expose the respective types without importing the Simplex
-SIMD backend. The ports retain the FastNoiseLite license and attribution in
+`noisy/cellulars` expose their respective types. The ports retain the
+FastNoiseLite license and attribution in
 [`LICENSE.fastnoiselite.txt`](../LICENSE.fastnoiselite.txt).
 
 ## OpenSimplex2S and ValueCubic grids
 
-Both types support scalar `grid(start, dimens)` in 2D and 3D. Pass integer or
+Both types support `grid(start, dimens)` in 2D and 3D. Pass integer or
 float32 coordinates in `start` and integer sizes in `dimens`. Samples are one
 unit apart before frequency scaling. Index the result with zero-based offsets
 from `start`, using the same layout as a Simplex grid.
+
+On ARM64, the grids automatically use NEON for groups of four contiguous
+samples. Remaining samples and grids on other architectures use scalar
+sampling. Build with `-d:noisyNoNeon` to select the scalar path for these two
+noise types on ARM64.
 
 ```nim
 import noisy
