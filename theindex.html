@@ -28,7 +28,7 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
@@ -87,6 +87,54 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc addInts(a, b: Int4): Int4" href="noisy/simd.html#addInts%2CM128i%2CM128i">simd: proc addInts(a, b: Int4): Int4</a></li>
           </ul></dd>
+<dt><a name="Cellular" href="#Cellular"><span>Cellular:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: object Cellular" href="noisy/cellulars.html#Cellular">cellulars: object Cellular</a></li>
+          </ul></dd>
+<dt><a name="CellularDistance" href="#CellularDistance"><span>CellularDistance:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: enum CellularDistance" href="noisy/cellulars.html#CellularDistance">cellulars: enum CellularDistance</a></li>
+          </ul></dd>
+<dt><a name="CellularReturn" href="#CellularReturn"><span>CellularReturn:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: enum CellularReturn" href="noisy/cellulars.html#CellularReturn">cellulars: enum CellularReturn</a></li>
+          </ul></dd>
+<dt><a name="CellValue" href="#CellValue"><span>CellValue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.CellValue" href="noisy/cellulars.html#CellValue">cellulars: CellularReturn.CellValue</a></li>
+          </ul></dd>
+<dt><a name="Distance" href="#Distance"><span>Distance:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance" href="noisy/cellulars.html#Distance">cellulars: CellularReturn.Distance</a></li>
+          </ul></dd>
+<dt><a name="Distance2" href="#Distance2"><span>Distance2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance2" href="noisy/cellulars.html#Distance2">cellulars: CellularReturn.Distance2</a></li>
+          </ul></dd>
+<dt><a name="Distance2Add" href="#Distance2Add"><span>Distance2Add:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance2Add" href="noisy/cellulars.html#Distance2Add">cellulars: CellularReturn.Distance2Add</a></li>
+          </ul></dd>
+<dt><a name="Distance2Div" href="#Distance2Div"><span>Distance2Div:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance2Div" href="noisy/cellulars.html#Distance2Div">cellulars: CellularReturn.Distance2Div</a></li>
+          </ul></dd>
+<dt><a name="Distance2Mul" href="#Distance2Mul"><span>Distance2Mul:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance2Mul" href="noisy/cellulars.html#Distance2Mul">cellulars: CellularReturn.Distance2Mul</a></li>
+          </ul></dd>
+<dt><a name="Distance2Sub" href="#Distance2Sub"><span>Distance2Sub:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularReturn.Distance2Sub" href="noisy/cellulars.html#Distance2Sub">cellulars: CellularReturn.Distance2Sub</a></li>
+          </ul></dd>
+<dt><a name="Euclidean" href="#Euclidean"><span>Euclidean:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularDistance.Euclidean" href="noisy/cellulars.html#Euclidean">cellulars: CellularDistance.Euclidean</a></li>
+          </ul></dd>
+<dt><a name="EuclideanSquared" href="#EuclideanSquared"><span>EuclideanSquared:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularDistance.EuclideanSquared" href="noisy/cellulars.html#EuclideanSquared">cellulars: CellularDistance.EuclideanSquared</a></li>
+          </ul></dd>
 <dt><a name="F2" href="#F2"><span>F2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: const F2" href="noisy/simplexcommon.html#F2">simplexcommon: const F2</a></li>
@@ -98,6 +146,14 @@
 <dt><a name="F4" href="#F4"><span>F4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: const F4" href="noisy/simplexcommon.html#F4">simplexcommon: const F4</a></li>
+          </ul></dd>
+<dt><a name="fastFloor" href="#fastFloor"><span>fastFloor:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc fastFloor(value: float32): int32" href="noisy/lattices.html#fastFloor%2Cfloat32">lattices: proc fastFloor(value: float32): int32</a></li>
+          </ul></dd>
+<dt><a name="fastRound" href="#fastRound"><span>fastRound:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc fastRound(value: float32): int32" href="noisy/lattices.html#fastRound%2Cfloat32">lattices: proc fastRound(value: float32): int32</a></li>
           </ul></dd>
 <dt><a name="fillGridAvx2" href="#fillGridAvx2"><span>fillGridAvx2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -139,6 +195,12 @@
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: const Grad4" href="noisy/simplexcommon.html#Grad4">simplexcommon: const Grad4</a></li>
           </ul></dd>
+<dt><a name="gradient" href="#gradient"><span>gradient:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc gradient(seed: int32; x, y: uint32; dx, dy: float32): float32" href="noisy/lattices.html#gradient%2Cint32%2Cuint32%2Cuint32%2Cfloat32%2Cfloat32">lattices: proc gradient(seed: int32; x, y: uint32; dx, dy: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="lattices: proc gradient(seed: int32; x, y, z: uint32; dx, dy, dz: float32): float32" href="noisy/lattices.html#gradient%2Cint32%2Cuint32%2Cuint32%2Cuint32%2Cfloat32%2Cfloat32%2Cfloat32">lattices: proc gradient(seed: int32; x, y, z: uint32; dx, dy, dz: float32): float32</a></li>
+          </ul></dd>
 <dt><a name="grid" href="#grid"><span>grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid" href="noisy.html#grid%2CSimplex%2C%2C">noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid</a></li>
@@ -171,6 +233,28 @@
 <li><a class="reference external"
           data-doc-search-tag="runtimecheck: proc hasAvx2(): bool" href="noisy/simd/runtimecheck.html#hasAvx2">runtimecheck: proc hasAvx2(): bool</a></li>
           </ul></dd>
+<dt><a name="hash" href="#hash"><span>hash:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc hash(seed: int32; x, y: uint32): uint32" href="noisy/lattices.html#hash%2Cint32%2Cuint32%2Cuint32">lattices: proc hash(seed: int32; x, y: uint32): uint32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="lattices: proc hash(seed: int32; x, y, z: uint32): uint32" href="noisy/lattices.html#hash%2Cint32%2Cuint32%2Cuint32%2Cuint32">lattices: proc hash(seed: int32; x, y, z: uint32): uint32</a></li>
+          </ul></dd>
+<dt><a name="hermite" href="#hermite"><span>hermite:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc hermite(t: float32): float32" href="noisy/lattices.html#hermite%2Cfloat32">lattices: proc hermite(t: float32): float32</a></li>
+          </ul></dd>
+<dt><a name="Hybrid" href="#Hybrid"><span>Hybrid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularDistance.Hybrid" href="noisy/cellulars.html#Hybrid">cellulars: CellularDistance.Hybrid</a></li>
+          </ul></dd>
+<dt><a name="initCellular" href="#initCellular"><span>initCellular:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: proc initCellular(seed: int): Cellular" href="noisy/cellulars.html#initCellular%2Cint">cellulars: proc initCellular(seed: int): Cellular</a></li>
+          </ul></dd>
+<dt><a name="initOpenSimplex2" href="#initOpenSimplex2"><span>initOpenSimplex2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc initOpenSimplex2(seed: int): OpenSimplex2" href="noisy/opensimplexes.html#initOpenSimplex2%2Cint">opensimplexes: proc initOpenSimplex2(seed: int): OpenSimplex2</a></li>
+          </ul></dd>
 <dt><a name="initPerlin" href="#initPerlin"><span>initPerlin:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="perlins: proc initPerlin(seed: int): Perlin" href="noisy/perlins.html#initPerlin%2Cint">perlins: proc initPerlin(seed: int): Perlin</a></li>
@@ -178,6 +262,10 @@
 <dt><a name="initSimplex" href="#initSimplex"><span>initSimplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="noisy: proc initSimplex(seed: int): Simplex" href="noisy.html#initSimplex%2Cint">noisy: proc initSimplex(seed: int): Simplex</a></li>
+          </ul></dd>
+<dt><a name="initValue" href="#initValue"><span>initValue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="values: proc initValue(seed: int): ValueNoise" href="noisy/values.html#initValue%2Cint">values: proc initValue(seed: int): ValueNoise</a></li>
           </ul></dd>
 <dt><a name="Int4" href="#Int4"><span>Int4:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -187,13 +275,55 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc int4(a: int32): Int4" href="noisy/simd.html#int4%2Cint32">simd: proc int4(a: int32): Int4</a></li>
           </ul></dd>
+<dt><a name="latticeValue" href="#latticeValue"><span>latticeValue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc latticeValue(seed: int32; x, y: uint32): float32" href="noisy/lattices.html#latticeValue%2Cint32%2Cuint32%2Cuint32">lattices: proc latticeValue(seed: int32; x, y: uint32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="lattices: proc latticeValue(seed: int32; x, y, z: uint32): float32" href="noisy/lattices.html#latticeValue%2Cint32%2Cuint32%2Cuint32%2Cuint32">lattices: proc latticeValue(seed: int32; x, y, z: uint32): float32</a></li>
+          </ul></dd>
+<dt><a name="lerp" href="#lerp"><span>lerp:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc lerp(a, b, t: float32): float32" href="noisy/lattices.html#lerp%2Cfloat32%2Cfloat32%2Cfloat32">lattices: proc lerp(a, b, t: float32): float32</a></li>
+          </ul></dd>
+<dt><a name="Manhattan" href="#Manhattan"><span>Manhattan:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cellulars: CellularDistance.Manhattan" href="noisy/cellulars.html#Manhattan">cellulars: CellularDistance.Manhattan</a></li>
+          </ul></dd>
 <dt><a name="NoisyError" href="#NoisyError"><span>NoisyError:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="common: object NoisyError" href="noisy/common.html#NoisyError">common: object NoisyError</a></li>
           </ul></dd>
+<dt><a name="OpenSimplex2" href="#OpenSimplex2"><span>OpenSimplex2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="opensimplexes: object OpenSimplex2" href="noisy/opensimplexes.html#OpenSimplex2">opensimplexes: object OpenSimplex2</a></li>
+          </ul></dd>
 <dt><a name="Perlin" href="#Perlin"><span>Perlin:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="perlins: object Perlin" href="noisy/perlins.html#Perlin">perlins: object Perlin</a></li>
+          </ul></dd>
+<dt><a name="prime" href="#prime"><span>prime:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: proc prime(coordinate: int32; multiplier: uint32): uint32" href="noisy/lattices.html#prime%2Cint32%2Cuint32">lattices: proc prime(coordinate: int32; multiplier: uint32): uint32</a></li>
+          </ul></dd>
+<dt><a name="PrimeX" href="#PrimeX"><span>PrimeX:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: const PrimeX" href="noisy/lattices.html#PrimeX">lattices: const PrimeX</a></li>
+          </ul></dd>
+<dt><a name="PrimeY" href="#PrimeY"><span>PrimeY:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: const PrimeY" href="noisy/lattices.html#PrimeY">lattices: const PrimeY</a></li>
+          </ul></dd>
+<dt><a name="PrimeZ" href="#PrimeZ"><span>PrimeZ:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: const PrimeZ" href="noisy/lattices.html#PrimeZ">lattices: const PrimeZ</a></li>
+          </ul></dd>
+<dt><a name="RandVecs2D" href="#RandVecs2D"><span>RandVecs2D:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: const RandVecs2D" href="noisy/lattices.html#RandVecs2D">lattices: const RandVecs2D</a></li>
+          </ul></dd>
+<dt><a name="RandVecs3D" href="#RandVecs3D"><span>RandVecs3D:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lattices: const RandVecs3D" href="noisy/lattices.html#RandVecs3D">lattices: const RandVecs3D</a></li>
           </ul></dd>
 <dt><a name="Simplex" href="#Simplex"><span>Simplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -233,6 +363,22 @@
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc value(simplex: Simplex; x, y, z, w: int): float32" href="noisy.html#value%2CSimplex%2Cint%2Cint%2Cint%2Cint">noisy: proc value(simplex: Simplex; x, y, z, w: int): float32</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc value(cellular: Cellular; x, y: float32): float32" href="noisy/cellulars.html#value%2CCellular%2Cfloat32%2Cfloat32">cellulars: proc value(cellular: Cellular; x, y: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc value(cellular: Cellular; x, y, z: float32): float32" href="noisy/cellulars.html#value%2CCellular%2Cfloat32%2Cfloat32%2Cfloat32">cellulars: proc value(cellular: Cellular; x, y, z: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc value(cellular: Cellular; x, y: int): float32" href="noisy/cellulars.html#value%2CCellular%2Cint%2Cint">cellulars: proc value(cellular: Cellular; x, y: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc value(cellular: Cellular; x, y, z: int): float32" href="noisy/cellulars.html#value%2CCellular%2Cint%2Cint%2Cint">cellulars: proc value(cellular: Cellular; x, y, z: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc value(noise: OpenSimplex2; x, y: float32): float32" href="noisy/opensimplexes.html#value%2COpenSimplex2%2Cfloat32%2Cfloat32">opensimplexes: proc value(noise: OpenSimplex2; x, y: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc value(noise: OpenSimplex2; x, y, z: float32): float32" href="noisy/opensimplexes.html#value%2COpenSimplex2%2Cfloat32%2Cfloat32%2Cfloat32">opensimplexes: proc value(noise: OpenSimplex2; x, y, z: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc value(noise: OpenSimplex2; x, y: int): float32" href="noisy/opensimplexes.html#value%2COpenSimplex2%2Cint%2Cint">opensimplexes: proc value(noise: OpenSimplex2; x, y: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc value(noise: OpenSimplex2; x, y, z: int): float32" href="noisy/opensimplexes.html#value%2COpenSimplex2%2Cint%2Cint%2Cint">opensimplexes: proc value(noise: OpenSimplex2; x, y, z: int): float32</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="perlins: proc value(perlin: Perlin; x: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32">perlins: proc value(perlin: Perlin; x: float32): float32</a></li>
           <li><a class="reference external"
           data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y: float32): float32" href="noisy/perlins.html#value%2CPerlin%2Cfloat32%2Cfloat32">perlins: proc value(perlin: Perlin; x, y: float32): float32</a></li>
@@ -248,12 +394,24 @@
           data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint%2Cint%2Cint">perlins: proc value(perlin: Perlin; x, y, z: int): float32</a></li>
           <li><a class="reference external"
           data-doc-search-tag="perlins: proc value(perlin: Perlin; x, y, z, w: int): float32" href="noisy/perlins.html#value%2CPerlin%2Cint%2Cint%2Cint%2Cint">perlins: proc value(perlin: Perlin; x, y, z, w: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc value(noise: ValueNoise; x, y: float32): float32" href="noisy/values.html#value%2CValueNoise%2Cfloat32%2Cfloat32">values: proc value(noise: ValueNoise; x, y: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc value(noise: ValueNoise; x, y, z: float32): float32" href="noisy/values.html#value%2CValueNoise%2Cfloat32%2Cfloat32%2Cfloat32">values: proc value(noise: ValueNoise; x, y, z: float32): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc value(noise: ValueNoise; x, y: int): float32" href="noisy/values.html#value%2CValueNoise%2Cint%2Cint">values: proc value(noise: ValueNoise; x, y: int): float32</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc value(noise: ValueNoise; x, y, z: int): float32" href="noisy/values.html#value%2CValueNoise%2Cint%2Cint%2Cint">values: proc value(noise: ValueNoise; x, y, z: int): float32</a></li>
+          </ul></dd>
+<dt><a name="ValueNoise" href="#ValueNoise"><span>ValueNoise:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="values: object ValueNoise" href="noisy/values.html#ValueNoise">values: object ValueNoise</a></li>
           </ul></dd>
 </dl>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 02:04:05 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 02:29:39 UTC</small>
       </div>
     </div>
   </div>

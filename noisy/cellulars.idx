@@ -1,0 +1,21 @@
+nimTitle	cellulars	noisy/cellulars.html	module noisy/cellulars		0
+nim	Euclidean	noisy/cellulars.html#Euclidean	CellularDistance.Euclidean		8
+nim	EuclideanSquared	noisy/cellulars.html#EuclideanSquared	CellularDistance.EuclideanSquared		8
+nim	Manhattan	noisy/cellulars.html#Manhattan	CellularDistance.Manhattan		8
+nim	Hybrid	noisy/cellulars.html#Hybrid	CellularDistance.Hybrid		8
+nim	CellularDistance	noisy/cellulars.html#CellularDistance	enum CellularDistance		8
+nim	CellValue	noisy/cellulars.html#CellValue	CellularReturn.CellValue		11
+nim	Distance	noisy/cellulars.html#Distance	CellularReturn.Distance		11
+nim	Distance2	noisy/cellulars.html#Distance2	CellularReturn.Distance2		11
+nim	Distance2Add	noisy/cellulars.html#Distance2Add	CellularReturn.Distance2Add		11
+nim	Distance2Sub	noisy/cellulars.html#Distance2Sub	CellularReturn.Distance2Sub		11
+nim	Distance2Mul	noisy/cellulars.html#Distance2Mul	CellularReturn.Distance2Mul		11
+nim	Distance2Div	noisy/cellulars.html#Distance2Div	CellularReturn.Distance2Div		11
+nim	CellularReturn	noisy/cellulars.html#CellularReturn	enum CellularReturn		11
+nim	Cellular	noisy/cellulars.html#Cellular	object Cellular		15
+nim	initCellular	noisy/cellulars.html#initCellular,int	proc initCellular(seed: int): Cellular		23
+nim	value	noisy/cellulars.html#value,Cellular,float32,float32	proc value(cellular: Cellular; x, y: float32): float32		149
+nim	value	noisy/cellulars.html#value,Cellular,float32,float32,float32	proc value(cellular: Cellular; x, y, z: float32): float32		153
+nim	value	noisy/cellulars.html#value,Cellular,int,int	proc value(cellular: Cellular; x, y: int): float32		157
+nim	value	noisy/cellulars.html#value,Cellular,int,int,int	proc value(cellular: Cellular; x, y, z: int): float32		161
+nimgrp	value	noisy/cellulars.html#value-procs-all	proc		149

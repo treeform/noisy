@@ -1,0 +1,20 @@
+nimTitle	lattices	noisy/lattices.html	module noisy/lattices		0
+nim	PrimeX	noisy/lattices.html#PrimeX	const PrimeX		6
+nim	PrimeY	noisy/lattices.html#PrimeY	const PrimeY		7
+nim	PrimeZ	noisy/lattices.html#PrimeZ	const PrimeZ		8
+nim	RandVecs2D	noisy/lattices.html#RandVecs2D	const RandVecs2D		126
+nim	RandVecs3D	noisy/lattices.html#RandVecs3D	const RandVecs3D		256
+nim	prime	noisy/lattices.html#prime,int32,uint32	proc prime(coordinate: int32; multiplier: uint32): uint32		465
+nim	hash	noisy/lattices.html#hash,int32,uint32,uint32	proc hash(seed: int32; x, y: uint32): uint32		469
+nim	hash	noisy/lattices.html#hash,int32,uint32,uint32,uint32	proc hash(seed: int32; x, y, z: uint32): uint32		473
+nim	latticeValue	noisy/lattices.html#latticeValue,int32,uint32,uint32	proc latticeValue(seed: int32; x, y: uint32): float32		477
+nim	latticeValue	noisy/lattices.html#latticeValue,int32,uint32,uint32,uint32	proc latticeValue(seed: int32; x, y, z: uint32): float32		484
+nim	gradient	noisy/lattices.html#gradient,int32,uint32,uint32,float32,float32	proc gradient(seed: int32; x, y: uint32; dx, dy: float32): float32		491
+nim	gradient	noisy/lattices.html#gradient,int32,uint32,uint32,uint32,float32,float32,float32	proc gradient(seed: int32; x, y, z: uint32; dx, dy, dz: float32): float32		502
+nim	fastFloor	noisy/lattices.html#fastFloor,float32	proc fastFloor(value: float32): int32		514
+nim	fastRound	noisy/lattices.html#fastRound,float32	proc fastRound(value: float32): int32		521
+nim	lerp	noisy/lattices.html#lerp,float32,float32,float32	proc lerp(a, b, t: float32): float32		528
+nim	hermite	noisy/lattices.html#hermite,float32	proc hermite(t: float32): float32		532
+nimgrp	gradient	noisy/lattices.html#gradient-procs-all	proc		491
+nimgrp	latticevalue	noisy/lattices.html#latticeValue-procs-all	proc		477
+nimgrp	hash	noisy/lattices.html#hash-procs-all	proc		469

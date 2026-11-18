@@ -1,0 +1,8 @@
+nimTitle	opensimplexes	noisy/opensimplexes.html	module noisy/opensimplexes		0
+nim	OpenSimplex2	noisy/opensimplexes.html#OpenSimplex2	object OpenSimplex2		6
+nim	initOpenSimplex2	noisy/opensimplexes.html#initOpenSimplex2,int	proc initOpenSimplex2(seed: int): OpenSimplex2		11
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32	proc value(noise: OpenSimplex2; x, y: float32): float32		143
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,float32,float32,float32	proc value(noise: OpenSimplex2; x, y, z: float32): float32		157
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int	proc value(noise: OpenSimplex2; x, y: int): float32		172
+nim	value	noisy/opensimplexes.html#value,OpenSimplex2,int,int,int	proc value(noise: OpenSimplex2; x, y, z: int): float32		176
+nimgrp	value	noisy/opensimplexes.html#value-procs-all	proc		143
