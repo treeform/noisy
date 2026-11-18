@@ -172,9 +172,9 @@ block:
       except NoisyError:
         caught = true
       doAssert caught
-    for jitter in [-0.001'f, 1.001'f, Inf.float32, NegInf.float32, NaN.float32]:
+    for jitter in [-0.001, 1.001, Inf, NegInf, NaN]:
       var noise = initCellular(42)
-      noise.jitter = jitter
+      noise.jitter = jitter.float32
       var caught = false
       try:
         discard noise.sample([0.125'f, -0.75'f, 1.5'f], dimensions)

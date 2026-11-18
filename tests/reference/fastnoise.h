@@ -7,8 +7,9 @@
 extern "C" {
 #endif
 
-/* Algorithm: 0 OpenSimplex2, 1 Value, 2 Cellular. Cellular enum values follow
- * FastNoiseLite's declared ordering. Samples use frequency 1 and no fractal. */
+/* Algorithm IDs are 0 OpenSimplex2, 1 Value, 2 Cellular, 3 OpenSimplex2S,
+ * and 4 ValueCubic. Cellular settings use FastNoiseLite's enum ordering.
+ * Samples use frequency 1 and no fractal. */
 float referenceFastNoise2(int32_t algorithm, int32_t seed, float x, float y,
                          int32_t distance, int32_t output, float jitter);
 float referenceFastNoise3(int32_t algorithm, int32_t seed,

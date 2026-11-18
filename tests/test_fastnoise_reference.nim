@@ -20,8 +20,14 @@ proc algorithm[T](noise: T): int32 =
     0
   elif T is ValueNoise:
     1
-  else:
+  elif T is Cellular:
     2
+  elif T is OpenSimplex2S:
+    3
+  elif T is ValueCubic:
+    4
+  else:
+    {.error: "Missing FastNoiseLite reference mapping for this noise type".}
 
 proc referenceValue[T](noise: T, point: Point, dimensions: int): float32 =
   ## Composes independent single-octave samples with Noisy's layering rules.
@@ -127,16 +133,21 @@ proc compareOctaves[T](initial: T, comparisons: var array[2, Comparison]) =
 
 var
   openComparisons, valueComparisons, cellularComparisons: array[2, Comparison]
+  smoothComparisons, cubicComparisons: array[2, Comparison]
   rng = initRand(191237)
 
-echo "Testing OpenSimplex2, Value, and Cellular against FastNoiseLite C++"
+echo "Testing scalar noise families against FastNoiseLite C++"
 for seed in Seeds:
   initOpenSimplex2(seed).compareBasic(openComparisons)
   initValue(seed).compareBasic(valueComparisons)
   initCellular(seed).compareBasic(cellularComparisons)
+  initOpenSimplex2S(seed).compareBasic(smoothComparisons)
+  initValueCubic(seed).compareBasic(cubicComparisons)
   initOpenSimplex2(seed).compareOctaves(openComparisons)
   initValue(seed).compareOctaves(valueComparisons)
   initCellular(seed).compareOctaves(cellularComparisons)
+  initOpenSimplex2S(seed).compareOctaves(smoothComparisons)
+  initValueCubic(seed).compareOctaves(cubicComparisons)
 
 echo "Testing every Cellular distance, return mode, jitter, and exact ties"
 for seed in Seeds:
@@ -169,3 +180,7 @@ for index in 0 ..< 2:
     &"reference comparisons, max error={valueComparisons[index].maxError}"
   echo &"Cellular {index + 2}D: {cellularComparisons[index].samples} " &
     &"reference comparisons, max error={cellularComparisons[index].maxError}"
+  echo &"OpenSimplex2S {index + 2}D: {smoothComparisons[index].samples} " &
+    &"reference comparisons, max error={smoothComparisons[index].maxError}"
+  echo &"ValueCubic {index + 2}D: {cubicComparisons[index].samples} " &
+    &"reference comparisons, max error={cubicComparisons[index].maxError}"

@@ -8,8 +8,24 @@ type
     seed*, octaves*: int
     amplitude*, frequency*, lacunarity*, gain*: float32
 
+  OpenSimplex2S* = object
+    ## Scalar OpenSimplex2S using FastNoiseLite's 2D and 3D conventions.
+    seed*, octaves*: int
+    amplitude*, frequency*, lacunarity*, gain*: float32
+
+  LatticeAxis = tuple[cell: uint32, delta: float32]
+
 func initOpenSimplex2*(seed: int): OpenSimplex2 =
   ## Initializes OpenSimplex2 with a seed and one octave.
+  result.seed = seed
+  result.octaves = 1
+  result.amplitude = 1
+  result.frequency = 1
+  result.lacunarity = 2
+  result.gain = 0.5
+
+func initOpenSimplex2S*(seed: int): OpenSimplex2S =
+  ## Initializes the smoother OpenSimplex2 variant with one octave.
   result.seed = seed
   result.octaves = 1
   result.amplitude = 1
@@ -175,4 +191,246 @@ func value*(noise: OpenSimplex2, x, y: int): float32 {.inline.} =
 
 func value*(noise: OpenSimplex2, x, y, z: int): float32 {.inline.} =
   ## Samples 3D OpenSimplex2 at integer coordinates.
+  noise.value(x.float32, y.float32, z.float32)
+
+func contribution(
+  seed: int32,
+  x, y: uint32,
+  dx, dy, attenuation: float32
+): float32 {.inline.} =
+  ## Weights a 2D OpenSimplex2S gradient by its compact support.
+  (attenuation * attenuation) * (attenuation * attenuation) *
+    gradient(seed, x, y, dx, dy)
+
+func contribution(
+  seed: int32, x, y, z: LatticeAxis, attenuation: float32
+): float32 {.inline.} =
+  ## Weights a 3D OpenSimplex2S gradient by its compact support.
+  (attenuation * attenuation) * (attenuation * attenuation) *
+    gradient(seed, x.cell, y.cell, z.cell, x.delta, y.delta, z.delta)
+
+func sampleSmooth(seed: int32, x, y: float32): float32 =
+  ## Samples FastNoiseLite's modified triangular OpenSimplex2S lattice.
+  const Sqrt3 = 1.73205077648162841796875'f
+  let
+    f2 = 0.5'f * (Sqrt3 - 1)
+    g2 = (3 - Sqrt3) / 6
+    skew = (x + y) * f2
+    xs = x + skew
+    ys = y + skew
+    ix = fastFloor(xs)
+    iy = fastFloor(ys)
+    xi = xs - ix.float32
+    yi = ys - iy.float32
+    ip = prime(ix, PrimeX)
+    jp = prime(iy, PrimeY)
+    i1 = ip + PrimeX
+    j1 = jp + PrimeY
+    unskew = (xi + yi) * g2
+    x0 = xi - unskew
+    y0 = yi - unskew
+    a0 = (2.0'f / 3.0'f) - x0 * x0 - y0 * y0
+    a1 = (2 * (1 - 2 * g2) * (1 / g2 - 2)) * unskew +
+      (-2 * (1 - 2 * g2) * (1 - 2 * g2) + a0)
+    x1 = x0 - (1 - 2 * g2)
+    y1 = y0 - (1 - 2 * g2)
+    difference = xi - yi
+  result = contribution(seed, ip, jp, x0, y0, a0)
+  result += contribution(seed, i1, j1, x1, y1, a1)
+  if unskew > g2:
+    if xi + difference > 1:
+      let
+        x2 = x0 + (3 * g2 - 2)
+        y2 = y0 + (3 * g2 - 1)
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(
+          seed, ip + (PrimeX shl 1), jp + PrimeY, x2, y2, a2
+        )
+    else:
+      let
+        x2 = x0 + g2
+        y2 = y0 + (g2 - 1)
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(seed, ip, jp + PrimeY, x2, y2, a2)
+    if yi - difference > 1:
+      let
+        x3 = x0 + (3 * g2 - 1)
+        y3 = y0 + (3 * g2 - 2)
+        a3 = (2.0'f / 3.0'f) - x3 * x3 - y3 * y3
+      if a3 > 0:
+        result += contribution(
+          seed, ip + PrimeX, jp + (PrimeY shl 1), x3, y3, a3
+        )
+    else:
+      let
+        x3 = x0 + (g2 - 1)
+        y3 = y0 + g2
+        a3 = (2.0'f / 3.0'f) - x3 * x3 - y3 * y3
+      if a3 > 0:
+        result += contribution(seed, ip + PrimeX, jp, x3, y3, a3)
+  else:
+    if xi + difference < 0:
+      let
+        x2 = x0 + (1 - g2)
+        y2 = y0 - g2
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(seed, ip - PrimeX, jp, x2, y2, a2)
+    else:
+      let
+        x2 = x0 + (g2 - 1)
+        y2 = y0 + g2
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(seed, ip + PrimeX, jp, x2, y2, a2)
+    if yi < difference:
+      let
+        x2 = x0 - g2
+        y2 = y0 - (g2 - 1)
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(seed, ip, jp - PrimeY, x2, y2, a2)
+    else:
+      let
+        x2 = x0 + g2
+        y2 = y0 + (g2 - 1)
+        a2 = (2.0'f / 3.0'f) - x2 * x2 - y2 * y2
+      if a2 > 0:
+        result += contribution(seed, ip, jp + PrimeY, x2, y2, a2)
+  result *= 18.24196194486065'f
+
+func sampleSmooth(seed: int32, x, y, z: float32): float32 =
+  ## Samples two offset cube lattices after the default OpenSimplex2 rotation.
+  const
+    Rotation = (2.0 / 3.0).float32
+    RadiusSquared = 0.75'f
+    AxisPrimes = [PrimeX, PrimeY, PrimeZ]
+  let
+    rotation = (x + y + z) * Rotation
+    rotated = [rotation - x, rotation - y, rotation - z]
+    secondSeed = cast[int32](cast[uint32](seed) + 1293373'u32)
+  var
+    nearest, opposite, centered, outer: array[3, LatticeAxis]
+    firstFlip, secondFlip: array[3, float32]
+  for axis, coordinate in rotated:
+    let
+      cell = fastFloor(coordinate)
+      fraction = coordinate - cell.float32
+      axisPrime = AxisPrimes[axis]
+      hashed = prime(cell, axisPrime)
+      mask = (-0.5'f - fraction).int32
+      bits = cast[uint32](mask)
+      direction = (mask or 1).float32
+      firstDelta = fraction + mask.float32
+      secondDelta = fraction - 0.5'f
+    nearest[axis] = (hashed + (bits and axisPrime), firstDelta)
+    opposite[axis] = (hashed + ((not bits) and axisPrime), firstDelta - direction)
+    centered[axis] = (hashed + axisPrime, secondDelta)
+    outer[axis] = (hashed + (bits and (axisPrime shl 1)), direction + secondDelta)
+    firstFlip[axis] = (2 * direction) * secondDelta
+    secondFlip[axis] = (-2 - 4 * mask).float32 * secondDelta - 1.0'f
+  let
+    x0 = nearest[0].delta
+    y0 = nearest[1].delta
+    z0 = nearest[2].delta
+    x1 = centered[0].delta
+    y1 = centered[1].delta
+    z1 = centered[2].delta
+    a0 = RadiusSquared - x0 * x0 - y0 * y0 - z0 * z0
+    a1 = RadiusSquared - x1 * x1 - y1 * y1 - z1 * z1
+  result = contribution(seed, nearest[0], nearest[1], nearest[2], a0)
+  result += contribution(secondSeed, centered[0], centered[1], centered[2], a1)
+
+  # For each axis, consider the adjacent first-lattice corner or its
+  # complementary pair and the corresponding second-lattice corner.
+  var usedOuterX, usedOuterY, usedOuterZ: bool
+  let alongX = firstFlip[0] + a0
+  if alongX > 0:
+    result += contribution(seed, opposite[0], nearest[1], nearest[2], alongX)
+  else:
+    let acrossYZ = firstFlip[1] + firstFlip[2] + a0
+    if acrossYZ > 0:
+      result += contribution(seed, nearest[0], opposite[1], opposite[2], acrossYZ)
+    let outerX = secondFlip[0] + a1
+    if outerX > 0:
+      result += contribution(secondSeed, outer[0], centered[1], centered[2], outerX)
+      usedOuterX = true
+
+  let alongY = firstFlip[1] + a0
+  if alongY > 0:
+    result += contribution(seed, nearest[0], opposite[1], nearest[2], alongY)
+  else:
+    let acrossXZ = firstFlip[0] + firstFlip[2] + a0
+    if acrossXZ > 0:
+      result += contribution(seed, opposite[0], nearest[1], opposite[2], acrossXZ)
+    let outerY = secondFlip[1] + a1
+    if outerY > 0:
+      result += contribution(secondSeed, centered[0], outer[1], centered[2], outerY)
+      usedOuterY = true
+
+  let alongZ = firstFlip[2] + a0
+  if alongZ > 0:
+    result += contribution(seed, nearest[0], nearest[1], opposite[2], alongZ)
+  else:
+    let acrossXY = firstFlip[0] + firstFlip[1] + a0
+    if acrossXY > 0:
+      result += contribution(seed, opposite[0], opposite[1], nearest[2], acrossXY)
+    let outerZ = secondFlip[2] + a1
+    if outerZ > 0:
+      result += contribution(secondSeed, centered[0], centered[1], outer[2], outerZ)
+      usedOuterZ = true
+
+  # A second-lattice pair is outside the support if its opposite axis
+  # already contributed a second-lattice corner.
+  if not usedOuterX:
+    let acrossYZ = secondFlip[1] + secondFlip[2] + a1
+    if acrossYZ > 0:
+      result += contribution(secondSeed, centered[0], outer[1], outer[2], acrossYZ)
+  if not usedOuterY:
+    let acrossXZ = secondFlip[0] + secondFlip[2] + a1
+    if acrossXZ > 0:
+      result += contribution(secondSeed, outer[0], centered[1], outer[2], acrossXZ)
+  if not usedOuterZ:
+    let acrossXY = secondFlip[0] + secondFlip[1] + a1
+    if acrossXY > 0:
+      result += contribution(secondSeed, outer[0], outer[1], centered[2], acrossXY)
+  result *= 9.046026385208288'f
+
+func value*(noise: OpenSimplex2S, x, y: float32): float32 =
+  ## Samples native 2D OpenSimplex2S with the configured octave settings.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  var
+    amplitude = noise.amplitude
+    frequency = noise.frequency
+  for _ in 0 ..< noise.octaves:
+    result += sampleSmooth(cast[int32](noise.seed), x * frequency, y * frequency) *
+      amplitude
+    amplitude *= noise.gain
+    frequency *= noise.lacunarity
+  result /= noise.octaves.float32
+
+func value*(noise: OpenSimplex2S, x, y, z: float32): float32 =
+  ## Samples native 3D OpenSimplex2S with the configured octave settings.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  var
+    amplitude = noise.amplitude
+    frequency = noise.frequency
+  for _ in 0 ..< noise.octaves:
+    result += sampleSmooth(
+      cast[int32](noise.seed), x * frequency, y * frequency, z * frequency
+    ) * amplitude
+    amplitude *= noise.gain
+    frequency *= noise.lacunarity
+  result /= noise.octaves.float32
+
+func value*(noise: OpenSimplex2S, x, y: int): float32 {.inline.} =
+  ## Samples 2D OpenSimplex2S at integer coordinates.
+  noise.value(x.float32, y.float32)
+
+func value*(noise: OpenSimplex2S, x, y, z: int): float32 {.inline.} =
+  ## Samples 3D OpenSimplex2S at integer coordinates.
   noise.value(x.float32, y.float32, z.float32)

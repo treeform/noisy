@@ -9,6 +9,8 @@ static FastNoiseLite configuredNoise(int32_t algorithm, int32_t seed,
     case 0: noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2); break;
     case 1: noise.SetNoiseType(FastNoiseLite::NoiseType_Value); break;
     case 2: noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular); break;
+    case 3: noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2S); break;
+    case 4: noise.SetNoiseType(FastNoiseLite::NoiseType_ValueCubic); break;
   }
   noise.SetFrequency(1.0f);
   noise.SetFractalType(FastNoiseLite::FractalType_None);
