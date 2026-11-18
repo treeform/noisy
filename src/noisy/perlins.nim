@@ -202,7 +202,9 @@ when useGridNeon:
 
 func grid*(perlin: Perlin, start: float32, width: int): Grid =
   ## Samples a 1D Improved Perlin grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    perlin.avxGrid(start, width, avxPerlin)
+  elif useGridNeon:
     perlin.fillGrid(start, width, sample1x4)
   else:
     perlin.scalarGrid(start, width)
@@ -215,7 +217,9 @@ func grid*(
   perlin: Perlin, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D Improved Perlin grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    perlin.avxGrid(start, dimens, avxPerlin)
+  elif useGridNeon:
     perlin.fillGrid(start, dimens, sample2x4)
   else:
     perlin.scalarGrid(start, dimens)
@@ -232,7 +236,9 @@ func grid*(
   dimens: (int, int, int)
 ): Grid =
   ## Samples a 3D Improved Perlin grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    perlin.avxGrid(start, dimens, avxPerlin)
+  elif useGridNeon:
     perlin.fillGrid(start, dimens, sample3x4)
   else:
     perlin.scalarGrid(start, dimens)
@@ -249,7 +255,9 @@ func grid*(
   dimens: (int, int, int, int)
 ): Grid =
   ## Samples a 4D Improved Perlin grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    perlin.avxGrid(start, dimens, avxPerlin)
+  elif useGridNeon:
     perlin.fillGrid(start, dimens, sample4x4)
   else:
     perlin.scalarGrid(start, dimens)

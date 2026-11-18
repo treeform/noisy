@@ -6,6 +6,19 @@ export Grid
 const useGridNeon* = defined(arm64) and not defined(noisyNoNeon) and
   not defined(js) and not defined(nimscript)
 
+const useGridAvx2* = defined(amd64) and
+  (defined(gcc) or defined(clang) or defined(vcc)) and
+  not defined(noisyNoAvx) and not defined(js) and not defined(nimscript)
+
+when useGridAvx2:
+  import simd/[gridavx2, runtimecheck]
+  export AvxKind
+else:
+  # Keep the generic filler independent of platform-specific vector types.
+  type
+    AvxKind = enum avxDisabled
+    AvxSettings = object
+
 when useGridNeon:
   import simd
 
@@ -80,7 +93,8 @@ func gridLength*(dimens: openArray[int]): int =
     result *= size
 
 func fillGridImpl[T, Batch](
-  noise: T, start: float32, width: int, batch: static[Batch]
+  noise: T, start: float32, width: int,
+  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
 ): Grid =
   ## Fills a line using the supplied batch sampler and scalar tails.
   mixin value
@@ -93,15 +107,22 @@ func fillGridImpl[T, Batch](
   )
   let scalarStart =
     when Batch is GridSampler: 0
+    elif Batch is AvxKind: width - width mod 8
     else: width - width mod 4
-  when Batch isnot GridSampler:
+  when Batch isnot GridSampler and Batch isnot AvxKind:
     for x in countup(0, scalarStart - 4, 4):
       store(result.values[x].unsafeAddr, batch(noise, gridCoordinates(start, x)))
+  when Batch is AvxKind:
+    if scalarStart > 0:
+      fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
+        [start, 0'f, 0'f, 0'f], 1, width,
+        result.values[0].unsafeAddr)
   for x in scalarStart ..< width:
     result.values[x] = noise.value(start + x.float32)
 
 func fillGridImpl[T, Batch](
-  noise: T, start: (float32, float32), dimens: (int, int), batch: static[Batch]
+  noise: T, start: (float32, float32), dimens: (int, int),
+  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
 ): Grid =
   ## Fills a plane using the supplied batch sampler and scalar tails.
   mixin value
@@ -118,11 +139,12 @@ func fillGridImpl[T, Batch](
     return
   let scalarStart =
     when Batch is GridSampler: 0
+    elif Batch is AvxKind: height - height mod 8
     else: height - height mod 4
   var index = 0
   for x in 0 ..< width:
     let sampleX = start[0] + x.float32
-    when Batch isnot GridSampler:
+    when Batch isnot GridSampler and Batch isnot AvxKind:
       let batchX = float4(sampleX)
       for y in countup(0, scalarStart - 4, 4):
         store(
@@ -130,6 +152,12 @@ func fillGridImpl[T, Batch](
           batch(noise, batchX, gridCoordinates(start[1], y))
         )
         index += 4
+    when Batch is AvxKind:
+      if scalarStart > 0:
+        fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
+          [sampleX, start[1], 0'f, 0'f], 2, height,
+          result.values[index].unsafeAddr)
+      index += scalarStart
     for y in scalarStart ..< height:
       result.values[index] = noise.value(sampleX, start[1] + y.float32)
       inc index
@@ -138,7 +166,7 @@ func fillGridImpl[T, Batch](
   noise: T,
   start: (float32, float32, float32),
   dimens: (int, int, int),
-  batch: static[Batch]
+  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
 ): Grid =
   ## Fills a volume using the supplied batch sampler and scalar tails.
   mixin value
@@ -155,15 +183,16 @@ func fillGridImpl[T, Batch](
     return
   let scalarStart =
     when Batch is GridSampler: 0
+    elif Batch is AvxKind: depth - depth mod 8
     else: depth - depth mod 4
   var index = 0
   for x in 0 ..< width:
     let sampleX = start[0] + x.float32
-    when Batch isnot GridSampler:
+    when Batch isnot GridSampler and Batch isnot AvxKind:
       let batchX = float4(sampleX)
     for y in 0 ..< height:
       let sampleY = start[1] + y.float32
-      when Batch isnot GridSampler:
+      when Batch isnot GridSampler and Batch isnot AvxKind:
         let batchY = float4(sampleY)
         for z in countup(0, scalarStart - 4, 4):
           store(
@@ -171,6 +200,12 @@ func fillGridImpl[T, Batch](
             batch(noise, batchX, batchY, gridCoordinates(start[2], z))
           )
           index += 4
+      when Batch is AvxKind:
+        if scalarStart > 0:
+          fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
+            [sampleX, sampleY, start[2], 0'f], 3, depth,
+            result.values[index].unsafeAddr)
+        index += scalarStart
       for z in scalarStart ..< depth:
         result.values[index] = noise.value(sampleX, sampleY, start[2] + z.float32)
         inc index
@@ -179,7 +214,7 @@ func fillGridImpl[T, Batch](
   noise: T,
   start: (float32, float32, float32, float32),
   dimens: (int, int, int, int),
-  batch: static[Batch]
+  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
 ): Grid =
   ## Fills each volume slice using the supplied batch sampler and scalar tails.
   mixin value
@@ -196,19 +231,20 @@ func fillGridImpl[T, Batch](
     return
   let scalarStart =
     when Batch is GridSampler: 0
+    elif Batch is AvxKind: depth - depth mod 8
     else: depth - depth mod 4
   var index = 0
   for w in 0 ..< frames:
     let sampleW = start[3] + w.float32
-    when Batch isnot GridSampler:
+    when Batch isnot GridSampler and Batch isnot AvxKind:
       let batchW = float4(sampleW)
     for x in 0 ..< width:
       let sampleX = start[0] + x.float32
-      when Batch isnot GridSampler:
+      when Batch isnot GridSampler and Batch isnot AvxKind:
         let batchX = float4(sampleX)
       for y in 0 ..< height:
         let sampleY = start[1] + y.float32
-        when Batch isnot GridSampler:
+        when Batch isnot GridSampler and Batch isnot AvxKind:
           let batchY = float4(sampleY)
           for z in countup(0, scalarStart - 4, 4):
             store(
@@ -216,6 +252,12 @@ func fillGridImpl[T, Batch](
               batch(noise, batchX, batchY, gridCoordinates(start[2], z), batchW)
             )
             index += 4
+        when Batch is AvxKind:
+          if scalarStart > 0:
+            fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
+              [sampleX, sampleY, start[2], sampleW], 4, depth,
+              result.values[index].unsafeAddr)
+          index += scalarStart
         for z in scalarStart ..< depth:
           result.values[index] = noise.value(
             sampleX, sampleY, start[2] + z.float32, sampleW
@@ -297,3 +339,26 @@ when useGridNeon:
       noise.scalarGrid(start, dimens)
     else:
       noise.fillGridImpl(start, dimens, batch)
+
+when useGridAvx2:
+  func avxGrid*[T, Start, Size](
+    noise: T, start: Start, dimens: Size, kind: static[AvxKind]
+  ): Grid =
+    ## Dispatches through a scalar ABI; unsupported machines use point samples.
+    when nimvm:
+      result = noise.scalarGrid(start, dimens)
+    else:
+      if not hasAvx2():
+        return noise.scalarGrid(start, dimens)
+      var settings = AvxSettings(
+        octaves: noise.octaves, amplitude: noise.amplitude,
+        frequency: noise.frequency, lacunarity: noise.lacunarity, gain: noise.gain)
+      when kind == avxPerlin:
+        settings.perm = noise.perm.unsafeAddr
+      else:
+        settings.seed = cast[int32](noise.seed)
+      when kind == avxCellular:
+        settings.jitter = noise.jitter
+        settings.distanceFunction = ord(noise.distanceFunction)
+        settings.returnType = ord(noise.returnType)
+      result = noise.fillGridImpl(start, dimens, kind, settings)

@@ -64,6 +64,29 @@ proc compare(
   inc comparison.samples
   comparison.maxError = max(comparison.maxError, error)
 
+proc compareGrid(noise: Perlin, dimensions: int) =
+  ## Varies the contiguous axis across two vector batches and all seven tails.
+  const Start = [-257.375'f, 255.125'f, -2.625'f, 1.875'f]
+  let grid = case dimensions
+    of 1: noise.grid(Start[0], 23)
+    of 2: noise.grid((Start[0], Start[1]), (1, 23))
+    of 3: noise.grid((Start[0], Start[1], Start[2]), (1, 1, 23))
+    else: noise.grid((Start[0], Start[1], Start[2], Start[3]), (1, 1, 23, 2))
+  for w in 0 ..< grid.frames:
+    for offset in 0 ..< 23:
+      var point = Start
+      point[min(dimensions - 1, 2)] += offset.float32
+      point[3] += w.float32
+      let
+        actual = grid.values[w * 23 + offset]
+        expected = noise.referenceValue(point, dimensions)
+        tolerance = AbsoluteTolerance +
+          RelativeTolerance * max(abs(actual), abs(expected))
+      doAssert abs(actual) < Inf and abs(expected) < Inf and
+        abs(actual - expected) <= tolerance,
+        &"Perlin {dimensions}D grid point={point}: actual={actual}, " &
+          &"reference={expected}, octaves={noise.octaves}"
+
 var
   noise = initPerlin(1988)
   comparisons: array[4, Comparison]
@@ -114,6 +137,7 @@ for settings in [
   (noise.octaves, noise.amplitude, noise.frequency, noise.lacunarity,
     noise.gain) = settings
   for dimensions in 1 .. 4:
+    noise.compareGrid(dimensions)
     for sample in 0 ..< 1000:
       var point: Point
       for axis in 0 ..< dimensions:

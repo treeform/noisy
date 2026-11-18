@@ -91,10 +91,35 @@ proc compare[T](
   inc comparison.samples
   comparison.maxError = max(comparison.maxError, error)
 
+proc compareGrid[T](noise: T, dimensions: int) =
+  ## Checks complete AVX2/NEON groups and tails against independent C++ samples.
+  const Start = [-5.375'f, 9.125'f, -2.625'f]
+  let grid =
+    if dimensions == 2: noise.grid((Start[0], Start[1]), (2, 23))
+    else: noise.grid((Start[0], Start[1], Start[2]), (2, 2, 23))
+  for x in 0 ..< grid.width:
+    for y in 0 ..< grid.height:
+      for z in 0 ..< grid.depth:
+        let
+          point = [Start[0] + x.float32, Start[1] + y.float32,
+            Start[2] + z.float32]
+          actual = grid[x, y, z]
+          expected = noise.referenceValue(point, dimensions)
+          tolerance = AbsoluteTolerance +
+            RelativeTolerance * max(abs(actual), abs(expected))
+        doAssert abs(actual) < Inf and abs(expected) < Inf and
+          abs(actual - expected) <= tolerance,
+          &"{$T} {dimensions}D grid seed={noise.seed} point={point}: " &
+            &"actual={actual}, reference={expected}"
+        when T is Cellular:
+          if noise.returnType == CellValue and noise.octaves == 1:
+            doAssert actual == expected
+
 proc compareBasic[T](noise: T, comparisons: var array[2, Comparison]) =
   ## Covers cell boundaries, negative coordinates, seed wrapping, and random inputs.
   var rng = initRand(48217)
   for dimensions in 2 .. 3:
+    noise.compareGrid(dimensions)
     for coordinate in [-1024.0'f, -256, -2, -1, -0.5, 0,
       0.5, 1, 2, 255, 256, 1024]:
       for offset in [-0.0001'f, 0.0'f, 0.0001'f, 0.125'f, 0.5'f]:
@@ -125,6 +150,7 @@ proc compareOctaves[T](initial: T, comparisons: var array[2, Comparison]) =
     (noise.octaves, noise.amplitude, noise.frequency, noise.lacunarity,
       noise.gain) = settings
     for dimensions in 2 .. 3:
+      noise.compareGrid(dimensions)
       for sample in 0 ..< 200:
         var point: Point
         for axis in 0 ..< dimensions:
@@ -159,6 +185,7 @@ for seed in Seeds:
       for jitter in [0.0'f, 0.5'f, 1.0'f]:
         noise.jitter = jitter
         for dimensions in 2 .. 3:
+          noise.compareGrid(dimensions)
           for point in [
             [0.0'f, 0.0'f, 0.0'f],
             [0.5'f, 0.5'f, 0.5'f],

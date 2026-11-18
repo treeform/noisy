@@ -51,10 +51,12 @@ float32 coordinates in `start` and integer sizes in `dimens`. Samples are one
 unit apart before frequency scaling. Index the result with zero-based offsets
 from `start`, using the same layout as a Simplex grid.
 
-On ARM64, the grids automatically use NEON for groups of four contiguous
-samples. Remaining samples and grids on other architectures use scalar
-sampling. Build with `-d:noisyNoNeon` to select scalar grids for these types on
-ARM64.
+On x86-64, the grids automatically use AVX2 for groups of eight contiguous
+samples when both the CPU and OS support it. ARM64 uses NEON in groups of four.
+Remaining samples and unsupported machines use scalar sampling. Build with
+`-d:noisyNoAvx` on x86 or `-d:noisyNoNeon` on ARM64 to select scalar grids for
+these types. All Cellular distance functions, return modes, and jitter settings
+are supported by both SIMD backends.
 
 ```nim
 import noisy

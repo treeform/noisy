@@ -21,13 +21,14 @@ Cellular support 2D and 3D. All share the `octaves`, `amplitude`,
 
 Point sampling with `value()` uses scalar arithmetic. On ARM64, `grid()` uses
 NEON for every noise family and handles leftover samples with scalar arithmetic.
-On x86, Simplex grids use AVX2 or SSE2 and the other grids use scalar sampling.
+On x86-64, every noise family uses AVX2 when available. Otherwise Simplex uses
+SSE2 and the other families use scalar sampling.
 Noisy depends on Nimsimd and supports the C and C++ backends with Nim 2.2 and 2.4.
 
 AVX2 generates eight samples at a time and checks both CPU and operating-system
-support before use. Only the AVX2 module receives AVX2 compiler flags, so no
-global `-mavx2` flag is needed. Use `-d:noisyNoAvx` to test or benchmark the SSE2
-fallback. GCC, Clang, and MSVC builds are supported.
+support before use. Only AVX2 modules receive AVX2 compiler flags, so no
+global `-mavx2` flag is needed. Use `-d:noisyNoAvx` to test or benchmark the
+SSE2/scalar fallbacks. GCC, Clang, and MSVC builds are supported.
 
 Originally created by Ryan Oldenburg in
 [guzba/noisy](https://github.com/guzba/noisy).

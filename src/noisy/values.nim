@@ -265,7 +265,9 @@ func grid*(
   noise: ValueNoise, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D Value grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxValue)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample2x4[ValueNoise])
   else:
     noise.scalarGrid(start, dimens)
@@ -282,7 +284,9 @@ func grid*(
   dimens: (int, int, int)
 ): Grid =
   ## Samples a 3D Value grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxValue)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample3x4[ValueNoise])
   else:
     noise.scalarGrid(start, dimens)
@@ -297,7 +301,9 @@ func grid*(
   noise: ValueCubic, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D ValueCubic grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxValueCubic)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample2x4[ValueCubic])
   else:
     noise.scalarGrid(start, dimens)
@@ -314,7 +320,9 @@ func grid*(
   dimens: (int, int, int)
 ): Grid =
   ## Samples a 3D ValueCubic grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxValueCubic)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample3x4[ValueCubic])
   else:
     noise.scalarGrid(start, dimens)

@@ -22,9 +22,11 @@ let
 ```
 
 `import noisy/perlins` also exposes this API. Perlin supports `grid()` in all
-four dimensions, with automatic NEON on ARM64 and a scalar fallback on other
-architectures. Its grid shapes and indexing match Simplex. Build with
-`-d:noisyNoNeon` to use scalar Perlin grids on ARM64.
+four dimensions, with automatic AVX2 on supported x86-64 CPUs and operating
+systems, NEON on ARM64, and scalar fallback elsewhere. Its grid shapes and
+indexing match Simplex. Build with `-d:noisyNoAvx` on x86 or `-d:noisyNoNeon` on
+ARM64 to use scalar Perlin grids. SIMD preserves the full public 512-entry
+permutation table, including independently modified halves.
 
 ```nim
 let heights = noise.grid((-4.5'f, -2.0'f), (16, 24))

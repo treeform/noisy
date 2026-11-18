@@ -202,7 +202,7 @@ block:
           [-3_000_000_000.0'f, 0.125'f, 4_000_000_000.0'f, 0.875'f]
         ]
       for start in starts:
-        for span in [3, 4, 9]:
+        for span in 0 .. 23:
           for dimensions in 1 .. 4:
             let grid = case dimensions
               of 1: noise.grid(start[0], span)

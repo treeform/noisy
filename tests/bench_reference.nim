@@ -43,7 +43,10 @@ var checksum: float64
 var results = newJArray()
 
 template supportsVector(noise: typed): bool =
-  noise is Simplex or useGridNeon
+  when useGridAvx2:
+    noise is Simplex or hasAvx2()
+  else:
+    noise is Simplex or useGridNeon
 
 proc consume(values: seq[float32]) =
   ## Consumes every output outside the timer to prevent dead-code removal.
@@ -126,9 +129,9 @@ proc generate(
               )
               inc index
   of Vector:
-    when not supportsVector(noise):
+    if not supportsVector(noise):
       raise newException(AssertionDefect, "No SIMD grid for this noise")
-    elif dimensions == 1:
+    when dimensions == 1:
       result = noise.grid(Start[0], shape[0]).values
     elif dimensions == 2:
       result = noise.grid((Start[0], Start[1]), (shape[0], shape[1])).values
@@ -184,11 +187,10 @@ proc measure(
 
 proc runCase(dimensions: static[int], name: string, noise: auto) =
   ## Warms the paths, rotates measurement order, and reports sorted medians.
-  const
-    shape = Shapes[dimensions - 1]
-    backends =
-      when supportsVector(noise): [Reference, Scalar, Vector]
-      else: [Reference, Scalar]
+  const shape = Shapes[dimensions - 1]
+  let backends =
+    if supportsVector(noise): @[Reference, Scalar, Vector]
+    else: @[Reference, Scalar]
   validate(dimensions, name, noise, shape, backends.toOpenArray(1, backends.high))
   for warmup in 0 ..< 2:
     for backend in backends:
@@ -225,7 +227,7 @@ proc runCase(dimensions: static[int], name: string, noise: auto) =
   }
   let line = &"| {name} | {dimensions}D | {noise.octaves} | " &
     &"{reference:.3f} | {scalar:.3f} | "
-  when supportsVector(noise):
+  if supportsVector(noise):
     let vector = medians[Vector]
     row["simd_ms"] = %vector
     row["simd_vs_reference"] = %(reference / vector)

@@ -23,6 +23,14 @@ type
     returnType*: CellularReturn
     jitter*: float32
 
+when useGridAvx2:
+  # The isolated AVX2 module receives these settings through a scalar ABI.
+  static:
+    doAssert [ord(Euclidean), ord(EuclideanSquared), ord(Manhattan), ord(Hybrid)] ==
+      [0, 1, 2, 3]
+    doAssert [ord(CellValue), ord(Distance), ord(Distance2), ord(Distance2Add),
+      ord(Distance2Sub), ord(Distance2Mul), ord(Distance2Div)] == [0, 1, 2, 3, 4, 5, 6]
+
 func initCellular*(seed: int): Cellular =
   ## Initializes cellular noise with squared distance and unit jitter.
   result.seed = seed
@@ -246,7 +254,9 @@ func grid*(
 ): Grid =
   ## Generates a 2D Cellular grid at unit intervals.
   cellular.validate()
-  when useGridNeon:
+  when useGridAvx2:
+    cellular.avxGrid(start, dimens, avxCellular)
+  elif useGridNeon:
     cellular.fillGrid(start, dimens, sample2x4)
   else:
     cellular.scalarGrid(start, dimens)
@@ -258,7 +268,9 @@ func grid*(
 ): Grid =
   ## Generates a 3D Cellular grid at unit intervals.
   cellular.validate()
-  when useGridNeon:
+  when useGridAvx2:
+    cellular.avxGrid(start, dimens, avxCellular)
+  elif useGridNeon:
     cellular.fillGrid(start, dimens, sample3x4)
   else:
     cellular.scalarGrid(start, dimens)

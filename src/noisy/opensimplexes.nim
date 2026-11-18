@@ -479,7 +479,9 @@ func grid*(
   noise: OpenSimplex2, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D OpenSimplex2 grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxOpenSimplex2)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample2x4[OpenSimplex2])
   else:
     noise.scalarGrid(start, dimens)
@@ -496,7 +498,9 @@ func grid*(
   dimens: (int, int, int)
 ): Grid =
   ## Samples a 3D OpenSimplex2 grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxOpenSimplex2)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample3x4[OpenSimplex2])
   else:
     noise.scalarGrid(start, dimens)
@@ -511,7 +515,9 @@ func grid*(
   noise: OpenSimplex2S, start: (float32, float32), dimens: (int, int)
 ): Grid =
   ## Samples a 2D OpenSimplex2S grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxOpenSimplex2S)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample2x4[OpenSimplex2S])
   else:
     noise.scalarGrid(start, dimens)
@@ -528,7 +534,9 @@ func grid*(
   dimens: (int, int, int)
 ): Grid =
   ## Samples a 3D OpenSimplex2S grid at unit intervals from start.
-  when useGridNeon:
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, avxOpenSimplex2S)
+  elif useGridNeon:
     noise.fillGrid(start, dimens, sample3x4[OpenSimplex2S])
   else:
     noise.scalarGrid(start, dimens)

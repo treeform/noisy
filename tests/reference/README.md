@@ -53,9 +53,10 @@ all supported noise families and dimensions with one and three octaves.
 nim r tools/gen_references.nim --benchmark
 ```
 
-On x86, automatic dispatch selects AVX2 or SSE2 for Simplex. When it selects
-AVX2, the runner also benchmarks a separate `-d:noisyNoAvx` SSE2 build. On
-ARM64, every noise family uses NEON. The table shows a dash for a noise without
+On x86, automatic dispatch selects AVX2 for every noise family when supported.
+The fallback uses SSE2 for Simplex and scalar sampling for the other families.
+When AVX2 is available, the runner also benchmarks a separate `-d:noisyNoAvx`
+fallback build. On ARM64, every noise family uses NEON. The table shows a dash for a noise without
 the given SIMD backend. Reference and scalar medians come from the
 automatic-dispatch run. Git records the checked-out source
 revision in the summary.

@@ -2,7 +2,9 @@ import
   std/strformat,
   noisy/[cellulars, opensimplexes, values]
 
-from noisy/grids import useGridNeon
+from noisy/grids import useGridNeon, useGridAvx2
+when useGridAvx2:
+  from noisy/simd/runtimecheck import hasAvx2
 
 template expectError(error: typedesc, body: untyped) =
   ## Checks that invalid input raises the specified exception.
@@ -16,13 +18,16 @@ template expectError(error: typedesc, body: untyped) =
 template checkSample(
   actual, expected: float32, offset, size: int, context: string
 ) =
-  ## Allows float32 rounding in complete NEON groups and checks tails exactly.
+  ## Allows float32 rounding in complete SIMD groups and checks tails exactly.
   let
     sample = actual
     point = expected
     error = abs(sample - point)
   var tolerance = 0.0'f
-  when useGridNeon:
+  when useGridAvx2:
+    if hasAvx2() and offset < size div 8 * 8:
+      tolerance = 0.00001'f + 0.00001'f * max(abs(sample), abs(point))
+  elif useGridNeon:
     if offset < size div 4 * 4:
       tolerance = 0.00001'f + 0.00001'f * max(abs(sample), abs(point))
   doAssert abs(sample) < Inf and abs(point) < Inf and error <= tolerance,
@@ -135,12 +140,12 @@ proc checkGridBatches[T](initial: T) =
     # At the float32 integer precision limit, rounding the batch start before
     # adding the lane can produce a different coordinate from point sampling.
     for start in [(-5.37'f, 9.13'f, -2.61'f), (0.25'f, 16777215.0'f, -0.5'f)]:
-      for size in 1 .. 11:
+      for size in 0 .. 23:
         compareGrid(noise, (start[0], start[1]), size)
         compareGrid(noise, (start[0], start[2], start[1]), size)
 
 proc checkGridBoundaries[T](noise: T) =
-  ## Places a lattice boundary in every lane of two groups and all three tails.
+  ## Places a lattice boundary in every lane of two groups and all seven tails.
   const
     X = -0.125'f
     Y = 0.25'f
@@ -157,9 +162,9 @@ proc checkGridBoundaries[T](noise: T) =
           2 * (X + Y) - 3 * boundary
         else: boundary
     for delta in [-0.0001'f, 0.0'f, 0.0001'f]:
-      for offset in 0 .. 10:
-        compareGrid(noise, (X, y + delta - offset.float32), 11)
-        compareGrid(noise, (X, Y, z + delta - offset.float32), 11)
+      for offset in 0 .. 22:
+        compareGrid(noise, (X, y + delta - offset.float32), 23)
+        compareGrid(noise, (X, Y, z + delta - offset.float32), 23)
 
 echo "Testing FastNoiseLite-compatible grids against scalar sampling"
 when (NimMajor, NimMinor) >= (2, 4):

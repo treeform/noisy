@@ -193,8 +193,8 @@ block:
           for returnType in CellularReturn:
             noise.returnType = returnType
             let
-              plane = noise.grid((Start[0], Start[1]), (2, 7))
-              volume = noise.grid(Start, (2, 2, 7))
+              plane = noise.grid((Start[0], Start[1]), (2, 23))
+              volume = noise.grid(Start, (2, 2, 23))
             template compare(actual, expected: float32) =
               if returnType == CellValue and noise.octaves == 1:
                 doAssert actual == expected,
@@ -249,13 +249,13 @@ block:
           for boundaryPoint in [left, right]:
             point[axis] = boundaryPoint
             let expected = noise.sample(point, dimensions)
-            for lane in 0 ..< 4:
+            for lane in 0 ..< 8:
               let start = boundaryPoint - lane.float32
               doAssert start + lane.float32 == boundaryPoint
               let actual =
                 if dimensions == 2:
-                  noise.grid((point[0], start), (1, 4))[0, lane]
+                  noise.grid((point[0], start), (1, 8))[0, lane]
                 else:
-                  noise.grid((point[0], point[1], start), (1, 1, 4))[0, 0, lane]
+                  noise.grid((point[0], point[1], start), (1, 1, 8))[0, 0, lane]
               doAssert actual == expected,
                 "Cellular boundary selected a different feature in " & $metric

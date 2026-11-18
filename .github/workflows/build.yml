@@ -36,5 +36,5 @@ jobs:
         run: nim r tools/gen_references.nim --cache-dir "${{ runner.temp }}/noisy-references"
       - name: Compare against C and C++ references
         run: nim r -f "-d:noisyReferenceDir=${{ runner.temp }}/noisy-references" tests/test_reference.nim
-      - name: Compare references with C++ release build
-        run: nim cpp -r -f -d:release "-d:noisyReferenceDir=${{ runner.temp }}/noisy-references" tests/test_reference.nim
+      - name: Run full suite and references with C++ release build
+        run: nim cpp -r -f -d:release "-d:noisyReferenceDir=${{ runner.temp }}/noisy-references" tests/tests.nim
