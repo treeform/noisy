@@ -33,18 +33,20 @@ func initPerlin*(seed: int): Perlin =
   for i in 0 ..< result.perm.len:
     result.perm[i] = permutation[i and 255]
 
-func fade(t: float32): float32 {.inline.} =
+include kernelchecks
+
+func fade(t: float32): float32 {.noiseKernel, inline.} =
   ## Uses Perlin's quintic interpolant with continuous second derivatives.
   t * t * t * (t * (t * 6 - 15) + 10)
 
-func interpolate(t, a, b: float32): float32 {.inline.} =
+func interpolate(t, a, b: float32): float32 {.noiseKernel, inline.} =
   ## Interpolates the two lattice contributions.
   a + t * (b - a)
 
 func gradient[N: static[int]](
   hash: int,
   offset: array[N, float32]
-): float32 {.inline.} =
+): float32 {.noiseKernel, inline.} =
   ## Evaluates Gustavson's dimension-specific Improved Perlin gradients.
   when N == 1:
     let
@@ -85,8 +87,11 @@ func gradient[N: static[int]](
 func noise[N: static[int]](
   perlin: Perlin,
   point: array[N, float32]
-): float32 =
+): float32 {.noiseKernel.} =
   ## Samples a lattice using Gustavson's public-domain noise1234 conventions.
+  static: doAssert N in 1 .. 4
+  # Mask addresses, not stored values: callers can edit both table halves.
+  # Wrapping addition also handles arbitrary signed int32 permutation entries.
   var
     lattice: array[N, int]
     fraction, weights: array[N, float32]
@@ -104,7 +109,7 @@ func noise[N: static[int]](
       let
         upper = (corner shr (N - 1 - axis)) and 1
         index = (lattice[axis] + upper) and 255
-      hash = perlin.perm[index + hash].int
+      hash = perlin.perm[(index +% hash) and 511].int
       offset[axis] = fraction[axis] - upper.float32
     corners[corner] = gradient(hash, offset)
   var count = corners.len
@@ -119,10 +124,8 @@ func noise[N: static[int]](
 func sample[N: static[int]](
   perlin: Perlin,
   point: array[N, float32]
-): float32 {.raises: [NoisyError].} =
+): float32 {.noiseKernel.} =
   ## Layers octaves with the same amplitude convention as Simplex.
-  if perlin.octaves <= 0:
-    raise newException(NoisyError, "Octaves must be > 0")
   var
     amplitude = perlin.amplitude
     frequency = perlin.frequency
@@ -130,25 +133,33 @@ func sample[N: static[int]](
     var scaled: array[N, float32]
     for axis in 0 ..< N:
       scaled[axis] = point[axis] * frequency
-    result += perlin.noise(scaled) * amplitude
-    amplitude *= perlin.gain
-    frequency *= perlin.lacunarity
-  result /= perlin.octaves.float32
+    result = result + perlin.noise(scaled) * amplitude
+    amplitude = amplitude * perlin.gain
+    frequency = frequency * perlin.lacunarity
+  result = result / perlin.octaves.float32
 
-func value*(perlin: Perlin, x: float32): float32 =
+func value*(perlin: Perlin, x: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 1D Improved Perlin noise with the configured octaves.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
   perlin.sample([x])
 
-func value*(perlin: Perlin, x, y: float32): float32 =
+func value*(perlin: Perlin, x, y: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 2D Improved Perlin noise with the configured octaves.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
   perlin.sample([x, y])
 
-func value*(perlin: Perlin, x, y, z: float32): float32 =
+func value*(perlin: Perlin, x, y, z: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 3D Improved Perlin noise with the configured octaves.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
   perlin.sample([x, y, z])
 
-func value*(perlin: Perlin, x, y, z, w: float32): float32 =
+func value*(perlin: Perlin, x, y, z, w: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 4D Improved Perlin noise with the configured octaves.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
   perlin.sample([x, y, z, w])
 
 func value*(perlin: Perlin, x: int): float32 {.inline.} =
@@ -183,9 +194,9 @@ when useGridNeon:
         scaled[axis] = point[axis] * scale
       let sample = float4(PerlinScales[N - 1]) *
         samplePerlinGrid4(perlin.perm, scaled)
-      total += sample * float4(amplitude)
-      amplitude *= perlin.gain
-      frequency *= perlin.lacunarity
+      total = total + sample * float4(amplitude)
+      amplitude = amplitude * perlin.gain
+      frequency = frequency * perlin.lacunarity
     total / float4(perlin.octaves.float32)
 
   func sample1x4(perlin: Perlin, x: Float4): Float4 =
@@ -199,6 +210,8 @@ when useGridNeon:
 
   func sample4x4(perlin: Perlin, x, y, z, w: Float4): Float4 =
     perlin.sampleBatch([x, y, z, w])
+
+{.pop.}
 
 func grid*(perlin: Perlin, start: float32, width: int): Grid =
   ## Samples a 1D Improved Perlin grid at unit intervals from start.

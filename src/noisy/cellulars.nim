@@ -43,15 +43,17 @@ func initCellular*(seed: int): Cellular =
   result.returnType = Distance
   result.jitter = 1
 
+include kernelchecks
+
 func metric[N: static[int]](
   distanceFunction: CellularDistance,
   offset: array[N, float32]
-): float32 {.inline.} =
+): float32 {.noiseKernel, inline.} =
   ## Measures a feature point using the selected distance convention.
   var squared, manhattan: float32
   for axis in 0 ..< N:
-    squared += offset[axis] * offset[axis]
-    manhattan += abs(offset[axis])
+    squared = squared + offset[axis] * offset[axis]
+    manhattan = manhattan + abs(offset[axis])
   case distanceFunction
   of Euclidean, EuclideanSquared: squared
   of Manhattan: manhattan
@@ -61,7 +63,7 @@ func finish(
   cellular: Cellular,
   closestHash: uint32,
   nearest, second: float32
-): float32 =
+): float32 {.noiseKernel.} =
   ## Converts the two nearest feature distances to the selected return mode.
   var
     distance0 = nearest
@@ -90,8 +92,9 @@ func finish(
 func noise[N: static[int]](
   cellular: Cellular,
   point: array[N, float32]
-): float32 =
+): float32 {.noiseKernel.} =
   ## Searches neighboring feature points in FastNoiseLite's traversal order.
+  static: doAssert N in 2 .. 3
   const
     Primes = [PrimeX, PrimeY, PrimeZ]
     Cells = when N == 2: 9 else: 27
@@ -136,7 +139,7 @@ func noise[N: static[int]](
       closestHash = hashValue
   cellular.finish(closestHash, distance0, distance1)
 
-func validate(cellular: Cellular) {.inline, raises: [NoisyError].} =
+template validate(cellular: Cellular) =
   ## Checks the shared requirements for point and grid sampling.
   if cellular.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
@@ -146,9 +149,8 @@ func validate(cellular: Cellular) {.inline, raises: [NoisyError].} =
 func sample[N: static[int]](
   cellular: Cellular,
   point: array[N, float32]
-): float32 {.raises: [NoisyError].} =
+): float32 {.noiseKernel.} =
   ## Layers scalar samples using the same octave convention as Simplex.
-  cellular.validate()
   var
     amplitude = cellular.amplitude
     frequency = cellular.frequency
@@ -156,17 +158,19 @@ func sample[N: static[int]](
     var scaled: array[N, float32]
     for axis in 0 ..< N:
       scaled[axis] = point[axis] * frequency
-    result += cellular.noise(scaled) * amplitude
-    amplitude *= cellular.gain
-    frequency *= cellular.lacunarity
-  result /= cellular.octaves.float32
+    result = result + cellular.noise(scaled) * amplitude
+    amplitude = amplitude * cellular.gain
+    frequency = frequency * cellular.lacunarity
+  result = result / cellular.octaves.float32
 
-func value*(cellular: Cellular, x, y: float32): float32 =
+func value*(cellular: Cellular, x, y: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 2D cellular noise with the configured octaves.
+  cellular.validate()
   cellular.sample([x, y])
 
-func value*(cellular: Cellular, x, y, z: float32): float32 =
+func value*(cellular: Cellular, x, y, z: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 3D cellular noise with the configured octaves.
+  cellular.validate()
   cellular.sample([x, y, z])
 
 func value*(cellular: Cellular, x, y: int): float32 {.inline.} =
@@ -221,9 +225,9 @@ when useGridNeon:
         scaled[axis] = point[axis] * scale
       let features = searchFeatures4(seed, cellular.jitter, scaled,
         squared, manhattan, trackSecond, trackHash)
-      total += cellular.finish4(features) * float4(amplitude)
-      amplitude *= cellular.gain
-      frequency *= cellular.lacunarity
+      total = total + cellular.finish4(features) * float4(amplitude)
+      amplitude = amplitude * cellular.gain
+      frequency = frequency * cellular.lacunarity
     total / float4(cellular.octaves.float32)
 
   func sample4[N: static[int]](
@@ -248,6 +252,8 @@ when useGridNeon:
 
   func sample3x4(cellular: Cellular, x, y, z: Float4): Float4 =
     cellular.sample4([x, y, z])
+
+{.pop.}
 
 func grid*(
   cellular: Cellular, start: (float32, float32), dimens: (int, int)

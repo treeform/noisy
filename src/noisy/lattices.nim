@@ -462,29 +462,31 @@ const
     -0.845289248'f, 0.2904925424'f, 0.0'f
   ]
 
-func prime*(coordinate: int32, multiplier: uint32): uint32 {.inline.} =
+include kernelchecks
+
+func prime*(coordinate: int32, multiplier: uint32): uint32 {.noiseKernel, inline.} =
   ## Multiplies lattice coordinates with explicit 32-bit wrapping.
   cast[uint32](coordinate) * multiplier
 
-func hash*(seed: int32, x, y: uint32): uint32 {.inline.} =
+func hash*(seed: int32, x, y: uint32): uint32 {.noiseKernel, inline.} =
   ## Hashes a seed and two primed coordinates modulo 2^32.
   (cast[uint32](seed) xor x xor y) * HashMultiplier
 
-func hash*(seed: int32, x, y, z: uint32): uint32 {.inline.} =
+func hash*(seed: int32, x, y, z: uint32): uint32 {.noiseKernel, inline.} =
   ## Hashes a seed and three primed coordinates modulo 2^32.
   (cast[uint32](seed) xor x xor y xor z) * HashMultiplier
 
-func latticeValue*(seed: int32, x, y: uint32): float32 {.inline.} =
+func latticeValue*(seed: int32, x, y: uint32): float32 {.noiseKernel, inline.} =
   ## Converts the wrapped 2D hash into the reference's signed value.
   var value = hash(seed, x, y)
-  value *= value
+  value = value * value
   value = value xor (value shl 19)
   cast[int32](value).float32 * (1.0'f / 2147483648.0'f)
 
-func latticeValue*(seed: int32, x, y, z: uint32): float32 {.inline.} =
+func latticeValue*(seed: int32, x, y, z: uint32): float32 {.noiseKernel, inline.} =
   ## Converts the wrapped 3D hash into the reference's signed value.
   var value = hash(seed, x, y, z)
-  value *= value
+  value = value * value
   value = value xor (value shl 19)
   cast[int32](value).float32 * (1.0'f / 2147483648.0'f)
 
@@ -492,7 +494,7 @@ func gradient*(
   seed: int32,
   x, y: uint32,
   dx, dy: float32
-): float32 {.inline.} =
+): float32 {.noiseKernel, inline.} =
   ## Takes the 2D gradient dot product using the published lookup table.
   var value = hash(seed, x, y)
   value = value xor cast[uint32](ashr(cast[int32](value), 15))
@@ -503,7 +505,7 @@ func gradient*(
   seed: int32,
   x, y, z: uint32,
   dx, dy, dz: float32
-): float32 {.inline.} =
+): float32 {.noiseKernel, inline.} =
   ## Takes the 3D gradient dot product using the published lookup table.
   var value = hash(seed, x, y, z)
   value = value xor cast[uint32](ashr(cast[int32](value), 15))
@@ -511,24 +513,26 @@ func gradient*(
   dx * Gradients3D[index] + dy * Gradients3D[index or 1] +
     dz * Gradients3D[index or 2]
 
-func fastFloor*(value: float32): int32 {.inline.} =
+func fastFloor*(value: float32): int32 {.noiseKernel, inline.} =
   ## Matches the reference's preceding-cell convention at negative integers.
   if value >= 0:
     value.int32
   else:
     value.int32 - 1
 
-func fastRound*(value: float32): int32 {.inline.} =
+func fastRound*(value: float32): int32 {.noiseKernel, inline.} =
   ## Rounds to the nearest lattice point with ties away from zero.
   if value >= 0:
     (value + 0.5'f).int32
   else:
     (value - 0.5'f).int32
 
-func lerp*(a, b, t: float32): float32 {.inline.} =
+func lerp*(a, b, t: float32): float32 {.noiseKernel, inline.} =
   ## Interpolates endpoints in the reference's arithmetic order.
   a + t * (b - a)
 
-func hermite*(t: float32): float32 {.inline.} =
+func hermite*(t: float32): float32 {.noiseKernel, inline.} =
   ## Applies the cubic interpolant used by Value noise.
   t * t * (3 - 2 * t)
+
+{.pop.}

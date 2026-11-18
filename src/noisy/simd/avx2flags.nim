@@ -5,12 +5,14 @@ when defined(gcc) or defined(clang):
 elif defined(vcc):
   {.localPassC: "/arch:AVX2 /fp:strict".}
 
+include ../kernelchecks
+
 # These helpers own no managed memory. Avoid ARC/ORC generating vector copy
 # hooks in nimsimd's baseline translation unit, which has a different AVX ABI.
 # Force inlining also avoids MinGW's vector return storage alignment problem.
 when defined(gcc) or defined(clang):
-  {.pragma: avxInline, inline, nodestroy,
+  {.pragma: avxInline, noiseKernel, inline, nodestroy,
     codegenDecl: "static inline __attribute__((always_inline)) $# $#$#".}
 elif defined(vcc):
-  {.pragma: avxInline, inline, nodestroy,
+  {.pragma: avxInline, noiseKernel, inline, nodestroy,
     codegenDecl: "static __forceinline $# $#$#".}

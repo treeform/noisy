@@ -17,10 +17,10 @@ macro unroll(index: untyped, limit: static[int], body: untyped): untyped =
 func permute4(perm: array[512, int32], indexes: Int4): Int4 {.inline.} =
   ## Gathers from the original 512-entry permutation in lane order.
   cast[Int4]([
-    perm[vgetq_lane_s32(indexes, 0)],
-    perm[vgetq_lane_s32(indexes, 1)],
-    perm[vgetq_lane_s32(indexes, 2)],
-    perm[vgetq_lane_s32(indexes, 3)]
+    perm[vgetq_lane_s32(indexes, 0) and 511],
+    perm[vgetq_lane_s32(indexes, 1) and 511],
+    perm[vgetq_lane_s32(indexes, 2) and 511],
+    perm[vgetq_lane_s32(indexes, 3) and 511]
   ])
 
 func cornerHashes[N: static[int]; Index: int | Int4](
@@ -34,8 +34,8 @@ func cornerHashes[N: static[int]; Index: int | Int4](
     unroll(corner, count):
       let suffix = result[corner]
       when Index is int:
-        result[corner] = perm[lattice[axis][0] + suffix]
-        result[corner + count] = perm[lattice[axis][1] + suffix]
+        result[corner] = perm[(lattice[axis][0] +% suffix) and 511]
+        result[corner + count] = perm[(lattice[axis][1] +% suffix) and 511]
       else:
         result[corner] = perm.permute4(addInts(lattice[axis][0], suffix))
         result[corner + count] = perm.permute4(addInts(lattice[axis][1], suffix))
@@ -81,6 +81,7 @@ func samplePerlinGrid4*[N: static[int]](
   perm: array[512, int32], point: array[N, Float4]
 ): Float4 =
   ## Samples four grid points that vary only on the contiguous axis.
+  static: doAssert N in 1 .. 4
   var
     lattice: array[N, array[2, Int4]]
     offset: array[N, array[2, Float4]]

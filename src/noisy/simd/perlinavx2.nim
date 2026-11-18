@@ -12,7 +12,7 @@ macro unroll(index: untyped, limit: static[int], body: untyped): untyped =
         `body`
 
 func permute8(perm: array[512, int32], indexes: Int8): Int8 {.avxInline.} =
-  gather(perm[0].unsafeAddr, indexes, 4)
+  gather(perm[0].unsafeAddr, indexes and int8(511), 4)
 
 func cornerHashes[N: static[int]](
   perm: array[512, int32], lattice: array[N, array[2, Int8]]
@@ -68,6 +68,7 @@ func samplePerlinGrid8*[N: static[int]](
   perm: array[512, int32], point: array[N, Float8]
 ): Float8 {.avxInline.} =
   ## Samples eight grid points that vary only on the contiguous axis.
+  static: doAssert N in 1 .. 4
   var
     lattice: array[N, array[2, Int8]]
     offset: array[N, array[2, Float8]]

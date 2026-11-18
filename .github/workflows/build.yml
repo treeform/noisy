@@ -30,6 +30,8 @@ jobs:
         run: nim r tests/tests.nim
       - name: Run release tests
         run: nim r -d:release tests/tests.nim
+      - name: Verify kernel bounds with checks enabled
+        run: nim r -d:release -d:noisyCheckKernels tests/tests.nim
       - name: Run release tests with SIMD fallbacks
         run: nim r -d:release -d:noisyNoAvx -d:noisyNoNeon tests/tests.nim
       - name: Fetch pinned reference sources

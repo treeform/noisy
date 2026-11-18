@@ -34,7 +34,9 @@ func initValueCubic*(seed: int): ValueCubic =
   result.lacunarity = 2
   result.gain = 0.5
 
-func sample(seed: int32, x, y: float32): float32 =
+include kernelchecks
+
+func sample(seed: int32, x, y: float32): float32 {.noiseKernel.} =
   ## Interpolates hashed corner values using FastNoiseLite's cubic fade.
   let
     ix = fastFloor(x)
@@ -49,7 +51,7 @@ func sample(seed: int32, x, y: float32): float32 =
     row1 = lerp(latticeValue(seed, x0, y1), latticeValue(seed, x1, y1), xs)
   lerp(row0, row1, ys)
 
-func sample(seed: int32, x, y, z: float32): float32 =
+func sample(seed: int32, x, y, z: float32): float32 {.noiseKernel.} =
   ## Interpolates hashed corner values in native three-dimensional space.
   let
     ix = fastFloor(x)
@@ -78,7 +80,7 @@ func sample(seed: int32, x, y, z: float32): float32 =
     )
   lerp(lerp(row00, row10, ys), lerp(row01, row11, ys), zs)
 
-func value*(noise: ValueNoise, x, y: float32): float32 =
+func value*(noise: ValueNoise, x, y: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 2D Value noise with the configured octaves.
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
@@ -86,13 +88,13 @@ func value*(noise: ValueNoise, x, y: float32): float32 =
     amplitude = noise.amplitude
     frequency = noise.frequency
   for octave in 0 ..< noise.octaves:
-    result += sample(cast[int32](noise.seed), x * frequency, y * frequency) *
+    result = result + sample(cast[int32](noise.seed), x * frequency, y * frequency) *
       amplitude
-    amplitude *= noise.gain
-    frequency *= noise.lacunarity
-  result /= noise.octaves.float32
+    amplitude = amplitude * noise.gain
+    frequency = frequency * noise.lacunarity
+  result = result / noise.octaves.float32
 
-func value*(noise: ValueNoise, x, y, z: float32): float32 =
+func value*(noise: ValueNoise, x, y, z: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 3D Value noise with the configured octaves.
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
@@ -100,12 +102,12 @@ func value*(noise: ValueNoise, x, y, z: float32): float32 =
     amplitude = noise.amplitude
     frequency = noise.frequency
   for octave in 0 ..< noise.octaves:
-    result += sample(
+    result = result + sample(
       cast[int32](noise.seed), x * frequency, y * frequency, z * frequency
     ) * amplitude
-    amplitude *= noise.gain
-    frequency *= noise.lacunarity
-  result /= noise.octaves.float32
+    amplitude = amplitude * noise.gain
+    frequency = frequency * noise.lacunarity
+  result = result / noise.octaves.float32
 
 func value*(noise: ValueNoise, x, y: int): float32 {.inline.} =
   ## Samples 2D Value noise at integer coordinates.
@@ -115,12 +117,12 @@ func value*(noise: ValueNoise, x, y, z: int): float32 {.inline.} =
   ## Samples 3D Value noise at integer coordinates.
   noise.value(x.float32, y.float32, z.float32)
 
-func cubic(a, b, c, d, t: float32): float32 {.inline.} =
+func cubic(a, b, c, d, t: float32): float32 {.noiseKernel, inline.} =
   ## Interpolates four samples in FastNoiseLite's arithmetic order.
   let p = (d - c) - (a - b)
   t * t * t * p + t * t * ((a - b) - p) + t * (c - a) + b
 
-func sampleCubic(seed: int32, x, y: float32): float32 =
+func sampleCubic(seed: int32, x, y: float32): float32 {.noiseKernel.} =
   ## Interpolates sixteen lattice values, first along x and then y.
   let
     ix = fastFloor(x)
@@ -148,7 +150,7 @@ func sampleCubic(seed: int32, x, y: float32): float32 =
     ys
   ) * (1.0'f / (1.5'f * 1.5'f))
 
-func sampleCubic(seed: int32, x, y, z: float32): float32 =
+func sampleCubic(seed: int32, x, y, z: float32): float32 {.noiseKernel.} =
   ## Interpolates sixty-four lattice values in x, y, then z order.
   let
     ix = fastFloor(x)
@@ -183,7 +185,7 @@ func sampleCubic(seed: int32, x, y, z: float32): float32 =
     zs
   ) * (1.0'f / (1.5'f * 1.5'f * 1.5'f))
 
-func value*(noise: ValueCubic, x, y: float32): float32 =
+func value*(noise: ValueCubic, x, y: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 2D cubic Value noise with the configured octaves.
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
@@ -191,16 +193,16 @@ func value*(noise: ValueCubic, x, y: float32): float32 =
     amplitude = noise.amplitude
     frequency = noise.frequency
   for octave in 0 ..< noise.octaves:
-    result += sampleCubic(
+    result = result + sampleCubic(
       cast[int32](noise.seed),
       x * frequency,
       y * frequency
     ) * amplitude
-    amplitude *= noise.gain
-    frequency *= noise.lacunarity
-  result /= noise.octaves.float32
+    amplitude = amplitude * noise.gain
+    frequency = frequency * noise.lacunarity
+  result = result / noise.octaves.float32
 
-func value*(noise: ValueCubic, x, y, z: float32): float32 =
+func value*(noise: ValueCubic, x, y, z: float32): float32 {.raises: [NoisyError].} =
   ## Samples native 3D cubic Value noise with the configured octaves.
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
@@ -208,15 +210,15 @@ func value*(noise: ValueCubic, x, y, z: float32): float32 =
     amplitude = noise.amplitude
     frequency = noise.frequency
   for octave in 0 ..< noise.octaves:
-    result += sampleCubic(
+    result = result + sampleCubic(
       cast[int32](noise.seed),
       x * frequency,
       y * frequency,
       z * frequency
     ) * amplitude
-    amplitude *= noise.gain
-    frequency *= noise.lacunarity
-  result /= noise.octaves.float32
+    amplitude = amplitude * noise.gain
+    frequency = frequency * noise.lacunarity
+  result = result / noise.octaves.float32
 
 func value*(noise: ValueCubic, x, y: int): float32 {.inline.} =
   ## Samples 2D cubic Value noise at integer coordinates.
@@ -239,9 +241,9 @@ when useGridNeon:
       let sample =
         when T is ValueNoise: sampleValue4(seed, x * scale, y * scale)
         else: sampleCubic4(seed, x * scale, y * scale)
-      total += sample * float4(amplitude)
-      amplitude *= noise.gain
-      frequency *= noise.lacunarity
+      total = total + sample * float4(amplitude)
+      amplitude = amplitude * noise.gain
+      frequency = frequency * noise.lacunarity
     total / float4(noise.octaves.float32)
 
   func sample3x4[T: ValueNoise | ValueCubic](noise: T, x, y, z: Float4): Float4 =
@@ -256,10 +258,12 @@ when useGridNeon:
       let sample =
         when T is ValueNoise: sampleValue4(seed, x * scale, y * scale, z * scale)
         else: sampleCubic4(seed, x * scale, y * scale, z * scale)
-      total += sample * float4(amplitude)
-      amplitude *= noise.gain
-      frequency *= noise.lacunarity
+      total = total + sample * float4(amplitude)
+      amplitude = amplitude * noise.gain
+      frequency = frequency * noise.lacunarity
     total / float4(noise.octaves.float32)
+
+{.pop.}
 
 func grid*(
   noise: ValueNoise, start: (float32, float32), dimens: (int, int)

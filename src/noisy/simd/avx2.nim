@@ -6,8 +6,7 @@ when defined(gcc) or defined(clang):
 elif defined(vcc):
   {.localPassC: "/arch:AVX2 /fp:strict".}
 
-when defined(release):
-  {.push checks: off.}
+include ../kernelchecks
 
 # Templates keep vector values within this module and avoid a vector ABI.
 template m256(a: float32): M256 = mm256_set1_ps(a)
@@ -36,10 +35,13 @@ func gather(p: ptr float32, indices: M256i, scale: int32): M256
   {.importc: "_mm256_i32gather_ps", header: "immintrin.h".}
 
 template lookupPerm(simplex: Simplex, indices: M256i): M256i =
-  gather(simplex.perm[0].unsafeAddr, indices, 4)
+  gather(simplex.perm[0].unsafeAddr, indices and m256i(511), 4) and m256i(511)
 
 template gradients(simplex: Simplex, indices: M256i): M256i =
-  gather(simplex.permMod12[0].unsafeAddr, indices, 4)
+  block:
+    let values = gather(simplex.permMod12[0].unsafeAddr, indices and m256i(511), 4)
+    values and mm256_cmpgt_epi32(values, m256i(-1)) and
+      mm256_cmpgt_epi32(m256i(12), values)
 
 func gradientAxis(axis: int): array[12, float32] =
   for i in 0 ..< grad3.len:
@@ -350,5 +352,4 @@ func fillGridAvx2*(
           let index = ((w * grid.width + x) * grid.height + y) * grid.depth + z
           mm256_storeu_ps(grid.values[index].unsafeAddr, total)
 
-when defined(release):
-  {.pop.}
+{.pop.}

@@ -64,6 +64,20 @@ to one. All sampling methods accept integer or float32 coordinates.
 See [examples/basic.nim](examples/basic.nim) and
 [examples/dimensions.nim](examples/dimensions.nim) for runnable examples.
 
+The shared gradient and random-vector lookup tables are already constants.
+Simplex and Perlin permutation tables depend on the seed. For a fixed seed and
+settings, the entire noise object can also be constructed at compile time:
+
+```nim
+const noise = initPerlin(42) # initSimplex(42) works too
+echo noise.value(0.125'f, 0.25'f)
+```
+
+Release builds remove checks and exception bookkeeping from audited sampling
+kernels. Public parameter validation remains enabled. See
+[kernel safety and verification](docs/kernels.md) for the bounds invariants and
+`-d:noisyCheckKernels` verification mode.
+
 ## Development
 
 Install dependencies from the workspace directory containing your checkout:
