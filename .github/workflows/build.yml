@@ -27,3 +27,9 @@ jobs:
         run: nim r tests/tests.nim
       - name: Run release tests
         run: nim r -d:release tests/tests.nim
+      - name: Fetch pinned reference sources
+        run: python tools/gen_references.py --cache-dir "${{ runner.temp }}/noisy-references"
+      - name: Compare against C and C++ references
+        run: nim r -f "-d:noisyReferenceDir=${{ runner.temp }}/noisy-references" tests/test_reference.nim
+      - name: Compare references with C++ release build
+        run: nim cpp -r -f -d:release "-d:noisyReferenceDir=${{ runner.temp }}/noisy-references" tests/test_reference.nim

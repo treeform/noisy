@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "path": "srombauts/SimplexNoise.cpp",
+      "url": "https://raw.githubusercontent.com/SRombauts/SimplexNoise/175add2d2a9ba99a43320b66bb87bb21b879b0f5/src/SimplexNoise.cpp",
+      "sha256": "71ea9417a0960ade39fdfee9e8d25104d2bf4690286eab1f609c8a40f15f29e0"
+    },
+    {
+      "path": "srombauts/SimplexNoise.h",
+      "url": "https://raw.githubusercontent.com/SRombauts/SimplexNoise/175add2d2a9ba99a43320b66bb87bb21b879b0f5/src/SimplexNoise.h",
+      "sha256": "1cde614db3c9918111e355d7163aa48c87a401537fab3853a109d08c36004ee9"
+    },
+    {
+      "path": "srombauts/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/SRombauts/SimplexNoise/175add2d2a9ba99a43320b66bb87bb21b879b0f5/LICENSE.txt",
+      "sha256": "42d9602c02b983399484b68e34cf420ac1c9e6b547ae09bc6c1759c6ecff7991"
+    },
+    {
+      "path": "caseman/_noise.h",
+      "url": "https://raw.githubusercontent.com/caseman/noise/bb32991ab97e90882d0e46e578060717c5b90dc5/_noise.h",
+      "sha256": "27bc829cf2903ffa5c5c8c518c8ed11ea8f760649ba0fb35bf5442057a76086e"
+    },
+    {
+      "path": "caseman/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/caseman/noise/bb32991ab97e90882d0e46e578060717c5b90dc5/LICENSE.txt",
+      "sha256": "1c6791d99347f89108fd79f17a88245e1b00ef14a307653fe730f1e46cea7f4d"
+    },
+    {
+      "path": "stegu/simplexnoise1234.c",
+      "url": "https://raw.githubusercontent.com/stegu/perlin-noise/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/simplexnoise1234.c",
+      "sha256": "83e1b59f2b00e6cf81fc10ca54f5993b99269f3f93c0d65086679de1090b9805"
+    },
+    {
+      "path": "stegu/simplexnoise1234.h",
+      "url": "https://raw.githubusercontent.com/stegu/perlin-noise/a624f5a18395c0ebc04738191efddf1dbd2cad9d/src/simplexnoise1234.h",
+      "sha256": "4d9c1daa0a1ba17d07db6ab7678e5c25a07609acf7d59b4d92f4e7bb46704380"
+    },
+    {
+      "path": "caseman/_simplex.c",
+      "url": "https://raw.githubusercontent.com/caseman/noise/bb32991ab97e90882d0e46e578060717c5b90dc5/_simplex.c",
+      "sha256": "47a3606dddafcc2d25a8adbd5345d982324bd01de7420b32a3e9f72adece3b84"
+    }
+  ],
+  "extracted": {
+    "path": "caseman/simplex23.c",
+    "sha256": "2d9f2f0ca44e9c71e7068bd52f55549556efdd2523483db6fe3e87455d2a8384"
+  }
+}

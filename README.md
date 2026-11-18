@@ -77,6 +77,10 @@ nim r tests/tests.nim
 The suite covers independent reference values, continuity, grid bounds, octave
 composition, and scalar/SIMD comparisons across seeds and parameters.
 
+For reproducible comparisons against independent C and C++ implementations,
+see [reference tests](tests/reference/README.md). Their pinned sources are
+fetched into an external cache and are not stored in this repository.
+
 Apple Silicon uses native ARM64 NEON. The same test command works without
 architecture flags or Rosetta. CI tests native ARM64 on macOS and x86 on Linux
 and Windows in debug and release builds.
