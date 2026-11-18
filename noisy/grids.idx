@@ -1,0 +1,12 @@
+nimTitle	grids	noisy/grids.html	module noisy/grids		0
+nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int	proc valueIndex(g: Grid; x, y, z: int): int		9
+nim	valueIndex	noisy/grids.html#valueIndex,Grid,int,int,int,int	proc valueIndex(g: Grid; x, y, z, w: int): int		13
+nim	`[]`	noisy/grids.html#[],Grid,int,int,int	proc `[]`(g: Grid; x, y: int; z = 0): float32		17
+nim	`[]`	noisy/grids.html#[],Grid,int	proc `[]`(g: Grid; x: int): float32		27
+nim	`[]`	noisy/grids.html#[],Grid,int,int,int,int	proc `[]`(g: Grid; x, y, z, w: int): float32		31
+nim	gridLength	noisy/grids.html#gridLength,openArray[int]	proc gridLength(dimens: openArray[int]): int		46
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,	proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid		64
+nim	scalarGrid	noisy/grids.html#scalarGrid,T,,_2	proc scalarGrid[T](noise: T; start: (float32, float32, float32);\n              dimens: (int, int, int)): Grid		87
+nimgrp	[]	noisy/grids.html#[]-procs-all	proc		17
+nimgrp	scalargrid	noisy/grids.html#scalarGrid-procs-all	proc		64
+nimgrp	valueindex	noisy/grids.html#valueIndex-procs-all	proc		9

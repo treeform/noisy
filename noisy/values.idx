@@ -11,4 +11,9 @@ nim	value	noisy/values.html#value,ValueCubic,float32,float32	proc value(noise: V
 nim	value	noisy/values.html#value,ValueCubic,float32,float32,float32	proc value(noise: ValueCubic; x, y, z: float32): float32		200
 nim	value	noisy/values.html#value,ValueCubic,int,int	proc value(noise: ValueCubic; x, y: int): float32		218
 nim	value	noisy/values.html#value,ValueCubic,int,int,int	proc value(noise: ValueCubic; x, y, z: int): float32		222
+nim	grid	noisy/values.html#grid,ValueCubic,,	proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid		226
+nim	grid	noisy/values.html#grid,ValueCubic,,_2	proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid		232
+nim	grid	noisy/values.html#grid,ValueCubic,,_3	proc grid(noise: ValueCubic; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		238
+nim	grid	noisy/values.html#grid,ValueCubic,,_4	proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid		246
+nimgrp	grid	noisy/values.html#grid-procs-all	proc		226
 nimgrp	value	noisy/values.html#value-procs-all	proc		78

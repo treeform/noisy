@@ -28,7 +28,7 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/grids.html">noisy/grids</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
@@ -63,11 +63,11 @@
           </ul></dd>
 <dt><a name="%60%5B%5D%60" href="#%60%5B%5D%60"><span>`[]`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="noisy: proc `[]`(g: Grid; x: int): float32" href="noisy.html#%5B%5D%2CGrid%2Cint">noisy: proc `[]`(g: Grid; x: int): float32</a></li>
+          data-doc-search-tag="grids: proc `[]`(g: Grid; x: int): float32" href="noisy/grids.html#%5B%5D%2CGrid%2Cint">grids: proc `[]`(g: Grid; x: int): float32</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="noisy: proc `[]`(g: Grid; x, y: int; z = 0): float32" href="noisy.html#%5B%5D%2CGrid%2Cint%2Cint%2Cint">noisy: proc `[]`(g: Grid; x, y: int; z = 0): float32</a></li>
+          data-doc-search-tag="grids: proc `[]`(g: Grid; x, y: int; z = 0): float32" href="noisy/grids.html#%5B%5D%2CGrid%2Cint%2Cint%2Cint">grids: proc `[]`(g: Grid; x, y: int; z = 0): float32</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="noisy: proc `[]`(g: Grid; x, y, z, w: int): float32" href="noisy.html#%5B%5D%2CGrid%2Cint%2Cint%2Cint%2Cint">noisy: proc `[]`(g: Grid; x, y, z, w: int): float32</a></li>
+          data-doc-search-tag="grids: proc `[]`(g: Grid; x, y, z, w: int): float32" href="noisy/grids.html#%5B%5D%2CGrid%2Cint%2Cint%2Cint%2Cint">grids: proc `[]`(g: Grid; x, y, z, w: int): float32</a></li>
           </ul></dd>
 <dt><a name="%60and%60" href="#%60and%60"><span>`and`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -224,10 +224,36 @@
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid" href="noisy.html#grid%2CSimplex%2Cfloat32%2Cint">noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start, width: int): Grid" href="noisy.html#grid%2CSimplex%2Cint%2Cint">noisy: proc grid(simplex: Simplex; start, width: int): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C">opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C_2">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C_3">opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C_4">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
           </ul></dd>
 <dt><a name="Grid" href="#Grid"><span>Grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: type Grid" href="noisy/simplexcommon.html#Grid">simplexcommon: type Grid</a></li>
+          </ul></dd>
+<dt><a name="grid" href="#grid"><span>grid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C">values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C_2">values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C_3">values: proc grid(noise: ValueCubic; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C_4">values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
+          </ul></dd>
+<dt><a name="gridLength" href="#gridLength"><span>gridLength:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc gridLength(dimens: openArray[int]): int" href="noisy/grids.html#gridLength%2CopenArray%5Bint%5D">grids: proc gridLength(dimens: openArray[int]): int</a></li>
           </ul></dd>
 <dt><a name="hasAvx2" href="#hasAvx2"><span>hasAvx2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -337,6 +363,14 @@
 <li><a class="reference external"
           data-doc-search-tag="lattices: const RandVecs3D" href="noisy/lattices.html#RandVecs3D">lattices: const RandVecs3D</a></li>
           </ul></dd>
+<dt><a name="scalarGrid" href="#scalarGrid"><span>scalarGrid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/grids.html#scalarGrid%2CT%2C%2C">grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int)): Grid" href="noisy/grids.html#scalarGrid%2CT%2C%2C_2">grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int)): Grid</a></li>
+          </ul></dd>
 <dt><a name="Simplex" href="#Simplex"><span>Simplex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simplexcommon: object Simplex" href="noisy/simplexcommon.html#Simplex">simplexcommon: object Simplex</a></li>
@@ -435,6 +469,12 @@
 <li><a class="reference external"
           data-doc-search-tag="values: object ValueCubic" href="noisy/values.html#ValueCubic">values: object ValueCubic</a></li>
           </ul></dd>
+<dt><a name="valueIndex" href="#valueIndex"><span>valueIndex:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc valueIndex(g: Grid; x, y, z: int): int" href="noisy/grids.html#valueIndex%2CGrid%2Cint%2Cint%2Cint">grids: proc valueIndex(g: Grid; x, y, z: int): int</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="grids: proc valueIndex(g: Grid; x, y, z, w: int): int" href="noisy/grids.html#valueIndex%2CGrid%2Cint%2Cint%2Cint%2Cint">grids: proc valueIndex(g: Grid; x, y, z, w: int): int</a></li>
+          </ul></dd>
 <dt><a name="ValueNoise" href="#ValueNoise"><span>ValueNoise:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="values: object ValueNoise" href="noisy/values.html#ValueNoise">values: object ValueNoise</a></li>
@@ -443,7 +483,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 04:53:32 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-18 05:11:51 UTC</small>
       </div>
     </div>
   </div>
