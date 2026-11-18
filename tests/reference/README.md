@@ -36,7 +36,62 @@ offline and reports that external comparisons were skipped. CI explicitly
 fetches and runs the C and C++ reference comparisons on all three platforms.
 
 The test prints comparison counts and maximum absolute errors for each dimension.
-It is a numerical correctness comparison, not a performance timing benchmark.
+Use the separate benchmark below to measure performance.
+
+## Timing
+
+From the repository root, use the same external cache to benchmark all four
+dimensions, with one and three octaves:
+
+```sh
+python3 tools/gen_references.py --cache-dir /tmp/noisy-references
+nim r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/bench_reference.nim
+```
+
+`bench_reference.nim` uses the standard library, so it does not require Benchy.
+It validates every output against the reference before timing. Each path allocates
+and fills an equally sized buffer of 262,144 samples, using identical coordinates,
+permutations, octave counts, frequency, amplitude, lacunarity, and gain. Shapes are
+262144 in 1D, 512x512 in 2D, 64x64x64 in 3D, and 32x32x32x8 in 4D.
+
+The C++ bridge loops over unchanged upstream kernels in one batch call per grid;
+it does not charge a foreign-function call per sample. Noisy scalar measurements
+call `value()` and fill a buffer; SIMD measurements call the public `grid()` API.
+Allocation and output writes are timed. Checksums, validation, and disposal of the
+returned output buffer are outside the timer; the public Grid object's overhead
+remains included. Every output is consumed and a checksum is printed to prevent
+dead-code elimination.
+
+After two warmups per path, the runner rotates measurement order across 11 rounds,
+each averaging four grids per path. It reports the sorted median of those round
+means and their min/max range. `-d:noisyBenchmarkRounds=N` and
+`-d:noisyBenchmarkBatches=N` change these settings. A speedup is baseline time
+divided by the measured path's time, so values above 1 mean faster. These are
+batch grid throughput measurements; arbitrary point queries can behave differently.
+Compiler optimizations of the C/C++ references remain enabled, and the 4D
+reference retains its double-precision intermediates.
+
+### Apple M4 Pro results
+
+Recorded with Nim 2.4.0, Apple Clang 21.0.0, the Nim C backend, `-d:release`, and
+native ARM64 NEON. Times below are milliseconds per grid from the first complete
+run; a second run confirmed the same faster/slower conclusions. Timing varies
+with hardware, compiler, and system load.
+
+| Dimensions | Octaves | C/C++ reference ms | Noisy scalar ms | Noisy NEON ms | Scalar vs reference | NEON vs reference |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1D | 1 | 1.001 | 0.595 | 0.377 | 1.68x | 2.65x |
+| 2D | 1 | 1.312 | 1.800 | 0.968 | 0.73x | 1.36x |
+| 3D | 1 | 2.388 | 2.940 | 2.115 | 0.81x | 1.13x |
+| 4D | 1 | 7.175 | 6.577 | 3.059 | 1.09x | 2.35x |
+| 1D | 3 | 2.910 | 1.462 | 0.913 | 1.99x | 3.19x |
+| 2D | 3 | 3.800 | 4.670 | 2.637 | 0.81x | 1.44x |
+| 3D | 3 | 9.471 | 8.476 | 6.126 | 1.12x | 1.55x |
+| 4D | 3 | 31.176 | 32.003 | 8.807 | 0.97x | 3.54x |
+
+NEON was faster than each selected reference in these workloads. Scalar results
+were mixed: notably, scalar 2D was slower at both octave counts. These numbers
+compare the specific implementations and workloads above, not every noise library.
 
 ## Comparable algorithms and inputs
 

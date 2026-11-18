@@ -88,7 +88,7 @@ and Windows in debug and release builds.
 ## Benchmarks and image generation
 
 Optional development tools have separate dependencies. From the workspace
-parent, install `benchy` for benchmarks or `pixie` for image generation with
+parent, install `benchy` for `bench_noisy.nim` or `pixie` for image generation with
 `nimby install benchy` or `nimby install pixie`.
 
 Run these commands from the repository root:
@@ -99,6 +99,17 @@ nim r tools/gen_noise.nim
 ```
 
 The generator writes the preview to `docs/noise.png`.
+
+To time scalar sampling and SIMD grids against the pinned C/C++ references:
+
+```sh
+python3 tools/gen_references.py --cache-dir /tmp/noisy-references
+nim r -f -d:release -d:noisyReferenceDir=/tmp/noisy-references tests/bench_reference.nim
+```
+
+This benchmark uses Nim's standard library and the external reference cache.
+It reports medians, timing ranges, and speedup ratios for 1D through 4D with one
+and three octaves. See the [methodology and results](tests/reference/README.md#timing).
 
 ## Documentation
 
