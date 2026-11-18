@@ -104,6 +104,56 @@ batch grid throughput measurements; arbitrary point queries can behave different
 Compiler optimizations of the C/C++ references remain enabled, and the 4D
 reference retains its double-precision intermediates.
 
+### AMD Ryzen 9 5900X expanded AVX2 results
+
+Recorded on 2026-11-18 at commit `0de468a` with a clean working tree, Windows
+x86-64, Nim 2.2.10, MinGW-w64 GCC/G++ 11.1.0, the Nim C backend, and `-d:release`.
+These are medians from 11 rounds of four grids per path, with 262,144 samples
+per grid. Every timed output was checked against the matching C/C++ reference.
+Times include allocation and output writes; lower is better.
+
+| Noise | Dimensions | Octaves | C/C++ reference ms | Noisy scalar ms | Noisy AVX2 ms | AVX2 vs reference | AVX2 vs scalar |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Improved Perlin | 1D | 1 | 1.323 | 10.249 | 1.024 | 1.29x | 10.01x |
+| Improved Perlin | 2D | 1 | 2.482 | 13.623 | 1.606 | 1.55x | 8.48x |
+| Improved Perlin | 3D | 1 | 3.914 | 19.021 | 2.767 | 1.41x | 6.87x |
+| Improved Perlin | 4D | 1 | 8.247 | 29.743 | 4.743 | 1.74x | 6.27x |
+| OpenSimplex2 | 2D | 1 | 2.982 | 11.323 | 1.513 | 1.97x | 7.48x |
+| OpenSimplex2 | 3D | 1 | 6.263 | 13.828 | 2.499 | 2.51x | 5.53x |
+| OpenSimplex2S | 2D | 1 | 3.392 | 11.992 | 1.869 | 1.81x | 6.41x |
+| OpenSimplex2S | 3D | 1 | 7.044 | 15.817 | 3.976 | 1.77x | 3.98x |
+| Value | 2D | 1 | 2.345 | 10.904 | 0.971 | 2.41x | 11.22x |
+| Value | 3D | 1 | 4.098 | 12.084 | 1.170 | 3.50x | 10.33x |
+| ValueCubic | 2D | 1 | 5.498 | 13.805 | 1.504 | 3.65x | 9.18x |
+| ValueCubic | 3D | 1 | 16.534 | 24.508 | 3.682 | 4.49x | 6.66x |
+| Cellular | 2D | 1 | 5.100 | 24.346 | 2.574 | 1.98x | 9.46x |
+| Cellular | 3D | 1 | 15.661 | 60.782 | 8.252 | 1.90x | 7.37x |
+| Improved Perlin | 1D | 3 | 3.295 | 19.728 | 1.445 | 2.28x | 13.66x |
+| Improved Perlin | 2D | 3 | 9.870 | 32.726 | 3.373 | 2.93x | 9.70x |
+| Improved Perlin | 3D | 3 | 13.557 | 49.626 | 6.357 | 2.13x | 7.81x |
+| Improved Perlin | 4D | 3 | 29.931 | 85.769 | 11.975 | 2.50x | 7.16x |
+| OpenSimplex2 | 2D | 3 | 8.576 | 22.684 | 3.109 | 2.76x | 7.30x |
+| OpenSimplex2 | 3D | 3 | 21.053 | 31.704 | 5.781 | 3.64x | 5.48x |
+| OpenSimplex2S | 2D | 3 | 9.867 | 24.493 | 4.127 | 2.39x | 5.93x |
+| OpenSimplex2S | 3D | 3 | 23.671 | 39.576 | 10.146 | 2.33x | 3.90x |
+| Value | 2D | 3 | 6.416 | 20.667 | 1.366 | 4.70x | 15.13x |
+| Value | 3D | 3 | 10.880 | 23.756 | 1.912 | 5.69x | 12.43x |
+| ValueCubic | 2D | 3 | 14.640 | 29.123 | 2.802 | 5.22x | 10.39x |
+| ValueCubic | 3D | 3 | 47.472 | 60.847 | 8.707 | 5.45x | 6.99x |
+| Cellular | 2D | 3 | 14.849 | 76.598 | 6.143 | 2.42x | 12.47x |
+| Cellular | 3D | 3 | 46.516 | 196.239 | 23.136 | 2.01x | 8.48x |
+
+For these newly accelerated workloads, AVX2 was 3.90x to 15.13x faster than
+Noisy scalar and 1.29x to 5.69x faster than the selected matching references.
+Cellular uses squared Euclidean distance, `Distance`, and jitter of 1; its
+other modes are covered by correctness tests, not this timing table.
+
+[Raw round means and metadata](results/ryzen-5900x-all-noises-avx2.json) also
+include Simplex and a separate `-d:noisyNoAvx` run. Only Simplex has an SSE2
+backend; the remaining families fall back to scalar on that build. These
+numbers describe this machine and these grid workloads, rather than arbitrary
+point queries or every noise library.
+
 ### AMD Ryzen 9 5900X Simplex results
 
 Recorded on Windows x86-64 with Nim 2.2.10, MinGW-w64 GCC/G++ 11.1.0,
