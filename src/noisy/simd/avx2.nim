@@ -261,9 +261,12 @@ template noise8(simplex: Simplex, xIn, yIn, zIn, wIn: M256): M256 =
         falloff > zero)
     m256(62) * total
 
-func fillGridAvx2*(simplex: Simplex, start: float32, grid: Grid) =
+func fillGridAvx2*(
+  simplex: Simplex, start: float32, width: int,
+  buffer: var openArray[float32]
+) =
   ## Fills complete groups of eight along X; the caller fills the remainder.
-  for x in countup(0, grid.width - 8, 8):
+  for x in countup(0, width - 8, 8):
     let vx = coordinates(start, x)
     var
       total = mm256_setzero_ps()
@@ -274,16 +277,20 @@ func fillGridAvx2*(simplex: Simplex, start: float32, grid: Grid) =
       amplitude = amplitude * m256(simplex.gain)
       frequency *= simplex.lacunarity
     total = total / m256(simplex.octaves.float32)
-    mm256_storeu_ps(grid.values[x].unsafeAddr, total)
+    mm256_storeu_ps(buffer[x].unsafeAddr, total)
 
-func fillGridAvx2*(simplex: Simplex, start: (float32, float32), grid: Grid) =
+func fillGridAvx2*(
+  simplex: Simplex, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  let (width, height) = dimens
   ## Fills complete groups of eight along Y; the caller fills the scalar tail.
   if simplex.octaves == 0:
     raise newException(NoisyError, "Octaves must be > 0")
 
-  for x in 0 ..< grid.width:
+  for x in 0 ..< width:
     let vx = m256(start[0] + x.float32)
-    for y in countup(0, grid.height - 8, 8):
+    for y in countup(0, height - 8, 8):
       let vy = coordinates(start[1], y)
       var
         total = mm256_setzero_ps()
@@ -296,20 +303,23 @@ func fillGridAvx2*(simplex: Simplex, start: (float32, float32), grid: Grid) =
         frequency *= simplex.lacunarity
       if simplex.octaves > 1:
         total = total / m256(simplex.octaves.float32)
-      mm256_storeu_ps(grid.values[x * grid.height + y].unsafeAddr, total)
+      mm256_storeu_ps(buffer[x * height + y].unsafeAddr, total)
 
 func fillGridAvx2*(
-  simplex: Simplex, start: (float32, float32, float32), grid: Grid
+  simplex: Simplex, start: (float32, float32, float32),
+  dimens: (int, int, int),
+  buffer: var openArray[float32]
 ) =
+  let (width, height, depth) = dimens
   ## Fills complete groups of eight along Z; the caller fills the scalar tail.
   if simplex.octaves == 0:
     raise newException(NoisyError, "Octaves must be > 0")
 
-  for x in 0 ..< grid.width:
+  for x in 0 ..< width:
     let vx = m256(start[0] + x.float32)
-    for y in 0 ..< grid.height:
+    for y in 0 ..< height:
       let vy = m256(start[1] + y.float32)
-      for z in countup(0, grid.depth - 8, 8):
+      for z in countup(0, depth - 8, 8):
         let vz = coordinates(start[2], z)
         var
           total = mm256_setzero_ps()
@@ -323,21 +333,24 @@ func fillGridAvx2*(
         if simplex.octaves > 1:
           total = total / m256(simplex.octaves.float32)
         mm256_storeu_ps(
-          grid.values[(x * grid.height + y) * grid.depth + z].unsafeAddr,
+          buffer[(x * height + y) * depth + z].unsafeAddr,
           total
         )
 
 func fillGridAvx2*(
-  simplex: Simplex, start: (float32, float32, float32, float32), grid: Grid
+  simplex: Simplex, start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int),
+  buffer: var openArray[float32]
 ) =
+  let (width, height, depth, frames) = dimens
   ## Fills eight Z samples at a time within each fourth-axis slice.
-  for w in 0 ..< grid.frames:
+  for w in 0 ..< frames:
     let vw = m256(start[3] + w.float32)
-    for x in 0 ..< grid.width:
+    for x in 0 ..< width:
       let vx = m256(start[0] + x.float32)
-      for y in 0 ..< grid.height:
+      for y in 0 ..< height:
         let vy = m256(start[1] + y.float32)
-        for z in countup(0, grid.depth - 8, 8):
+        for z in countup(0, depth - 8, 8):
           let vz = coordinates(start[2], z)
           var
             total = mm256_setzero_ps()
@@ -349,7 +362,7 @@ func fillGridAvx2*(
             amplitude = amplitude * m256(simplex.gain)
             frequency *= simplex.lacunarity
           total = total / m256(simplex.octaves.float32)
-          let index = ((w * grid.width + x) * grid.height + y) * grid.depth + z
-          mm256_storeu_ps(grid.values[index].unsafeAddr, total)
+          let index = ((w * width + x) * height + y) * depth + z
+          mm256_storeu_ps(buffer[index].unsafeAddr, total)
 
 {.pop.}

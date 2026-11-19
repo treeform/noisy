@@ -266,73 +266,141 @@ when useGridNeon:
 {.pop.}
 
 func grid*(
+  noise: ValueNoise, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 2D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, buffer, avxValue)
+  elif useGridNeon:
+    noise.fillGrid(start, dimens, buffer, sample2x4[ValueNoise])
+  else:
+    noise.scalarGrid(start, dimens, buffer)
+
+func grid*(
   noise: ValueNoise, start: (float32, float32), dimens: (int, int)
 ): Grid =
-  ## Samples a 2D Value grid at unit intervals from start.
-  when useGridAvx2:
-    noise.avxGrid(start, dimens, avxValue)
-  elif useGridNeon:
-    noise.fillGrid(start, dimens, sample2x4[ValueNoise])
-  else:
-    noise.scalarGrid(start, dimens)
+  ## Allocates and fills a 2D grid at unit intervals from start.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.grid(start, dimens, result.values)
+
+func grid*(
+  noise: ValueNoise, start: (int, int), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 2D grid into caller-owned storage from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens, buffer)
 
 func grid*(
   noise: ValueNoise, start: (int, int), dimens: (int, int)
 ): Grid {.inline.} =
-  ## Samples a 2D Value grid from an integer start.
+  ## Allocates a 2D grid from an integer start.
   noise.grid((start[0].float32, start[1].float32), dimens)
 
 func grid*(
-  noise: ValueNoise,
-  start: (float32, float32, float32),
-  dimens: (int, int, int)
-): Grid =
-  ## Samples a 3D Value grid at unit intervals from start.
+  noise: ValueNoise, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 3D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   when useGridAvx2:
-    noise.avxGrid(start, dimens, avxValue)
+    noise.avxGrid(start, dimens, buffer, avxValue)
   elif useGridNeon:
-    noise.fillGrid(start, dimens, sample3x4[ValueNoise])
+    noise.fillGrid(start, dimens, buffer, sample3x4[ValueNoise])
   else:
-    noise.scalarGrid(start, dimens)
+    noise.scalarGrid(start, dimens, buffer)
+
+func grid*(
+  noise: ValueNoise, start: (float32, float32, float32), dimens: (int, int, int)
+): Grid =
+  ## Allocates and fills a 3D grid at unit intervals from start.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.grid(start, dimens, result.values)
+
+func grid*(
+  noise: ValueNoise, start: (int, int, int), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 3D grid into caller-owned storage from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens, buffer)
 
 func grid*(
   noise: ValueNoise, start: (int, int, int), dimens: (int, int, int)
 ): Grid {.inline.} =
-  ## Samples a 3D Value grid from an integer start.
+  ## Allocates a 3D grid from an integer start.
   noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
+
+func grid*(
+  noise: ValueCubic, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 2D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
+  when useGridAvx2:
+    noise.avxGrid(start, dimens, buffer, avxValueCubic)
+  elif useGridNeon:
+    noise.fillGrid(start, dimens, buffer, sample2x4[ValueCubic])
+  else:
+    noise.scalarGrid(start, dimens, buffer)
 
 func grid*(
   noise: ValueCubic, start: (float32, float32), dimens: (int, int)
 ): Grid =
-  ## Samples a 2D ValueCubic grid at unit intervals from start.
-  when useGridAvx2:
-    noise.avxGrid(start, dimens, avxValueCubic)
-  elif useGridNeon:
-    noise.fillGrid(start, dimens, sample2x4[ValueCubic])
-  else:
-    noise.scalarGrid(start, dimens)
+  ## Allocates and fills a 2D grid at unit intervals from start.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.grid(start, dimens, result.values)
+
+func grid*(
+  noise: ValueCubic, start: (int, int), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 2D grid into caller-owned storage from an integer start.
+  noise.grid((start[0].float32, start[1].float32), dimens, buffer)
 
 func grid*(
   noise: ValueCubic, start: (int, int), dimens: (int, int)
 ): Grid {.inline.} =
-  ## Samples a 2D ValueCubic grid from an integer start.
+  ## Allocates a 2D grid from an integer start.
   noise.grid((start[0].float32, start[1].float32), dimens)
 
 func grid*(
-  noise: ValueCubic,
-  start: (float32, float32, float32),
-  dimens: (int, int, int)
-): Grid =
-  ## Samples a 3D ValueCubic grid at unit intervals from start.
+  noise: ValueCubic, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 3D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   when useGridAvx2:
-    noise.avxGrid(start, dimens, avxValueCubic)
+    noise.avxGrid(start, dimens, buffer, avxValueCubic)
   elif useGridNeon:
-    noise.fillGrid(start, dimens, sample3x4[ValueCubic])
+    noise.fillGrid(start, dimens, buffer, sample3x4[ValueCubic])
   else:
-    noise.scalarGrid(start, dimens)
+    noise.scalarGrid(start, dimens, buffer)
+
+func grid*(
+  noise: ValueCubic, start: (float32, float32, float32), dimens: (int, int, int)
+): Grid =
+  ## Allocates and fills a 3D grid at unit intervals from start.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.grid(start, dimens, result.values)
+
+func grid*(
+  noise: ValueCubic, start: (int, int, int), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 3D grid into caller-owned storage from an integer start.
+  noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens, buffer)
 
 func grid*(
   noise: ValueCubic, start: (int, int, int), dimens: (int, int, int)
 ): Grid {.inline.} =
-  ## Samples a 3D ValueCubic grid from an integer start.
+  ## Allocates a 3D grid from an integer start.
   noise.grid((start[0].float32, start[1].float32, start[2].float32), dimens)

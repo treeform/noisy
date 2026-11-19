@@ -3,6 +3,7 @@ import test_api, test_noisy, test_dimensions, test_simd, test_perlin, test_avx2
 import test_opensimplex2, test_opensimplex2s
 import test_values, test_valuecubic, test_cellular, test_scalar_grids
 import test_kernel_bounds
+import test_grid_buffers
 when defined(noisyReferenceDir):
   import test_reference
 else:

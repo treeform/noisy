@@ -213,72 +213,142 @@ when useGridNeon:
 
 {.pop.}
 
-func grid*(perlin: Perlin, start: float32, width: int): Grid =
-  ## Samples a 1D Improved Perlin grid at unit intervals from start.
+func grid*(
+  perlin: Perlin, start: float32, width: int,
+  buffer: var openArray[float32]
+) =
+  ## Fills 1D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   when useGridAvx2:
-    perlin.avxGrid(start, width, avxPerlin)
+    perlin.avxGrid(start, width, buffer, avxPerlin)
   elif useGridNeon:
-    perlin.fillGrid(start, width, sample1x4)
+    perlin.fillGrid(start, width, buffer, sample1x4)
   else:
-    perlin.scalarGrid(start, width)
+    perlin.scalarGrid(start, width, buffer)
 
-func grid*(perlin: Perlin, start, width: int): Grid {.inline.} =
-  ## Samples a 1D Improved Perlin grid from an integer start.
+func grid*(
+  perlin: Perlin, start: float32, width: int
+): Grid =
+  ## Allocates and fills a 1D grid at unit intervals from start.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(width)
+  perlin.grid(start, width, result.values)
+
+func grid*(
+  perlin: Perlin, start: int, width: int,
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 1D grid into caller-owned storage from an integer start.
+  perlin.grid(start.float32, width, buffer)
+
+func grid*(
+  perlin: Perlin, start: int, width: int
+): Grid {.inline.} =
+  ## Allocates a 1D grid from an integer start.
   perlin.grid(start.float32, width)
+
+func grid*(
+  perlin: Perlin, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 2D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
+  when useGridAvx2:
+    perlin.avxGrid(start, dimens, buffer, avxPerlin)
+  elif useGridNeon:
+    perlin.fillGrid(start, dimens, buffer, sample2x4)
+  else:
+    perlin.scalarGrid(start, dimens, buffer)
 
 func grid*(
   perlin: Perlin, start: (float32, float32), dimens: (int, int)
 ): Grid =
-  ## Samples a 2D Improved Perlin grid at unit intervals from start.
-  when useGridAvx2:
-    perlin.avxGrid(start, dimens, avxPerlin)
-  elif useGridNeon:
-    perlin.fillGrid(start, dimens, sample2x4)
-  else:
-    perlin.scalarGrid(start, dimens)
+  ## Allocates and fills a 2D grid at unit intervals from start.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  perlin.grid(start, dimens, result.values)
+
+func grid*(
+  perlin: Perlin, start: (int, int), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 2D grid into caller-owned storage from an integer start.
+  perlin.grid((start[0].float32, start[1].float32), dimens, buffer)
 
 func grid*(
   perlin: Perlin, start: (int, int), dimens: (int, int)
 ): Grid {.inline.} =
-  ## Samples a 2D Improved Perlin grid from an integer start.
+  ## Allocates a 2D grid from an integer start.
   perlin.grid((start[0].float32, start[1].float32), dimens)
 
 func grid*(
-  perlin: Perlin,
-  start: (float32, float32, float32),
-  dimens: (int, int, int)
-): Grid =
-  ## Samples a 3D Improved Perlin grid at unit intervals from start.
+  perlin: Perlin, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 3D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   when useGridAvx2:
-    perlin.avxGrid(start, dimens, avxPerlin)
+    perlin.avxGrid(start, dimens, buffer, avxPerlin)
   elif useGridNeon:
-    perlin.fillGrid(start, dimens, sample3x4)
+    perlin.fillGrid(start, dimens, buffer, sample3x4)
   else:
-    perlin.scalarGrid(start, dimens)
+    perlin.scalarGrid(start, dimens, buffer)
+
+func grid*(
+  perlin: Perlin, start: (float32, float32, float32), dimens: (int, int, int)
+): Grid =
+  ## Allocates and fills a 3D grid at unit intervals from start.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  perlin.grid(start, dimens, result.values)
+
+func grid*(
+  perlin: Perlin, start: (int, int, int), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 3D grid into caller-owned storage from an integer start.
+  perlin.grid((start[0].float32, start[1].float32, start[2].float32), dimens, buffer)
 
 func grid*(
   perlin: Perlin, start: (int, int, int), dimens: (int, int, int)
 ): Grid {.inline.} =
-  ## Samples a 3D Improved Perlin grid from an integer start.
+  ## Allocates a 3D grid from an integer start.
   perlin.grid((start[0].float32, start[1].float32, start[2].float32), dimens)
 
 func grid*(
-  perlin: Perlin,
-  start: (float32, float32, float32, float32),
-  dimens: (int, int, int, int)
-): Grid =
-  ## Samples a 4D Improved Perlin grid at unit intervals from start.
+  perlin: Perlin, start: (float32, float32, float32, float32), dimens: (int, int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 4D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   when useGridAvx2:
-    perlin.avxGrid(start, dimens, avxPerlin)
+    perlin.avxGrid(start, dimens, buffer, avxPerlin)
   elif useGridNeon:
-    perlin.fillGrid(start, dimens, sample4x4)
+    perlin.fillGrid(start, dimens, buffer, sample4x4)
   else:
-    perlin.scalarGrid(start, dimens)
+    perlin.scalarGrid(start, dimens, buffer)
+
+func grid*(
+  perlin: Perlin, start: (float32, float32, float32, float32), dimens: (int, int, int, int)
+): Grid =
+  ## Allocates and fills a 4D grid at unit intervals from start.
+  if perlin.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  perlin.grid(start, dimens, result.values)
+
+func grid*(
+  perlin: Perlin, start: (int, int, int, int), dimens: (int, int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 4D grid into caller-owned storage from an integer start.
+  perlin.grid((start[0].float32, start[1].float32, start[2].float32, start[3].float32), dimens, buffer)
 
 func grid*(
   perlin: Perlin, start: (int, int, int, int), dimens: (int, int, int, int)
 ): Grid {.inline.} =
-  ## Samples a 4D Improved Perlin grid from an integer start.
-  perlin.grid((
-    start[0].float32, start[1].float32, start[2].float32, start[3].float32
-  ), dimens)
+  ## Allocates a 4D grid from an integer start.
+  perlin.grid((start[0].float32, start[1].float32, start[2].float32, start[3].float32), dimens)

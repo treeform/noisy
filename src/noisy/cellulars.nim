@@ -256,39 +256,71 @@ when useGridNeon:
 {.pop.}
 
 func grid*(
-  cellular: Cellular, start: (float32, float32), dimens: (int, int)
-): Grid =
-  ## Generates a 2D Cellular grid at unit intervals.
+  cellular: Cellular, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 2D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
   cellular.validate()
   when useGridAvx2:
-    cellular.avxGrid(start, dimens, avxCellular)
+    cellular.avxGrid(start, dimens, buffer, avxCellular)
   elif useGridNeon:
-    cellular.fillGrid(start, dimens, sample2x4)
+    cellular.fillGrid(start, dimens, buffer, sample2x4)
   else:
-    cellular.scalarGrid(start, dimens)
+    cellular.scalarGrid(start, dimens, buffer)
 
 func grid*(
-  cellular: Cellular,
-  start: (float32, float32, float32),
-  dimens: (int, int, int)
+  cellular: Cellular, start: (float32, float32), dimens: (int, int)
 ): Grid =
-  ## Generates a 3D Cellular grid at unit intervals.
+  ## Allocates and fills a 2D grid at unit intervals from start.
   cellular.validate()
-  when useGridAvx2:
-    cellular.avxGrid(start, dimens, avxCellular)
-  elif useGridNeon:
-    cellular.fillGrid(start, dimens, sample3x4)
-  else:
-    cellular.scalarGrid(start, dimens)
+  result = allocateGrid(dimens)
+  cellular.grid(start, dimens, result.values)
+
+func grid*(
+  cellular: Cellular, start: (int, int), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 2D grid into caller-owned storage from an integer start.
+  cellular.grid((start[0].float32, start[1].float32), dimens, buffer)
 
 func grid*(
   cellular: Cellular, start: (int, int), dimens: (int, int)
 ): Grid {.inline.} =
-  ## Generates a 2D Cellular grid from an integer origin.
+  ## Allocates a 2D grid from an integer start.
   cellular.grid((start[0].float32, start[1].float32), dimens)
+
+func grid*(
+  cellular: Cellular, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills 3D samples into buffer without allocating or resizing it.
+  ## Requires room for the full grid; extra elements are left untouched.
+  cellular.validate()
+  when useGridAvx2:
+    cellular.avxGrid(start, dimens, buffer, avxCellular)
+  elif useGridNeon:
+    cellular.fillGrid(start, dimens, buffer, sample3x4)
+  else:
+    cellular.scalarGrid(start, dimens, buffer)
+
+func grid*(
+  cellular: Cellular, start: (float32, float32, float32), dimens: (int, int, int)
+): Grid =
+  ## Allocates and fills a 3D grid at unit intervals from start.
+  cellular.validate()
+  result = allocateGrid(dimens)
+  cellular.grid(start, dimens, result.values)
+
+func grid*(
+  cellular: Cellular, start: (int, int, int), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills a 3D grid into caller-owned storage from an integer start.
+  cellular.grid((start[0].float32, start[1].float32, start[2].float32), dimens, buffer)
 
 func grid*(
   cellular: Cellular, start: (int, int, int), dimens: (int, int, int)
 ): Grid {.inline.} =
-  ## Generates a 3D Cellular grid from an integer origin.
+  ## Allocates a 3D grid from an integer start.
   cellular.grid((start[0].float32, start[1].float32, start[2].float32), dimens)

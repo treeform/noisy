@@ -53,6 +53,9 @@ functions with threads enabled and goto exceptions unchanged.
 - Grid allocation and dimension multiplication remain validated. Vector stores
   cover complete groups of eight or four samples; scalar code fills the tail.
   No speculative vector load or store is used beyond the allocated output.
+  The buffer-taking `grid()` overloads validate destination length before any
+  write, fill only the requested prefix, and accept unaligned mutable slices.
+  The returning overloads allocate their storage and call these same fillers.
 
 Coordinates and octave settings must keep the scaled/rotated lattice coordinates
 finite and representable by the sampler's integer conversion. FastNoiseLite and
@@ -79,6 +82,10 @@ table halves. Formerly out-of-bounds custom lookups now wrap within the array.
 table contents, lattice boundaries, seeds, all dimensions, complete vector
 batches, and scalar tails. The existing suite also checks parameter errors,
 all cellular modes, octave composition, and independent C/C++ reference values.
+`test_grid_buffers.nim` covers every family and dimension with exact and oversized
+buffers, guarded slices, repeated fills, empty shapes, invalid parameters, and
+all SIMD tail lengths. With `-d:nimAllocStats`, it also verifies unchanged Nim
+allocation/deallocation counters around successful buffer fills.
 
 ```sh
 nim r tests/tests.nim

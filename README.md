@@ -99,6 +99,37 @@ to one. All sampling methods accept integer or float32 coordinates.
 See [examples/basic.nim](examples/basic.nim) and
 [examples/dimensions.nim](examples/dimensions.nim) for runnable examples.
 
+### Reuse a grid buffer
+
+Every `grid()` overload also accepts a mutable `float32` buffer as its final
+argument. It fills the buffer directly, using the same SIMD dispatch and sample
+layout, without allocating or resizing it:
+
+```nim
+var noise = initPerlin(1988)
+noise.frequency = 0.025
+var buffer = newSeq[float32](512 * 512)
+
+noise.grid((0, 0), (512, 512), buffer)
+noise.grid((512, 0), (512, 512), buffer) # Reuse storage for the next chunk.
+
+# The original overload allocates its buffer, calls the filler, and returns it.
+let surface = noise.grid((0, 0), (512, 512))
+noise.grid((512, 0), (512, 512), surface.values) # Refill an existing Grid too.
+```
+
+Buffers can be sequences, fixed arrays, or mutable slices made with
+`toOpenArray(first, last)`. They must contain at least the product of the grid
+dimensions; extra elements are left untouched. Invalid octave or jitter settings,
+negative or overflowing dimensions, and undersized buffers raise `NoisyError` before any
+samples are written. A zero dimension produces no writes. There is no automatic
+resize, and lengths refer to elements, not bytes.
+
+This works with integer or fractional origins in every supported dimension:
+1D through 4D for Simplex and Perlin, and 2D/3D for the other five families.
+The flat index is `x * height + y` in 2D, `(x * height + y) * depth + z` in 3D,
+and `((w * width + x) * height + y) * depth + z` in 4D.
+
 The shared gradient and random-vector lookup tables are already constants.
 Simplex and Perlin permutation tables depend on the seed. For a fixed seed and
 settings, the entire noise object can also be constructed at compile time:

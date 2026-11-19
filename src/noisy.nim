@@ -46,9 +46,6 @@ func initSimplex*(seed: int): Simplex =
     result.perm[i] = permutation[i and 255]
     result.permMod12[i] = result.perm[i] mod 12
 
-func `[]=`(g: var Grid, x, y, z: int, value: float32) {.inline.} =
-  g.values[g.valueIndex(x, y, z)] = value
-
 func dot(g: array[3, float32], x, y: float32): float32 {.noiseKernel, inline.} =
   g[0] * x + g[1] * y
 
@@ -639,55 +636,69 @@ func grid4(
   totals
 
 func grid*(
-  simplex: Simplex, start: (float32, float32), dimens: (int, int)
-): Grid =
-  ## Beginning at position start, generate a grid of 2D noise based on the
-  ## Simplex parameters. The width and height of the grid is set by the dimens
-  ## parameter.
-
+  simplex: Simplex, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills a 2D grid without allocating or resizing buffer.
+  ## Requires room for the full grid; extra elements are left untouched.
   let
     (x, y) = start
     (width, height) = dimens
+  if simplex.octaves <= 0:
+    failOctaves()
+  if checkGridBuffer(buffer.len, [width, height]) == 0:
+    return
+  when nimvm:
+    simplex.scalarGrid(start, dimens, buffer)
+  else:
+    var widthDone, heightDone: int
+    template fillSse2OrNeon() =
+      for i in countup(0, width - 4, 4):
+        for j in countup(0, height - 4, 4):
+          let grid4 = simplex.grid4(x, y, i, j)
+          for a in 0 ..< 4:
+            store(
+              buffer[(a + i) * height + j].unsafeAddr,
+              grid4[a]
+            )
+          widthDone = i + 4
+          heightDone = j + 4
 
-  result = Grid()
-  result.width = width
-  result.height = height
-  result.depth = 1
-  result.frames = 1
-  result.values.setLen(width * height)
-
-  var widthDone, heightDone: int
-  template fillSse2OrNeon() =
-    for i in countup(0, width - 4, 4):
-      for j in countup(0, height - 4, 4):
-        let grid4 = simplex.grid4(x, y, i, j)
-        for a in 0 ..< 4:
-          store(
-            result.values[result.valueIndex(a + i, j, 0)].unsafeAddr,
-            grid4[a]
-          )
-        widthDone = i + 4
-        heightDone = j + 4
-
-  when allowAvx2:
-    if hasAvx2() and width > 0 and height >= 8:
-      simplex.fillGridAvx2(start, result)
-      widthDone = width
-      heightDone = height - height mod 8
+    when allowAvx2:
+      if hasAvx2() and width > 0 and height >= 8:
+        simplex.fillGridAvx2(start, dimens, buffer)
+        widthDone = width
+        heightDone = height - height mod 8
+      else:
+        fillSse2OrNeon()
     else:
       fillSse2OrNeon()
-  else:
-    fillSse2OrNeon()
 
-  # Fill any width leftover
-  for i in widthDone ..< width:
-    for j in 0 ..< heightDone:
-      result[i, j, 0] = simplex.value(x + i.float32, y + j.float32)
+    # Fill any width leftover
+    for i in widthDone ..< width:
+      for j in 0 ..< heightDone:
+        buffer[i * height + j] = simplex.value(x + i.float32, y + j.float32)
 
-  # Fill any height leftover
-  for i in 0 ..< width:
-    for j in heightDone ..< height:
-      result[i, j, 0] = simplex.value(x + i.float32, y + j.float32)
+    # Fill any height leftover
+    for i in 0 ..< width:
+      for j in heightDone ..< height:
+        buffer[i * height + j] = simplex.value(x + i.float32, y + j.float32)
+
+func grid*(
+  simplex: Simplex, start: (float32, float32), dimens: (int, int)
+): Grid =
+  ## Allocates and fills a 2D grid at unit intervals from start.
+  if simplex.octaves <= 0:
+    failOctaves()
+  result = allocateGrid(dimens)
+  simplex.grid(start, dimens, result.values)
+
+func grid*(
+  simplex: Simplex, start: (int, int), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Helper for working with ints.
+  simplex.grid((start[0].float32, start[1].float32), dimens, buffer)
 
 func grid*(
   simplex: Simplex, start: (int, int), dimens: (int, int)
@@ -696,73 +707,87 @@ func grid*(
   simplex.grid((start[0].float32, start[1].float32), dimens)
 
 func grid*(
-  simplex: Simplex, start: (float32, float32, float32), dimens: (int, int, int)
-): Grid =
-  ## Beginning at position start, generate a grid of 3D noise based on the
-  ## Simplex parameters. The width, depth, and height of the grid is set by
-  ## the dimens parameter.
-
+  simplex: Simplex, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills a 3D grid without allocating or resizing buffer.
+  ## Requires room for the full grid; extra elements are left untouched.
   let
     (x, y, z) = start
     (width, height, depth) = dimens
+  if simplex.octaves <= 0:
+    failOctaves()
+  if checkGridBuffer(buffer.len, [width, height, depth]) == 0:
+    return
+  when nimvm:
+    simplex.scalarGrid(start, dimens, buffer)
+  else:
+    var widthDone, heightDone, depthDone: int
+    template fillSse2OrNeon() =
+      for i in countup(0, width - 4, 4):
+        for j in countup(0, height - 4, 4):
+          for k in countup(0, depth - 4, 4):
+            let grid4 = simplex.grid4(x, y, z, i, j, k)
+            for a in 0 ..< 4:
+              for b in 0 ..< 4:
+                store(
+                  buffer[((a + i) * height + b + j) * depth + k].unsafeAddr,
+                  grid4[a][b]
+                )
+            widthDone = i + 4
+            heightDone = j + 4
+            depthDone = k + 4
 
-  result = Grid()
-  result.width = width
-  result.height = height
-  result.depth = depth
-  result.frames = 1
-  result.values.setLen(width * height * depth)
-
-  var widthDone, heightDone, depthDone: int
-  template fillSse2OrNeon() =
-    for i in countup(0, width - 4, 4):
-      for j in countup(0, height - 4, 4):
-        for k in countup(0, depth - 4, 4):
-          let grid4 = simplex.grid4(x, y, z, i, j, k)
-          for a in 0 ..< 4:
-            for b in 0 ..< 4:
-              store(
-                result.values[result.valueIndex(a + i, b + j, k)].unsafeAddr,
-                grid4[a][b]
-              )
-          widthDone = i + 4
-          heightDone = j + 4
-          depthDone = k + 4
-
-  when allowAvx2:
-    if hasAvx2() and width > 0 and height > 0 and depth >= 8:
-      simplex.fillGridAvx2(start, result)
-      widthDone = width
-      heightDone = height
-      depthDone = depth - depth mod 8
+    when allowAvx2:
+      if hasAvx2() and width > 0 and height > 0 and depth >= 8:
+        simplex.fillGridAvx2(start, dimens, buffer)
+        widthDone = width
+        heightDone = height
+        depthDone = depth - depth mod 8
+      else:
+        fillSse2OrNeon()
     else:
       fillSse2OrNeon()
-  else:
-    fillSse2OrNeon()
 
-  # Fill any width leftover
-  for i in widthDone ..< width:
-    for j in 0 ..< heightDone:
-      for k in 0 ..< depthDone:
-        result[i, j, k] = simplex.value(
-          x + i.float32, y + j.float32, z + k.float32
-        )
+    # Fill any width leftover
+    for i in widthDone ..< width:
+      for j in 0 ..< heightDone:
+        for k in 0 ..< depthDone:
+          buffer[(i * height + j) * depth + k] = simplex.value(
+            x + i.float32, y + j.float32, z + k.float32
+          )
 
-  # Fill any height leftover
-  for i in 0 ..< width:
-    for j in heightDone ..< height:
-      for k in 0 ..< depthDone:
-        result[i, j, k] = simplex.value(
-          x + i.float32, y + j.float32, z + k.float32
-        )
+    # Fill any height leftover
+    for i in 0 ..< width:
+      for j in heightDone ..< height:
+        for k in 0 ..< depthDone:
+          buffer[(i * height + j) * depth + k] = simplex.value(
+            x + i.float32, y + j.float32, z + k.float32
+          )
 
-  # Fill any depth leftover
-  for i in 0 ..< width:
-    for j in 0 ..< height:
-      for k in depthDone ..< depth:
-        result[i, j, k] = simplex.value(
-          x + i.float32, y + j.float32, z + k.float32
-        )
+    # Fill any depth leftover
+    for i in 0 ..< width:
+      for j in 0 ..< height:
+        for k in depthDone ..< depth:
+          buffer[(i * height + j) * depth + k] = simplex.value(
+            x + i.float32, y + j.float32, z + k.float32
+          )
+
+func grid*(
+  simplex: Simplex, start: (float32, float32, float32), dimens: (int, int, int)
+): Grid =
+  ## Allocates and fills a 3D grid at unit intervals from start.
+  if simplex.octaves <= 0:
+    failOctaves()
+  result = allocateGrid(dimens)
+  simplex.grid(start, dimens, result.values)
+
+func grid*(
+  simplex: Simplex, start: (int, int, int), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Helper for working with ints.
+  simplex.grid((start[0].float32, start[1].float32, start[2].float32), dimens, buffer)
 
 func grid*(
   simplex: Simplex, start: (int, int, int), dimens: (int, int, int)
@@ -991,30 +1016,43 @@ func values4x4(simplex: Simplex, x, y, z, w: Float4): Float4 =
     frequency = frequency * simplex.lacunarity
   total / float4(simplex.octaves.float32)
 
-func grid*(simplex: Simplex, start: float32, width: int): Grid =
-  ## Generates 1D noise at unit intervals using SIMD for complete groups of samples.
+func grid*(
+  simplex: Simplex, start: float32, width: int, buffer: var openArray[float32]
+) =
+  ## Fills a 1D grid without allocating or resizing buffer.
+  ## Requires room for the full grid; extra elements are left untouched.
   if simplex.octaves <= 0:
     failOctaves()
-  let length = gridLength([width])
-  result = Grid(
-    width: width,
-    height: 1,
-    depth: 1,
-    frames: 1,
-    values: newSeq[float32](length)
-  )
-  var widthDone: int
-  when allowAvx2:
-    if hasAvx2() and width >= 8:
-      simplex.fillGridAvx2(start, result)
-      widthDone = width - width mod 8
-  for x in countup(widthDone, width - 4, 4):
-    store(
-      result.values[x].unsafeAddr,
-      simplex.values1x4(coordinates(start, x))
-    )
-  for x in width div 4 * 4 ..< width:
-    result.values[x] = simplex.value(start + x.float32)
+  if checkGridBuffer(buffer.len, [width]) == 0:
+    return
+  when nimvm:
+    simplex.scalarGrid(start, width, buffer)
+  else:
+    var widthDone: int
+    when allowAvx2:
+      if hasAvx2() and width >= 8:
+        simplex.fillGridAvx2(start, width, buffer)
+        widthDone = width - width mod 8
+    for x in countup(widthDone, width - 4, 4):
+      store(
+        buffer[x].unsafeAddr,
+        simplex.values1x4(coordinates(start, x))
+      )
+    for x in width div 4 * 4 ..< width:
+      buffer[x] = simplex.value(start + x.float32)
+
+func grid*(simplex: Simplex, start: float32, width: int): Grid =
+  ## Allocates and fills a 1D grid at unit intervals from start.
+  if simplex.octaves <= 0:
+    failOctaves()
+  result = allocateGrid(width)
+  simplex.grid(start, width, result.values)
+
+func grid*(
+  simplex: Simplex, start, width: int, buffer: var openArray[float32]
+) {.inline.} =
+  ## Generates a 1D grid beginning at an integer coordinate.
+  simplex.grid(start.float32, width, buffer)
 
 func grid*(simplex: Simplex, start, width: int): Grid {.inline.} =
   ## Generates a 1D grid beginning at an integer coordinate.
@@ -1023,53 +1061,72 @@ func grid*(simplex: Simplex, start, width: int): Grid {.inline.} =
 func grid*(
   simplex: Simplex,
   start: (float32, float32, float32, float32),
-  dimens: (int, int, int, int)
-): Grid =
-  ## Generates a 4D grid at unit intervals, with SIMD along the z axis.
-  ## The fourth dimension is frames; each frame contains one 3D slice.
-  if simplex.octaves <= 0:
-    failOctaves()
+  dimens: (int, int, int, int),
+  buffer: var openArray[float32]
+) =
+  ## Fills a 4D grid without allocating or resizing buffer.
+  ## Requires room for the full grid; extra elements are left untouched.
   let
     (width, height, depth, frames) = dimens
-    length = gridLength([width, height, depth, frames])
-  result = Grid(
-    width: width,
-    height: height,
-    depth: depth,
-    frames: frames,
-    values: newSeq[float32](length)
-  )
-  if length == 0:
+  if simplex.octaves <= 0:
+    failOctaves()
+  if checkGridBuffer(buffer.len, [width, height, depth, frames]) == 0:
     return
-  var depthDone: int
-  when allowAvx2:
-    if hasAvx2() and depth >= 8:
-      simplex.fillGridAvx2(start, result)
-      depthDone = depth - depth mod 8
-  for w in 0 ..< frames:
-    let
-      worldW = start[3] + w.float32
-      ws = float4(worldW)
-    for x in 0 ..< width:
+  when nimvm:
+    simplex.scalarGrid(start, dimens, buffer)
+  else:
+    var depthDone: int
+    when allowAvx2:
+      if hasAvx2() and depth >= 8:
+        simplex.fillGridAvx2(start, dimens, buffer)
+        depthDone = depth - depth mod 8
+    for w in 0 ..< frames:
       let
-        worldX = start[0] + x.float32
-        xs = float4(worldX)
-      for y in 0 ..< height:
+        worldW = start[3] + w.float32
+        ws = float4(worldW)
+      for x in 0 ..< width:
         let
-          worldY = start[1] + y.float32
-          ys = float4(worldY)
-        for z in countup(depthDone, depth - 4, 4):
-          store(
-            result.values[result.valueIndex(x, y, z, w)].unsafeAddr,
-            simplex.values4x4(xs, ys, coordinates(start[2], z), ws)
-          )
-        for z in depth div 4 * 4 ..< depth:
-          result.values[result.valueIndex(x, y, z, w)] = simplex.value(
-            worldX,
-            worldY,
-            start[2] + z.float32,
-            worldW
-          )
+          worldX = start[0] + x.float32
+          xs = float4(worldX)
+        for y in 0 ..< height:
+          let
+            worldY = start[1] + y.float32
+            ys = float4(worldY)
+          for z in countup(depthDone, depth - 4, 4):
+            store(
+              buffer[((w * width + x) * height + y) * depth + z].unsafeAddr,
+              simplex.values4x4(xs, ys, coordinates(start[2], z), ws)
+            )
+          for z in depth div 4 * 4 ..< depth:
+            buffer[((w * width + x) * height + y) * depth + z] = simplex.value(
+              worldX,
+              worldY,
+              start[2] + z.float32,
+              worldW
+            )
+
+func grid*(
+  simplex: Simplex,
+  start: (float32, float32, float32, float32),
+  dimens: (int, int, int, int)
+): Grid =
+  ## Allocates and fills a 4D grid at unit intervals from start.
+  if simplex.octaves <= 0:
+    failOctaves()
+  result = allocateGrid(dimens)
+  simplex.grid(start, dimens, result.values)
+
+func grid*(
+  simplex: Simplex,
+  start: (int, int, int, int),
+  dimens: (int, int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Generates a 4D grid beginning at integer coordinates.
+  simplex.grid(
+    (start[0].float32, start[1].float32, start[2].float32, start[3].float32),
+    dimens, buffer
+  )
 
 func grid*(
   simplex: Simplex,

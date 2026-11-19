@@ -92,49 +92,67 @@ func gridLength*(dimens: openArray[int]): int =
       raise newException(NoisyError, "Grid dimensions are too large")
     result *= size
 
+func checkGridBuffer*(bufferLength: int, dimens: openArray[int]): int =
+  ## Validates the complete shape and destination before any sample is written.
+  result = gridLength(dimens)
+  if bufferLength < result:
+    raise newException(NoisyError, "Grid buffer is too small")
+
+func allocateGrid*[Size: int | (int, int) | (int, int, int) | (int, int, int, int)](
+  dimens: Size
+): Grid =
+  ## Internal allocation shared by the public convenience overloads.
+  var shape = [1, 1, 1, 1]
+  when Size is int:
+    shape[0] = dimens
+  else:
+    var axis = 0
+    for size in fields(dimens):
+      shape[axis] = size
+      inc axis
+  let length = gridLength(shape)
+  Grid(width: shape[0], height: shape[1], depth: shape[2], frames: shape[3],
+    values: newSeq[float32](length))
+
 func fillGridImpl[T, Batch](
   noise: T, start: float32, width: int,
-  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
-): Grid =
+  buffer: var openArray[float32], batch: static[Batch],
+  avxSettings: AvxSettings = default(AvxSettings)
+) =
   ## Fills a line using the supplied batch sampler and scalar tails.
   mixin value
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
-  let length = gridLength([width])
-  result = Grid(
-    width: width, height: 1, depth: 1, frames: 1,
-    values: newSeq[float32](length)
-  )
+  let length = checkGridBuffer(buffer.len, [width])
+  if length == 0:
+    return
   let scalarStart =
     when Batch is GridSampler: 0
     elif Batch is AvxKind: width - width mod 8
     else: width - width mod 4
   when Batch isnot GridSampler and Batch isnot AvxKind:
     for x in countup(0, scalarStart - 4, 4):
-      store(result.values[x].unsafeAddr, batch(noise, gridCoordinates(start, x)))
+      store(buffer[x].unsafeAddr, batch(noise, gridCoordinates(start, x)))
   when Batch is AvxKind:
     if scalarStart > 0:
       fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
         [start, 0'f, 0'f, 0'f], 1, width,
-        result.values[0].unsafeAddr)
+        buffer[0].unsafeAddr)
   for x in scalarStart ..< width:
-    result.values[x] = noise.value(start + x.float32)
+    buffer[x] = noise.value(start + x.float32)
 
 func fillGridImpl[T, Batch](
   noise: T, start: (float32, float32), dimens: (int, int),
-  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
-): Grid =
+  buffer: var openArray[float32], batch: static[Batch],
+  avxSettings: AvxSettings = default(AvxSettings)
+) =
   ## Fills a plane using the supplied batch sampler and scalar tails.
   mixin value
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
   let
     (width, height) = dimens
-    length = gridLength([width, height])
-  result = Grid(
-    width: width, height: height, depth: 1, frames: 1,
-    values: newSeq[float32](length)
-  )
+    length = checkGridBuffer(buffer.len, [width, height])
   if length == 0:
     return
   let scalarStart =
@@ -148,7 +166,7 @@ func fillGridImpl[T, Batch](
       let batchX = float4(sampleX)
       for y in countup(0, scalarStart - 4, 4):
         store(
-          result.values[index].unsafeAddr,
+          buffer[index].unsafeAddr,
           batch(noise, batchX, gridCoordinates(start[1], y))
         )
         index += 4
@@ -156,29 +174,26 @@ func fillGridImpl[T, Batch](
       if scalarStart > 0:
         fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
           [sampleX, start[1], 0'f, 0'f], 2, height,
-          result.values[index].unsafeAddr)
+          buffer[index].unsafeAddr)
       index += scalarStart
     for y in scalarStart ..< height:
-      result.values[index] = noise.value(sampleX, start[1] + y.float32)
+      buffer[index] = noise.value(sampleX, start[1] + y.float32)
       inc index
 
 func fillGridImpl[T, Batch](
   noise: T,
   start: (float32, float32, float32),
   dimens: (int, int, int),
-  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
-): Grid =
+  buffer: var openArray[float32], batch: static[Batch],
+  avxSettings: AvxSettings = default(AvxSettings)
+) =
   ## Fills a volume using the supplied batch sampler and scalar tails.
   mixin value
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
   let
     (width, height, depth) = dimens
-    length = gridLength([width, height, depth])
-  result = Grid(
-    width: width, height: height, depth: depth, frames: 1,
-    values: newSeq[float32](length)
-  )
+    length = checkGridBuffer(buffer.len, [width, height, depth])
   if length == 0:
     return
   let scalarStart =
@@ -196,7 +211,7 @@ func fillGridImpl[T, Batch](
         let batchY = float4(sampleY)
         for z in countup(0, scalarStart - 4, 4):
           store(
-            result.values[index].unsafeAddr,
+            buffer[index].unsafeAddr,
             batch(noise, batchX, batchY, gridCoordinates(start[2], z))
           )
           index += 4
@@ -204,29 +219,26 @@ func fillGridImpl[T, Batch](
         if scalarStart > 0:
           fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
             [sampleX, sampleY, start[2], 0'f], 3, depth,
-            result.values[index].unsafeAddr)
+            buffer[index].unsafeAddr)
         index += scalarStart
       for z in scalarStart ..< depth:
-        result.values[index] = noise.value(sampleX, sampleY, start[2] + z.float32)
+        buffer[index] = noise.value(sampleX, sampleY, start[2] + z.float32)
         inc index
 
 func fillGridImpl[T, Batch](
   noise: T,
   start: (float32, float32, float32, float32),
   dimens: (int, int, int, int),
-  batch: static[Batch], avxSettings: AvxSettings = default(AvxSettings)
-): Grid =
+  buffer: var openArray[float32], batch: static[Batch],
+  avxSettings: AvxSettings = default(AvxSettings)
+) =
   ## Fills each volume slice using the supplied batch sampler and scalar tails.
   mixin value
   if noise.octaves <= 0:
     raise newException(NoisyError, "Octaves must be > 0")
   let
     (width, height, depth, frames) = dimens
-    length = gridLength([width, height, depth, frames])
-  result = Grid(
-    width: width, height: height, depth: depth, frames: frames,
-    values: newSeq[float32](length)
-  )
+    length = checkGridBuffer(buffer.len, [width, height, depth, frames])
   if length == 0:
     return
   let scalarStart =
@@ -248,7 +260,7 @@ func fillGridImpl[T, Batch](
           let batchY = float4(sampleY)
           for z in countup(0, scalarStart - 4, 4):
             store(
-              result.values[index].unsafeAddr,
+              buffer[index].unsafeAddr,
               batch(noise, batchX, batchY, gridCoordinates(start[2], z), batchW)
             )
             index += 4
@@ -256,37 +268,77 @@ func fillGridImpl[T, Batch](
           if scalarStart > 0:
             fillRowAvx2(AvxBatch(kind: batch, settings: avxSettings),
               [sampleX, sampleY, start[2], sampleW], 4, depth,
-              result.values[index].unsafeAddr)
+              buffer[index].unsafeAddr)
           index += scalarStart
         for z in scalarStart ..< depth:
-          result.values[index] = noise.value(
+          buffer[index] = noise.value(
             sampleX, sampleY, start[2] + z.float32, sampleW
           )
           inc index
 
-func scalarGrid*[T](noise: T, start: float32, width: int): Grid {.inline.} =
-  ## Fills a line with scalar samples at unit intervals.
-  noise.fillGridImpl(start, width, sampleScalar)
+func scalarGrid*[T](
+  noise: T, start: float32, width: int,
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills caller-owned storage with scalar samples at unit intervals.
+  noise.fillGridImpl(start, width, buffer, sampleScalar)
+
+func scalarGrid*[T](
+  noise: T, start: float32, width: int
+): Grid {.inline.} =
+  ## Allocates storage and fills it with scalar samples.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(width)
+  noise.scalarGrid(start, width, result.values)
+
+func scalarGrid*[T](
+  noise: T, start: (float32, float32), dimens: (int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills caller-owned storage with scalar samples at unit intervals.
+  noise.fillGridImpl(start, dimens, buffer, sampleScalar)
 
 func scalarGrid*[T](
   noise: T, start: (float32, float32), dimens: (int, int)
 ): Grid {.inline.} =
-  ## Fills a plane with scalar samples at unit intervals.
-  noise.fillGridImpl(start, dimens, sampleScalar)
+  ## Allocates storage and fills it with scalar samples.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.scalarGrid(start, dimens, result.values)
+
+func scalarGrid*[T](
+  noise: T, start: (float32, float32, float32), dimens: (int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills caller-owned storage with scalar samples at unit intervals.
+  noise.fillGridImpl(start, dimens, buffer, sampleScalar)
 
 func scalarGrid*[T](
   noise: T, start: (float32, float32, float32), dimens: (int, int, int)
 ): Grid {.inline.} =
-  ## Fills a volume with scalar samples at unit intervals.
-  noise.fillGridImpl(start, dimens, sampleScalar)
+  ## Allocates storage and fills it with scalar samples.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.scalarGrid(start, dimens, result.values)
 
 func scalarGrid*[T](
-  noise: T,
-  start: (float32, float32, float32, float32),
-  dimens: (int, int, int, int)
+  noise: T, start: (float32, float32, float32, float32), dimens: (int, int, int, int),
+  buffer: var openArray[float32]
+) {.inline.} =
+  ## Fills caller-owned storage with scalar samples at unit intervals.
+  noise.fillGridImpl(start, dimens, buffer, sampleScalar)
+
+func scalarGrid*[T](
+  noise: T, start: (float32, float32, float32, float32), dimens: (int, int, int, int)
 ): Grid {.inline.} =
-  ## Fills volume slices with scalar samples at unit intervals.
-  noise.fillGridImpl(start, dimens, sampleScalar)
+  ## Allocates storage and fills it with scalar samples.
+  if noise.octaves <= 0:
+    raise newException(NoisyError, "Octaves must be > 0")
+  result = allocateGrid(dimens)
+  noise.scalarGrid(start, dimens, result.values)
 
 when useGridNeon:
   type
@@ -296,60 +348,57 @@ when useGridNeon:
     GridBatch4[T] = proc(noise: T, x, y, z, w: Float4): Float4 {.noSideEffect.}
 
   func fillGrid*[T](
-    noise: T, start: float32, width: int, batch: static[GridBatch1[T]]
-  ): Grid {.inline.} =
-    ## Generates a 1D grid using four contiguous samples per batch.
+    noise: T, start: float32, width: int,
+    buffer: var openArray[float32], batch: static[GridBatch1[T]]
+  ) {.inline.} =
+    ## Fills caller-owned storage with NEON batches and scalar tails.
     when nimvm:
-      noise.scalarGrid(start, width)
+      noise.scalarGrid(start, width, buffer)
     else:
-      noise.fillGridImpl(start, width, batch)
+      noise.fillGridImpl(start, width, buffer, batch)
 
   func fillGrid*[T](
-    noise: T,
-    start: (float32, float32),
-    dimens: (int, int),
-    batch: static[GridBatch2[T]]
-  ): Grid {.inline.} =
-    ## Generates a 2D grid using four contiguous y samples per batch.
+    noise: T, start: (float32, float32), dimens: (int, int),
+    buffer: var openArray[float32], batch: static[GridBatch2[T]]
+  ) {.inline.} =
+    ## Fills caller-owned storage with NEON batches and scalar tails.
     when nimvm:
-      noise.scalarGrid(start, dimens)
+      noise.scalarGrid(start, dimens, buffer)
     else:
-      noise.fillGridImpl(start, dimens, batch)
+      noise.fillGridImpl(start, dimens, buffer, batch)
 
   func fillGrid*[T](
-    noise: T,
-    start: (float32, float32, float32),
-    dimens: (int, int, int),
-    batch: static[GridBatch3[T]]
-  ): Grid {.inline.} =
-    ## Generates a 3D grid using four contiguous z samples per batch.
+    noise: T, start: (float32, float32, float32), dimens: (int, int, int),
+    buffer: var openArray[float32], batch: static[GridBatch3[T]]
+  ) {.inline.} =
+    ## Fills caller-owned storage with NEON batches and scalar tails.
     when nimvm:
-      noise.scalarGrid(start, dimens)
+      noise.scalarGrid(start, dimens, buffer)
     else:
-      noise.fillGridImpl(start, dimens, batch)
+      noise.fillGridImpl(start, dimens, buffer, batch)
 
   func fillGrid*[T](
-    noise: T,
-    start: (float32, float32, float32, float32),
-    dimens: (int, int, int, int),
-    batch: static[GridBatch4[T]]
-  ): Grid {.inline.} =
-    ## Generates a 4D grid using four contiguous z samples per batch.
+    noise: T, start: (float32, float32, float32, float32), dimens: (int, int, int, int),
+    buffer: var openArray[float32], batch: static[GridBatch4[T]]
+  ) {.inline.} =
+    ## Fills caller-owned storage with NEON batches and scalar tails.
     when nimvm:
-      noise.scalarGrid(start, dimens)
+      noise.scalarGrid(start, dimens, buffer)
     else:
-      noise.fillGridImpl(start, dimens, batch)
+      noise.fillGridImpl(start, dimens, buffer, batch)
 
 when useGridAvx2:
   func avxGrid*[T, Start, Size](
-    noise: T, start: Start, dimens: Size, kind: static[AvxKind]
-  ): Grid =
+    noise: T, start: Start, dimens: Size, buffer: var openArray[float32],
+    kind: static[AvxKind]
+  ) =
     ## Dispatches through a scalar ABI; unsupported machines use point samples.
     when nimvm:
-      result = noise.scalarGrid(start, dimens)
+      noise.scalarGrid(start, dimens, buffer)
     else:
       if not hasAvx2():
-        return noise.scalarGrid(start, dimens)
+        noise.scalarGrid(start, dimens, buffer)
+        return
       var settings = AvxSettings(
         octaves: noise.octaves, amplitude: noise.amplitude,
         frequency: noise.frequency, lacunarity: noise.lacunarity, gain: noise.gain)
@@ -361,4 +410,4 @@ when useGridAvx2:
         settings.jitter = noise.jitter
         settings.distanceFunction = ord(noise.distanceFunction)
         settings.returnType = ord(noise.returnType)
-      result = noise.fillGridImpl(start, dimens, kind, settings)
+      noise.fillGridImpl(start, dimens, buffer, kind, settings)
