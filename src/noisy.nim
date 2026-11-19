@@ -1140,3 +1140,6 @@ func grid*(
   )
 
 {.pop.}
+
+import noisy/tiles
+export tiles

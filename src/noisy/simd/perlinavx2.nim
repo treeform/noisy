@@ -67,7 +67,7 @@ func gradient8[N: static[int]](
 func samplePerlinGrid8*[N: static[int]](
   perm: array[512, int32], point: array[N, Float8]
 ): Float8 {.avxInline.} =
-  ## Samples eight grid points that vary only on the contiguous axis.
+  ## Samples eight points; every coordinate may vary independently per lane.
   static: doAssert N in 1 .. 4
   var
     lattice: array[N, array[2, Int8]]

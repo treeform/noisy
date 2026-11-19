@@ -261,6 +261,35 @@ template noise8(simplex: Simplex, xIn, yIn, zIn, wIn: M256): M256 =
         falloff > zero)
     m256(62) * total
 
+func sampleTileAvx2*(
+  simplex: Simplex, points: array[4, array[8, float32]], dimensions: int,
+  output: ptr float32
+) =
+  ## Internal: samples eight circle/torus positions with validated settings.
+  let
+    x = mm256_loadu_ps(points[0][0].unsafeAddr)
+    y = mm256_loadu_ps(points[1][0].unsafeAddr)
+  template sample(n: static[int]) =
+    when n == 4:
+      let
+        z = mm256_loadu_ps(points[2][0].unsafeAddr)
+        w = mm256_loadu_ps(points[3][0].unsafeAddr)
+    var
+      total = m256(0)
+      amplitude = m256(simplex.amplitude)
+      frequency = simplex.frequency
+    for octave in 0 ..< simplex.octaves:
+      let scale = m256(frequency)
+      when n == 2:
+        total += noise8(simplex, x * scale, y * scale) * amplitude
+      else:
+        total += noise8(simplex, x * scale, y * scale, z * scale, w * scale) * amplitude
+      amplitude = amplitude * m256(simplex.gain)
+      frequency *= simplex.lacunarity
+    mm256_storeu_ps(output, total / m256(simplex.octaves.float32))
+  if dimensions == 2: sample(2)
+  else: sample(4)
+
 func fillGridAvx2*(
   simplex: Simplex, start: float32, width: int,
   buffer: var openArray[float32]

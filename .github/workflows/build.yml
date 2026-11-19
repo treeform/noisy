@@ -32,6 +32,8 @@ jobs:
         run: nim r -d:release tests/tests.nim
       - name: Check grid buffer reuse without allocations
         run: nim r -d:release -d:nimAllocStats tests/test_grid_buffers.nim
+      - name: Check tiled buffer reuse without allocations
+        run: nim r -d:release -d:nimAllocStats tests/test_tiles.nim
       - name: Verify kernel bounds with checks enabled
         run: nim r -d:release -d:noisyCheckKernels tests/tests.nim
       - name: Run release tests with SIMD fallbacks

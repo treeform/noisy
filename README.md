@@ -130,6 +130,45 @@ This works with integer or fractional origins in every supported dimension:
 The flat index is `x * height + y` in 2D, `(x * height + y) * depth + z` in 3D,
 and `((w * width + x) * height + y) * depth + z` in 4D.
 
+### Seamless tiles
+
+`tileGrid()` generates seamless repeats with the same buffer-taking and allocating
+forms. It maps a 1D loop onto a circle in 2D noise, or a 2D tile onto a torus in
+4D noise. The available samplers determine which output dimensions are supported:
+
+| Noise | Seamless output |
+| --- | --- |
+| Simplex, Perlin | 1D loops and 2D tiles |
+| OpenSimplex2, OpenSimplex2S, Value, ValueCubic, Cellular | 1D loops |
+
+```nim
+var noise = initSimplex(1988)
+noise.frequency = 0.025
+noise.octaves = 3
+noise.lacunarity = 1.7 # Non-integer lacunarity also remains seamless.
+
+var buffer = newSeq[float32](512 * 512)
+noise.tileGrid((0, 0), (512, 512), buffer) # Period defaults to the dimensions.
+let texture = noise.tileGrid((0, 0), (512, 512))
+
+# Explicit world-space periods let smaller chunks share the same repeat.
+let chunk = noise.tileGrid((256, 0), (256, 512), (512, 512))
+```
+
+Samples advance by one world unit. A period of 512 means the sample at 512
+matches the sample at 0; a 512-sample tile excludes that duplicated endpoint.
+The last included sample does not need to equal the first. Keep the explicit
+period unchanged when generating chunks. The usual buffer length and layout
+rules apply, and successful buffer fills allocate nothing.
+
+Tiled sampling uses AVX2 for complete groups of eight when available, with a
+scalar fallback on other systems and for remaining samples. It produces a
+circle/torus slice of higher-dimensional noise, so it differs from `grid()`.
+See [tiling details and input limits](docs/tiling.md) and
+[the runnable example](examples/tiles.nim).
+
+### Lookup tables and kernel checks
+
 The shared gradient and random-vector lookup tables are already constants.
 Simplex and Perlin permutation tables depend on the seed. For a fixed seed and
 settings, the entire noise object can also be constructed at compile time:

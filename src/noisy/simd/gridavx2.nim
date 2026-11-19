@@ -120,3 +120,24 @@ func fillRowAvx2*(
   of avxValue: fill(avxValue)
   of avxValueCubic: fill(avxValueCubic)
   of avxCellular: fill(avxCellular)
+
+func sampleTileAvx2*(
+  batch: AvxBatch, points: array[4, array[8, float32]], dimensions: int,
+  output: ptr float32
+) =
+  ## Internal: samples eight circle/torus positions through the scalar ABI.
+  ## The caller validates settings, selects 2D/4D, and supplies eight outputs.
+  template run(n: static[int], kind: static[AvxKind]) =
+    var point: array[n, Float8]
+    for axis in 0 ..< n:
+      point[axis] = mm256_loadu_ps(points[axis][0].unsafeAddr)
+    mm256_storeu_ps(output, sample(batch.settings, point, kind))
+  case batch.kind
+  of avxPerlin:
+    if dimensions == 2: run(2, avxPerlin)
+    else: run(4, avxPerlin)
+  of avxOpenSimplex2: run(2, avxOpenSimplex2)
+  of avxOpenSimplex2S: run(2, avxOpenSimplex2S)
+  of avxValue: run(2, avxValue)
+  of avxValueCubic: run(2, avxValueCubic)
+  of avxCellular: run(2, avxCellular)

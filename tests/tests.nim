@@ -4,6 +4,7 @@ import test_opensimplex2, test_opensimplex2s
 import test_values, test_valuecubic, test_cellular, test_scalar_grids
 import test_kernel_bounds
 import test_grid_buffers
+import test_tiles
 when defined(noisyReferenceDir):
   import test_reference
 else:
