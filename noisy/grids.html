@@ -83,10 +83,20 @@
 <li><a class="reference" href="#%5B%5D%2CGrid%2Cint" title="`[]`(g: Grid; x: int): float32">`[]`(g: Grid; x: int): float32</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">allocateGrid
+  <li><a class="reference" href="#allocateGrid%2CSize" title="allocateGrid[Size: int | (int, int) | (int, int, int) | (int, int, int, int)](
+    dimens: Size): Grid">allocateGrid[Size: int | (int, int) | (int, int, int) | (int, int, int, int)](
+    dimens: Size): Grid</a></li>
+
+</ul>
 <ul class="simple nested-toc-section">avxGrid
-  <li><a class="reference" href="#avxGrid%2CT%2CStart%2CSize%2Cstatic%5BAvxKind%5D" title="avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
-                        kind: static[AvxKind]): Grid">avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
-                        kind: static[AvxKind]): Grid</a></li>
+  <li><a class="reference" href="#avxGrid%2CT%2CStart%2CSize%2CopenArray%5Bfloat32%5D%2Cstatic%5BAvxKind%5D" title="avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
+                        buffer: var openArray[float32]; kind: static[AvxKind])">avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
+                        buffer: var openArray[float32]; kind: static[AvxKind])</a></li>
+
+</ul>
+<ul class="simple nested-toc-section">checkGridBuffer
+  <li><a class="reference" href="#checkGridBuffer%2Cint%2CopenArray%5Bint%5D" title="checkGridBuffer(bufferLength: int; dimens: openArray[int]): int">checkGridBuffer(bufferLength: int; dimens: openArray[int]): int</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">gridLength
@@ -95,13 +105,25 @@
 </ul>
 <ul class="simple nested-toc-section">scalarGrid
   <li><a class="reference" href="#scalarGrid%2CT%2C%2C" title="scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid">scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D" title="scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int);
+              buffer: var openArray[float32])">scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int);
+              buffer: var openArray[float32])</a></li>
 <li><a class="reference" href="#scalarGrid%2CT%2C%2C_2" title="scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid">scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_2" title="scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int); buffer: var openArray[float32])">scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int); buffer: var openArray[float32])</a></li>
 <li><a class="reference" href="#scalarGrid%2CT%2C%2C_3" title="scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
               dimens: (int, int, int, int)): Grid">scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
               dimens: (int, int, int, int)): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_3" title="scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int); buffer: var openArray[float32])">scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
 <li><a class="reference" href="#scalarGrid%2CT%2Cfloat32%2Cint" title="scalarGrid[T](noise: T; start: float32; width: int): Grid">scalarGrid[T](noise: T; start: float32; width: int): Grid</a></li>
+<li><a class="reference" href="#scalarGrid%2CT%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D" title="scalarGrid[T](noise: T; start: float32; width: int;
+              buffer: var openArray[float32])">scalarGrid[T](noise: T; start: float32; width: int;
+              buffer: var openArray[float32])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">valueIndex
@@ -197,15 +219,44 @@
 </div>
 
 </div>
+<div id="allocateGrid-procs-all">
+  <div id="allocateGrid,Size">
+  <dt><pre><span class="Keyword">func</span> <a href="#allocateGrid%2CSize"><span class="Identifier">allocateGrid</span></a><span class="Other">[</span><span class="Identifier">Size</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Operator">|</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span> <span class="Operator">|</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span> <span class="Operator">|</span>
+    <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">dimens</span><span class="Other">:</span> <span class="Identifier">Size</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a></pre></dt>
+  <dd>
+    
+    Internal allocation shared by the public convenience overloads.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L101" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L101" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
 <div id="avxGrid-procs-all">
-  <div id="avxGrid,T,Start,Size,static[AvxKind]">
-  <dt><pre><span class="Keyword">func</span> <a href="#avxGrid%2CT%2CStart%2CSize%2Cstatic%5BAvxKind%5D"><span class="Identifier">avxGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">,</span> <span class="Identifier">Start</span><span class="Other">,</span> <span class="Identifier">Size</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">Start</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Identifier">Size</span><span class="Other">;</span>
-                             <span class="Identifier">kind</span><span class="Other">:</span> <span class="Identifier">static</span><span class="Other">[</span><a href="simd/gridavx2.html#AvxKind"><span class="Identifier">AvxKind</span></a><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a></pre></dt>
+  <div id="avxGrid,T,Start,Size,openArray[float32],static[AvxKind]">
+  <dt><pre><span class="Keyword">func</span> <a href="#avxGrid%2CT%2CStart%2CSize%2CopenArray%5Bfloat32%5D%2Cstatic%5BAvxKind%5D"><span class="Identifier">avxGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">,</span> <span class="Identifier">Start</span><span class="Other">,</span> <span class="Identifier">Size</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">Start</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Identifier">Size</span><span class="Other">;</span>
+                             <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">;</span>
+                             <span class="Identifier">kind</span><span class="Other">:</span> <span class="Identifier">static</span><span class="Other">[</span><a href="simd/gridavx2.html#AvxKind"><span class="Identifier">AvxKind</span></a><span class="Other">]</span><span class="Other">)</span></pre></dt>
   <dd>
     
     Dispatches through a scalar ABI; unsupported machines use point samples.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L344" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L344" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L391" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L391" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
+<div id="checkGridBuffer-procs-all">
+  <div id="checkGridBuffer,int,openArray[int]">
+  <dt><pre><span class="Keyword">func</span> <a href="#checkGridBuffer%2Cint%2CopenArray%5Bint%5D"><span class="Identifier">checkGridBuffer</span></a><span class="Other">(</span><span class="Identifier">bufferLength</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Validates the complete shape and destination before any sample is written.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L95" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L95" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -231,9 +282,20 @@
     <span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Fills a plane with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L271" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L271" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates storage and fills it with scalar samples.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L302" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L302" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,,,openArray[float32]">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span>
+                   <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills caller-owned storage with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L295" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L295" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -242,9 +304,21 @@
                    <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Fills a volume with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L277" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L277" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates storage and fills it with scalar samples.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L318" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L318" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,,,openArray[float32]_2">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_2"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
+                   <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.
+    <span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills caller-owned storage with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L311" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L311" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -253,9 +327,21 @@
                    <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Fills volume slices with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L283" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L283" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates storage and fills it with scalar samples.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L334" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L334" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,,,openArray[float32]_3">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_3"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
+                   <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.
+    <span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills caller-owned storage with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L327" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L327" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -263,9 +349,20 @@
   <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2Cfloat32%2Cint"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span class="Identifier">inline</span>.}</pre></dt>
   <dd>
     
-    Fills a line with scalar samples at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L267" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L267" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates storage and fills it with scalar samples.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L286" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L286" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="scalarGrid,T,float32,int,openArray[float32]">
+  <dt><pre><span class="Keyword">func</span> <a href="#scalarGrid%2CT%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D"><span class="Identifier">scalarGrid</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">noise</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">float32</span><span class="Other">;</span> <span class="Identifier">width</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span>
+                   <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+  <dd>
+    
+    Fills caller-owned storage with scalar samples at unit intervals.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/grids.nim#L279" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/grids.nim#L279" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -312,7 +409,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 15:56:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:03:42 UTC</small>
       </div>
     </div>
   </div>

@@ -109,6 +109,12 @@
 <li><a class="reference external"
           data-doc-search-tag="simd: proc addInts(a, b: Int4): Int4" href="noisy/simd.html#addInts%2CM128i%2CM128i">simd: proc addInts(a, b: Int4): Int4</a></li>
           </ul></dd>
+<dt><a name="allocateGrid" href="#allocateGrid"><span>allocateGrid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc allocateGrid[Size: int | (int, int) | (int, int, int) | (int, int, int, int)](
+    dimens: Size): Grid" href="noisy/grids.html#allocateGrid%2CSize">grids: proc allocateGrid[Size: int | (int, int) | (int, int, int) | (int, int, int, int)](
+    dimens: Size): Grid</a></li>
+          </ul></dd>
 <dt><a name="AvxBatch" href="#AvxBatch"><span>AvxBatch:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="gridavx2: object AvxBatch" href="noisy/simd/gridavx2.html#AvxBatch">gridavx2: object AvxBatch</a></li>
@@ -120,8 +126,8 @@
 <dt><a name="avxGrid" href="#avxGrid"><span>avxGrid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="grids: proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
-                        kind: static[AvxKind]): Grid" href="noisy/grids.html#avxGrid%2CT%2CStart%2CSize%2Cstatic%5BAvxKind%5D">grids: proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
-                        kind: static[AvxKind]): Grid</a></li>
+                        buffer: var openArray[float32]; kind: static[AvxKind])" href="noisy/grids.html#avxGrid%2CT%2CStart%2CSize%2CopenArray%5Bfloat32%5D%2Cstatic%5BAvxKind%5D">grids: proc avxGrid[T, Start, Size](noise: T; start: Start; dimens: Size;
+                        buffer: var openArray[float32]; kind: static[AvxKind])</a></li>
           </ul></dd>
 <dt><a name="AvxKind" href="#AvxKind"><span>AvxKind:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -174,6 +180,10 @@
 <dt><a name="CellValue" href="#CellValue"><span>CellValue:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="cellulars: CellularReturn.CellValue" href="noisy/cellulars.html#CellValue">cellulars: CellularReturn.CellValue</a></li>
+          </ul></dd>
+<dt><a name="checkGridBuffer" href="#checkGridBuffer"><span>checkGridBuffer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="grids: proc checkGridBuffer(bufferLength: int; dimens: openArray[int]): int" href="noisy/grids.html#checkGridBuffer%2Cint%2CopenArray%5Bint%5D">grids: proc checkGridBuffer(bufferLength: int; dimens: openArray[int]): int</a></li>
           </ul></dd>
 <dt><a name="coordinates8" href="#coordinates8"><span>coordinates8:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -237,15 +247,21 @@
           </ul></dd>
 <dt><a name="fillGridAvx2" href="#fillGridAvx2"><span>fillGridAvx2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); grid: Grid)</a></li>
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); dimens: (int, int);
+             buffer: var openArray[float32])" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32); dimens: (int, int);
+             buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32); grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid_2">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32); grid: Grid)</a></li>
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32);
+             dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_2">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32);
+             dimens: (int, int, int); buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);
-             grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2CGrid_3">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);
-             grid: Grid)</a></li>
+             dimens: (int, int, int, int); buffer: var openArray[float32])" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_3">avx2: proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);
+             dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2Cfloat32%2CGrid">avx2: proc fillGridAvx2(simplex: Simplex; start: float32; grid: Grid)</a></li>
+          data-doc-search-tag="avx2: proc fillGridAvx2(simplex: Simplex; start: float32; width: int;
+             buffer: var openArray[float32])" href="noisy/simd/avx2.html#fillGridAvx2%2CSimplex%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D">avx2: proc fillGridAvx2(simplex: Simplex; start: float32; width: int;
+             buffer: var openArray[float32])</a></li>
           </ul></dd>
 <dt><a name="fillRowAvx2" href="#fillRowAvx2"><span>fillRowAvx2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -323,6 +339,30 @@
 <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid" href="noisy.html#grid%2CSimplex%2C%2C">noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D">noisy: proc grid(simplex: Simplex; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_2">noisy: proc grid(simplex: Simplex; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_3">noisy: proc grid(simplex: Simplex; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_4">noisy: proc grid(simplex: Simplex; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32, float32, float32);
+     dimens: (int, int, int, int); buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_5">noisy: proc grid(simplex: Simplex; start: (float32, float32, float32, float32);
+     dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (int, int, int, int);
+     dimens: (int, int, int, int); buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2C%2C%2CopenArray%5Bfloat32%5D_6">noisy: proc grid(simplex: Simplex; start: (int, int, int, int);
+     dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (int, int); dimens: (int, int)): Grid" href="noisy.html#grid%2CSimplex%2C%2C_2">noisy: proc grid(simplex: Simplex; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: (float32, float32, float32);
@@ -341,19 +381,57 @@
           <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid" href="noisy.html#grid%2CSimplex%2Cfloat32%2Cint">noisy: proc grid(simplex: Simplex; start: float32; width: int): Grid</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start: float32; width: int;
+     buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D">noisy: proc grid(simplex: Simplex; start: float32; width: int;
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="noisy: proc grid(simplex: Simplex; start, width: int): Grid" href="noisy.html#grid%2CSimplex%2Cint%2Cint">noisy: proc grid(simplex: Simplex; start, width: int): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="noisy: proc grid(simplex: Simplex; start, width: int; buffer: var openArray[float32])" href="noisy.html#grid%2CSimplex%2Cint%2Cint%2CopenArray%5Bfloat32%5D">noisy: proc grid(simplex: Simplex; start, width: int; buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C">cellulars: proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
-     dimens: (int, int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C_2">cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
-     dimens: (int, int, int)): Grid</a></li>
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/cellulars.html#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D">cellulars: proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C_3">cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid</a></li>
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/cellulars.html#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_2">cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/cellulars.html#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_3">cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/cellulars.html#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_4">cellulars: proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C_2">cellulars: proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C_3">cellulars: proc grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="cellulars: proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid" href="noisy/cellulars.html#grid%2CCellular%2C%2C_4">cellulars: proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C">opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C%2CopenArray%5Bfloat32%5D">opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C%2CopenArray%5Bfloat32%5D_2">opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C%2CopenArray%5Bfloat32%5D_3">opensimplexes: proc grid(noise: OpenSimplex2; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C%2CopenArray%5Bfloat32%5D_4">opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2%2C%2C_2">opensimplexes: proc grid(noise: OpenSimplex2; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
@@ -365,6 +443,22 @@
           <li><a class="reference external"
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C">opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C%2CopenArray%5Bfloat32%5D">opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C%2CopenArray%5Bfloat32%5D_2">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C%2CopenArray%5Bfloat32%5D_3">opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C%2CopenArray%5Bfloat32%5D_4">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C_2">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (float32, float32, float32);
@@ -374,6 +468,30 @@
           data-doc-search-tag="opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid" href="noisy/opensimplexes.html#grid%2COpenSimplex2S%2C%2C_4">opensimplexes: proc grid(noise: OpenSimplex2S; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/perlins.html#grid%2CPerlin%2C%2C">perlins: proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D">perlins: proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D_2">perlins: proc grid(perlin: Perlin; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D_3">perlins: proc grid(perlin: Perlin; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D_4">perlins: proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (float32, float32, float32, float32);
+     dimens: (int, int, int, int); buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D_5">perlins: proc grid(perlin: Perlin; start: (float32, float32, float32, float32);
+     dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int);
+     buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2C%2C%2CopenArray%5Bfloat32%5D_6">perlins: proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int);
+     buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid" href="noisy/perlins.html#grid%2CPerlin%2C%2C_2">perlins: proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
@@ -391,7 +509,11 @@
           <li><a class="reference external"
           data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: float32; width: int): Grid" href="noisy/perlins.html#grid%2CPerlin%2Cfloat32%2Cint">perlins: proc grid(perlin: Perlin; start: float32; width: int): Grid</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start, width: int): Grid" href="noisy/perlins.html#grid%2CPerlin%2Cint%2Cint">perlins: proc grid(perlin: Perlin; start, width: int): Grid</a></li>
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: float32; width: int; buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D">perlins: proc grid(perlin: Perlin; start: float32; width: int; buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: int; width: int): Grid" href="noisy/perlins.html#grid%2CPerlin%2Cint%2Cint">perlins: proc grid(perlin: Perlin; start: int; width: int): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="perlins: proc grid(perlin: Perlin; start: int; width: int; buffer: var openArray[float32])" href="noisy/perlins.html#grid%2CPerlin%2Cint%2Cint%2CopenArray%5Bfloat32%5D">perlins: proc grid(perlin: Perlin; start: int; width: int; buffer: var openArray[float32])</a></li>
           </ul></dd>
 <dt><a name="Grid" href="#Grid"><span>Grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -400,6 +522,22 @@
 <dt><a name="grid" href="#grid"><span>grid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C">values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueCubic%2C%2C%2CopenArray%5Bfloat32%5D">values: proc grid(noise: ValueCubic; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueCubic%2C%2C%2CopenArray%5Bfloat32%5D_2">values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueCubic%2C%2C%2CopenArray%5Bfloat32%5D_3">values: proc grid(noise: ValueCubic; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueCubic%2C%2C%2CopenArray%5Bfloat32%5D_4">values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C_2">values: proc grid(noise: ValueCubic; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
@@ -410,6 +548,22 @@
           data-doc-search-tag="values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid" href="noisy/values.html#grid%2CValueCubic%2C%2C_4">values: proc grid(noise: ValueCubic; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueNoise%2C%2C">values: proc grid(noise: ValueNoise; start: (float32, float32); dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueNoise%2C%2C%2CopenArray%5Bfloat32%5D">values: proc grid(noise: ValueNoise; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueNoise%2C%2C%2CopenArray%5Bfloat32%5D_2">values: proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueNoise%2C%2C%2CopenArray%5Bfloat32%5D_3">values: proc grid(noise: ValueNoise; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])" href="noisy/values.html#grid%2CValueNoise%2C%2C%2CopenArray%5Bfloat32%5D_4">values: proc grid(noise: ValueNoise; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
           <li><a class="reference external"
           data-doc-search-tag="values: proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int)): Grid" href="noisy/values.html#grid%2CValueNoise%2C%2C_2">values: proc grid(noise: ValueNoise; start: (int, int); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
@@ -597,6 +751,18 @@
 <li><a class="reference external"
           data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid" href="noisy/grids.html#scalarGrid%2CT%2C%2C">grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int)): Grid</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int);
+              buffer: var openArray[float32])" href="noisy/grids.html#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D">grids: proc scalarGrid[T](noise: T; start: (float32, float32); dimens: (int, int);
+              buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int); buffer: var openArray[float32])" href="noisy/grids.html#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_2">grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
+              dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int); buffer: var openArray[float32])" href="noisy/grids.html#scalarGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D_3">grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32, float32);
+              dimens: (int, int, int, int); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid" href="noisy/grids.html#scalarGrid%2CT%2C%2C_2">grids: proc scalarGrid[T](noise: T; start: (float32, float32, float32);
               dimens: (int, int, int)): Grid</a></li>
@@ -606,6 +772,10 @@
               dimens: (int, int, int, int)): Grid</a></li>
           <li><a class="reference external"
           data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: float32; width: int): Grid" href="noisy/grids.html#scalarGrid%2CT%2Cfloat32%2Cint">grids: proc scalarGrid[T](noise: T; start: float32; width: int): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="grids: proc scalarGrid[T](noise: T; start: float32; width: int;
+              buffer: var openArray[float32])" href="noisy/grids.html#scalarGrid%2CT%2Cfloat32%2Cint%2CopenArray%5Bfloat32%5D">grids: proc scalarGrid[T](noise: T; start: float32; width: int;
+              buffer: var openArray[float32])</a></li>
           </ul></dd>
 <dt><a name="searchFeatures8" href="#searchFeatures8"><span>searchFeatures8:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -753,7 +923,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 15:56:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:03:42 UTC</small>
       </div>
     </div>
   </div>

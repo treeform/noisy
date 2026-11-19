@@ -9,13 +9,21 @@ nim	value	noisy/perlins.html#value,Perlin,int	proc value(perlin: Perlin; x: int)
 nim	value	noisy/perlins.html#value,Perlin,int,int	proc value(perlin: Perlin; x, y: int): float32		169
 nim	value	noisy/perlins.html#value,Perlin,int,int,int	proc value(perlin: Perlin; x, y, z: int): float32		173
 nim	value	noisy/perlins.html#value,Perlin,int,int,int,int	proc value(perlin: Perlin; x, y, z, w: int): float32		177
-nim	grid	noisy/perlins.html#grid,Perlin,float32,int	proc grid(perlin: Perlin; start: float32; width: int): Grid		216
-nim	grid	noisy/perlins.html#grid,Perlin,int,int	proc grid(perlin: Perlin; start, width: int): Grid		225
-nim	grid	noisy/perlins.html#grid,Perlin,,	proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid		229
-nim	grid	noisy/perlins.html#grid,Perlin,,_2	proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid		240
-nim	grid	noisy/perlins.html#grid,Perlin,,_3	proc grid(perlin: Perlin; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		246
-nim	grid	noisy/perlins.html#grid,Perlin,,_4	proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int)): Grid		259
-nim	grid	noisy/perlins.html#grid,Perlin,,_5	proc grid(perlin: Perlin; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int)): Grid		265
-nim	grid	noisy/perlins.html#grid,Perlin,,_6	proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int)): Grid		278
+nim	grid	noisy/perlins.html#grid,Perlin,float32,int,openArray[float32]	proc grid(perlin: Perlin; start: float32; width: int; buffer: var openArray[float32])		216
+nim	grid	noisy/perlins.html#grid,Perlin,float32,int	proc grid(perlin: Perlin; start: float32; width: int): Grid		229
+nim	grid	noisy/perlins.html#grid,Perlin,int,int,openArray[float32]	proc grid(perlin: Perlin; start: int; width: int; buffer: var openArray[float32])		238
+nim	grid	noisy/perlins.html#grid,Perlin,int,int	proc grid(perlin: Perlin; start: int; width: int): Grid		245
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]	proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int);\n     buffer: var openArray[float32])		251
+nim	grid	noisy/perlins.html#grid,Perlin,,	proc grid(perlin: Perlin; start: (float32, float32); dimens: (int, int)): Grid		264
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]_2	proc grid(perlin: Perlin; start: (int, int); dimens: (int, int);\n     buffer: var openArray[float32])		273
+nim	grid	noisy/perlins.html#grid,Perlin,,_2	proc grid(perlin: Perlin; start: (int, int); dimens: (int, int)): Grid		280
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]_3	proc grid(perlin: Perlin; start: (float32, float32, float32);\n     dimens: (int, int, int); buffer: var openArray[float32])		286
+nim	grid	noisy/perlins.html#grid,Perlin,,_3	proc grid(perlin: Perlin; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		299
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]_4	proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int);\n     buffer: var openArray[float32])		308
+nim	grid	noisy/perlins.html#grid,Perlin,,_4	proc grid(perlin: Perlin; start: (int, int, int); dimens: (int, int, int)): Grid		315
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]_5	proc grid(perlin: Perlin; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int); buffer: var openArray[float32])		321
+nim	grid	noisy/perlins.html#grid,Perlin,,_5	proc grid(perlin: Perlin; start: (float32, float32, float32, float32);\n     dimens: (int, int, int, int)): Grid		334
+nim	grid	noisy/perlins.html#grid,Perlin,,,openArray[float32]_6	proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int);\n     buffer: var openArray[float32])		343
+nim	grid	noisy/perlins.html#grid,Perlin,,_6	proc grid(perlin: Perlin; start: (int, int, int, int); dimens: (int, int, int, int)): Grid		350
 nimgrp	grid	noisy/perlins.html#grid-procs-all	proc		216
 nimgrp	value	noisy/perlins.html#value-procs-all	proc		141

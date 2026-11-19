@@ -18,9 +18,13 @@ nim	value	noisy/cellulars.html#value,Cellular,float32,float32	proc value(cellula
 nim	value	noisy/cellulars.html#value,Cellular,float32,float32,float32	proc value(cellular: Cellular; x, y, z: float32): float32		171
 nim	value	noisy/cellulars.html#value,Cellular,int,int	proc value(cellular: Cellular; x, y: int): float32		176
 nim	value	noisy/cellulars.html#value,Cellular,int,int,int	proc value(cellular: Cellular; x, y, z: int): float32		180
-nim	grid	noisy/cellulars.html#grid,Cellular,,	proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid		258
-nim	grid	noisy/cellulars.html#grid,Cellular,,_2	proc grid(cellular: Cellular; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		270
-nim	grid	noisy/cellulars.html#grid,Cellular,,_3	proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid		284
-nim	grid	noisy/cellulars.html#grid,Cellular,,_4	proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid		290
+nim	grid	noisy/cellulars.html#grid,Cellular,,,openArray[float32]	proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int);\n     buffer: var openArray[float32])		258
+nim	grid	noisy/cellulars.html#grid,Cellular,,	proc grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid		272
+nim	grid	noisy/cellulars.html#grid,Cellular,,,openArray[float32]_2	proc grid(cellular: Cellular; start: (int, int); dimens: (int, int);\n     buffer: var openArray[float32])		280
+nim	grid	noisy/cellulars.html#grid,Cellular,,_2	proc grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid		287
+nim	grid	noisy/cellulars.html#grid,Cellular,,,openArray[float32]_3	proc grid(cellular: Cellular; start: (float32, float32, float32);\n     dimens: (int, int, int); buffer: var openArray[float32])		293
+nim	grid	noisy/cellulars.html#grid,Cellular,,_3	proc grid(cellular: Cellular; start: (float32, float32, float32);\n     dimens: (int, int, int)): Grid		307
+nim	grid	noisy/cellulars.html#grid,Cellular,,,openArray[float32]_4	proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int);\n     buffer: var openArray[float32])		315
+nim	grid	noisy/cellulars.html#grid,Cellular,,_4	proc grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid		322
 nimgrp	grid	noisy/cellulars.html#grid-procs-all	proc		258
 nimgrp	value	noisy/cellulars.html#value-procs-all	proc		166

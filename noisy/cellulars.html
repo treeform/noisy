@@ -88,11 +88,23 @@
     <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">grid
   <li><a class="reference" href="#grid%2CCellular%2C%2C" title="grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid">grid(cellular: Cellular; start: (float32, float32); dimens: (int, int)): Grid</a></li>
-<li><a class="reference" href="#grid%2CCellular%2C%2C_2" title="grid(cellular: Cellular; start: (float32, float32, float32);
+<li><a class="reference" href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D" title="grid(cellular: Cellular; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])">grid(cellular: Cellular; start: (float32, float32); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
+<li><a class="reference" href="#grid%2CCellular%2C%2C_3" title="grid(cellular: Cellular; start: (float32, float32, float32);
      dimens: (int, int, int)): Grid">grid(cellular: Cellular; start: (float32, float32, float32);
      dimens: (int, int, int)): Grid</a></li>
-<li><a class="reference" href="#grid%2CCellular%2C%2C_3" title="grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid">grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid</a></li>
+<li><a class="reference" href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_3" title="grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])">grid(cellular: Cellular; start: (float32, float32, float32);
+     dimens: (int, int, int); buffer: var openArray[float32])</a></li>
+<li><a class="reference" href="#grid%2CCellular%2C%2C_2" title="grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid">grid(cellular: Cellular; start: (int, int); dimens: (int, int)): Grid</a></li>
+<li><a class="reference" href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_2" title="grid(cellular: Cellular; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])">grid(cellular: Cellular; start: (int, int); dimens: (int, int);
+     buffer: var openArray[float32])</a></li>
 <li><a class="reference" href="#grid%2CCellular%2C%2C_4" title="grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid">grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int)): Grid</a></li>
+<li><a class="reference" href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_4" title="grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])">grid(cellular: Cellular; start: (int, int, int); dimens: (int, int, int);
+     buffer: var openArray[float32])</a></li>
 
 </ul>
 <ul class="simple nested-toc-section">initCellular
@@ -183,32 +195,68 @@
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Generates a 2D Cellular grid at unit intervals.
+    Allocates and fills a 2D grid at unit intervals from start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L272" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L272" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="grid,Cellular,,,openArray[float32]">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span>
+          <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Fills 2D samples into buffer without allocating or resizing it. Requires room for the full grid; extra elements are left untouched.
     <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L258" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
 <a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L258" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
-<div id="grid,Cellular,,_2">
-  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C_2"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
+<div id="grid,Cellular,,_3">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C_3"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
           <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Generates a 3D Cellular grid at unit intervals.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L270" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L270" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates and fills a 3D grid at unit intervals from start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L307" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L307" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
-<div id="grid,Cellular,,_3">
-  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C_3"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.
+<div id="grid,Cellular,,,openArray[float32]_3">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_3"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">)</span><span class="Other">;</span>
+          <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Fills 3D samples into buffer without allocating or resizing it. Requires room for the full grid; extra elements are left untouched.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L293" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L293" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="grid,Cellular,,_2">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C_2"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <a href="simplexcommon.html#Grid"><span class="Identifier">Grid</span></a> {.
     <span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Generates a 2D Cellular grid from an integer origin.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L284" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L284" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates a 2D grid from an integer start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L287" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L287" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="grid,Cellular,,,openArray[float32]_2">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_2"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span>
+          <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Fills a 2D grid into caller-owned storage from an integer start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L280" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L280" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -217,9 +265,21 @@
     <span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
     
-    Generates a 3D Cellular grid from an integer origin.
-    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L290" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L290" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    Allocates a 3D grid from an integer start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L322" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L322" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+<div id="grid,Cellular,,,openArray[float32]_4">
+  <dt><pre><span class="Keyword">func</span> <a href="#grid%2CCellular%2C%2C%2CopenArray%5Bfloat32%5D_4"><span class="Identifier">grid</span></a><span class="Other">(</span><span class="Identifier">cellular</span><span class="Other">:</span> <a href="#Cellular"><span class="Identifier">Cellular</span></a><span class="Other">;</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">dimens</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">;</span>
+          <span class="Identifier">buffer</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">NoisyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Fills a 3D grid into caller-owned storage from an integer start.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/cellulars.nim#L315" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/cellulars.nim#L315" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -301,7 +361,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 15:56:08 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:03:42 UTC</small>
       </div>
     </div>
   </div>
