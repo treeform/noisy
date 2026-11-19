@@ -28,7 +28,7 @@
     <label for="nav-toggle" id="nav-overlay"></label>
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/grids.html">noisy/grids</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/avx2base.html">noisy/simd/avx2base</a>, <a href="noisy/simd/cellularavx2.html">noisy/simd/cellularavx2</a>, <a href="noisy/simd/gridavx2.html">noisy/simd/gridavx2</a>, <a href="noisy/simd/latticesavx2.html">noisy/simd/latticesavx2</a>, <a href="noisy/simd/opensimplex2avx2.html">noisy/simd/opensimplex2avx2</a>, <a href="noisy/simd/opensimplex2savx2.html">noisy/simd/opensimplex2savx2</a>, <a href="noisy/simd/perlinavx2.html">noisy/simd/perlinavx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simd/valueavx2.html">noisy/simd/valueavx2</a>, <a href="noisy/simd/valuecubicavx2.html">noisy/simd/valuecubicavx2</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="noisy.html">noisy</a>, <a href="noisy/cellulars.html">noisy/cellulars</a>, <a href="noisy/common.html">noisy/common</a>, <a href="noisy/grids.html">noisy/grids</a>, <a href="noisy/lattices.html">noisy/lattices</a>, <a href="noisy/opensimplexes.html">noisy/opensimplexes</a>, <a href="noisy/perlins.html">noisy/perlins</a>, <a href="noisy/simd.html">noisy/simd</a>, <a href="noisy/simd/avx2.html">noisy/simd/avx2</a>, <a href="noisy/simd/avx2base.html">noisy/simd/avx2base</a>, <a href="noisy/simd/cellularavx2.html">noisy/simd/cellularavx2</a>, <a href="noisy/simd/gridavx2.html">noisy/simd/gridavx2</a>, <a href="noisy/simd/latticesavx2.html">noisy/simd/latticesavx2</a>, <a href="noisy/simd/opensimplex2avx2.html">noisy/simd/opensimplex2avx2</a>, <a href="noisy/simd/opensimplex2savx2.html">noisy/simd/opensimplex2savx2</a>, <a href="noisy/simd/perlinavx2.html">noisy/simd/perlinavx2</a>, <a href="noisy/simd/runtimecheck.html">noisy/simd/runtimecheck</a>, <a href="noisy/simd/valueavx2.html">noisy/simd/valueavx2</a>, <a href="noisy/simd/valuecubicavx2.html">noisy/simd/valuecubicavx2</a>, <a href="noisy/simplexcommon.html">noisy/simplexcommon</a>, <a href="noisy/tiles.html">noisy/tiles</a>, <a href="noisy/values.html">noisy/values</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc `*`(a, b: Float4): Float4" href="noisy/simd.html#%2A%2CM128%2CM128">simd: proc `*`(a, b: Float4): Float4</a></li>
@@ -741,6 +741,16 @@
           <li><a class="reference external"
           data-doc-search-tag="opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y, z: Float8): Float8" href="noisy/simd/opensimplex2savx2.html#sampleSmooth8%2Cint32%2CM256%2CM256%2CM256">opensimplex2savx2: proc sampleSmooth8(seed: int32; x, y, z: Float8): Float8</a></li>
           </ul></dd>
+<dt><a name="sampleTileAvx2" href="#sampleTileAvx2"><span>sampleTileAvx2:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="avx2: proc sampleTileAvx2(simplex: Simplex; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)" href="noisy/simd/avx2.html#sampleTileAvx2%2CSimplex%2Carray%5B%2Carray%5B%2Cfloat32%5D%5D%2Cint%2Cptr.float32">avx2: proc sampleTileAvx2(simplex: Simplex; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="gridavx2: proc sampleTileAvx2(batch: AvxBatch; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)" href="noisy/simd/gridavx2.html#sampleTileAvx2%2CAvxBatch%2Carray%5B%2Carray%5B%2Cfloat32%5D%5D%2Cint%2Cptr.float32">gridavx2: proc sampleTileAvx2(batch: AvxBatch; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)</a></li>
+          </ul></dd>
 <dt><a name="sampleValue8" href="#sampleValue8"><span>sampleValue8:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="valueavx2: proc sampleValue8(seed: int32; x, y: Float8): Float8" href="noisy/simd/valueavx2.html#sampleValue8%2Cint32%2CM256%2CM256">valueavx2: proc sampleValue8(seed: int32; x, y: Float8): Float8</a></li>
@@ -802,6 +812,40 @@
 <dt><a name="store" href="#store"><span>store:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="simd: proc store(p: ptr float32; a: Float4)" href="noisy/simd.html#store%2Cptr.float32%2CM128">simd: proc store(p: ptr float32; a: Float4)</a></li>
+          </ul></dd>
+<dt><a name="tileGrid" href="#tileGrid"><span>tileGrid:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);
+                                        dimens: (int, int)): Grid" href="noisy/tiles.html#tileGrid%2CT%2C%2C">tiles: proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);
+                                        dimens: (int, int)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);
+    dimens: (int, int); period: (P, P)): Grid" href="noisy/tiles.html#tileGrid%2CT%2C%2C%2C">tiles: proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);
+    dimens: (int, int); period: (P, P)): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);
+    dimens: (int, int); period: (P, P); buffer: var openArray[float32])" href="noisy/tiles.html#tileGrid%2CT%2C%2C%2C%2CopenArray%5Bfloat32%5D">tiles: proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);
+    dimens: (int, int); period: (P, P); buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);
+                                        dimens: (int, int);
+                                        buffer: var openArray[float32])" href="noisy/tiles.html#tileGrid%2CT%2C%2C%2CopenArray%5Bfloat32%5D">tiles: proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);
+                                        dimens: (int, int);
+                                        buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int): Grid" href="noisy/tiles.html#tileGrid%2CT%2CS%2Cint">tiles: proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int;
+                                      buffer: var openArray[float32])" href="noisy/tiles.html#tileGrid%2CT%2CS%2Cint%2CopenArray%5Bfloat32%5D">tiles: proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int;
+                                      buffer: var openArray[float32])</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;
+    period: P): Grid" href="noisy/tiles.html#tileGrid%2CT%2CS%2Cint%2CP">tiles: proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;
+    period: P): Grid</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="tiles: proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;
+    period: P; buffer: var openArray[float32])" href="noisy/tiles.html#tileGrid%2CT%2CS%2Cint%2CP%2CopenArray%5Bfloat32%5D">tiles: proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;
+    period: P; buffer: var openArray[float32])</a></li>
           </ul></dd>
 <dt><a name="toFloats" href="#toFloats"><span>toFloats:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -923,7 +967,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:03:42 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:16:20 UTC</small>
       </div>
     </div>
   </div>

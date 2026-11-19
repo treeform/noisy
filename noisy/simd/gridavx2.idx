@@ -9,3 +9,4 @@ nim	AvxKind	noisy/simd/gridavx2.html#AvxKind	enum AvxKind		8
 nim	AvxSettings	noisy/simd/gridavx2.html#AvxSettings	object AvxSettings		11
 nim	AvxBatch	noisy/simd/gridavx2.html#AvxBatch	object AvxBatch		17
 nim	fillRowAvx2	noisy/simd/gridavx2.html#fillRowAvx2,AvxBatch,array[,float32],int,int,ptr.float32	proc fillRowAvx2(batch: AvxBatch; start: array[4, float32]; dimensions, length: int;\n            output: ptr float32)		98
+nim	sampleTileAvx2	noisy/simd/gridavx2.html#sampleTileAvx2,AvxBatch,array[,array[,float32]],int,ptr.float32	proc sampleTileAvx2(batch: AvxBatch; points: array[4, array[8, float32]];\n               dimensions: int; output: ptr float32)		124

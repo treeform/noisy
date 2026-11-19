@@ -1,0 +1,10 @@
+nimTitle	tiles	noisy/tiles.html	module noisy/tiles		0
+nim	tileGrid	noisy/tiles.html#tileGrid,T,S,int,P,openArray[float32]	proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;\n    period: P; buffer: var openArray[float32])		145
+nim	tileGrid	noisy/tiles.html#tileGrid,T,S,int,P	proc tileGrid[T: TileNoise; S, P: SomeNumber](noise: T; start: S; width: int;\n    period: P): Grid		156
+nim	tileGrid	noisy/tiles.html#tileGrid,T,S,int,openArray[float32]	proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int;\n                                      buffer: var openArray[float32])		164
+nim	tileGrid	noisy/tiles.html#tileGrid,T,S,int	proc tileGrid[T: TileNoise; S: SomeNumber](noise: T; start: S; width: int): Grid		170
+nim	tileGrid	noisy/tiles.html#tileGrid,T,,,,openArray[float32]	proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);\n    dimens: (int, int); period: (P, P); buffer: var openArray[float32])		174
+nim	tileGrid	noisy/tiles.html#tileGrid,T,,,	proc tileGrid[T: TileNoise2D; S, P: SomeNumber](noise: T; start: (S, S);\n    dimens: (int, int); period: (P, P)): Grid		188
+nim	tileGrid	noisy/tiles.html#tileGrid,T,,,openArray[float32]	proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);\n                                        dimens: (int, int);\n                                        buffer: var openArray[float32])		197
+nim	tileGrid	noisy/tiles.html#tileGrid,T,,	proc tileGrid[T: TileNoise2D; S: SomeNumber](noise: T; start: (S, S);\n                                        dimens: (int, int)): Grid		203
+nimgrp	tilegrid	noisy/tiles.html#tileGrid-procs-all	proc		145

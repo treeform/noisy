@@ -93,6 +93,12 @@
             output: ptr float32)</a></li>
 
 </ul>
+<ul class="simple nested-toc-section">sampleTileAvx2
+  <li><a class="reference" href="#sampleTileAvx2%2CAvxBatch%2Carray%5B%2Carray%5B%2Cfloat32%5D%5D%2Cint%2Cptr.float32" title="sampleTileAvx2(batch: AvxBatch; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)">sampleTileAvx2(batch: AvxBatch; points: array[4, array[8, float32]];
+               dimensions: int; output: ptr float32)</a></li>
+
+</ul>
 
     </ul>
   </details>
@@ -177,6 +183,21 @@
 </div>
 
 </div>
+<div id="sampleTileAvx2-procs-all">
+  <div id="sampleTileAvx2,AvxBatch,array[,array[,float32]],int,ptr.float32">
+  <dt><pre><span class="Keyword">func</span> <a href="#sampleTileAvx2%2CAvxBatch%2Carray%5B%2Carray%5B%2Cfloat32%5D%5D%2Cint%2Cptr.float32"><span class="Identifier">sampleTileAvx2</span></a><span class="Other">(</span><span class="Identifier">batch</span><span class="Other">:</span> <a href="#AvxBatch"><span class="Identifier">AvxBatch</span></a><span class="Other">;</span> <span class="Identifier">points</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">4</span><span class="Other">,</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">8</span><span class="Other">,</span> <span class="Identifier">float32</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span>
+                    <span class="Identifier">dimensions</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">float32</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+  <dd>
+    
+    Internal: samples eight circle/torus positions through the scalar ABI. The caller validates settings, selects 2D/4D, and supplies eight outputs.
+    <a href="https://github.com/treeform/noisy/tree/master/src/noisy/simd/gridavx2.nim#L124" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="https://github.com/treeform/noisy/edit/devel/src/noisy/simd/gridavx2.nim#L124" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+
+  </dd>
+</div>
+
+</div>
 
   </dl>
 </div>
@@ -187,7 +208,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:03:42 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-11-19 16:16:19 UTC</small>
       </div>
     </div>
   </div>

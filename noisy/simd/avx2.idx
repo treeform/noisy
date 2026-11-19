@@ -1,6 +1,7 @@
 nimTitle	avx2	noisy/simd/avx2.html	module noisy/simd/avx2		0
-nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,float32,int,openArray[float32]	proc fillGridAvx2(simplex: Simplex; start: float32; width: int;\n             buffer: var openArray[float32])		264
-nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]	proc fillGridAvx2(simplex: Simplex; start: (float32, float32); dimens: (int, int);\n             buffer: var openArray[float32])		282
-nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]_2	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32);\n             dimens: (int, int, int); buffer: var openArray[float32])		308
-nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]_3	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);\n             dimens: (int, int, int, int); buffer: var openArray[float32])		340
-nimgrp	fillgridavx2	noisy/simd/avx2.html#fillGridAvx2-procs-all	proc		264
+nim	sampleTileAvx2	noisy/simd/avx2.html#sampleTileAvx2,Simplex,array[,array[,float32]],int,ptr.float32	proc sampleTileAvx2(simplex: Simplex; points: array[4, array[8, float32]];\n               dimensions: int; output: ptr float32)		264
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,float32,int,openArray[float32]	proc fillGridAvx2(simplex: Simplex; start: float32; width: int;\n             buffer: var openArray[float32])		293
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]	proc fillGridAvx2(simplex: Simplex; start: (float32, float32); dimens: (int, int);\n             buffer: var openArray[float32])		311
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]_2	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32);\n             dimens: (int, int, int); buffer: var openArray[float32])		337
+nim	fillGridAvx2	noisy/simd/avx2.html#fillGridAvx2,Simplex,,,openArray[float32]_3	proc fillGridAvx2(simplex: Simplex; start: (float32, float32, float32, float32);\n             dimens: (int, int, int, int); buffer: var openArray[float32])		369
+nimgrp	fillgridavx2	noisy/simd/avx2.html#fillGridAvx2-procs-all	proc		293
